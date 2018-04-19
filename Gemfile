@@ -25,6 +25,7 @@ gem 'rack-graphiql'
 group :test, :development do
   gem 'pry'
   gem 'pry-nav'
+  gem 'rspec'
   gem 'rubocop', require: false
   gem 'sinatra-reloader'
 end
