@@ -1,0 +1,1 @@
+abort('Enviroment variable ENV is required') if ENV['ENV'].blank?
