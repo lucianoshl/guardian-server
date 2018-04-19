@@ -1,1 +1,1 @@
-web: ENV=$ENV bundle exec foreman start -f Procfile.workers
+web: bundle exec foreman start -f Procfile.workers
