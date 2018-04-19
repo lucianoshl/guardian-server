@@ -21,6 +21,8 @@ gem 'foreman'
 # developer
 gem "pry"
 gem "pry-nav"
+gem "rack-graphiql"
+gem "sinatra-reloader"
 
 # general
 gem 'require_all'
