@@ -8,3 +8,7 @@ require_rel '../lib/requirer.rb'
 get '/' do
   'Put this in your pipe & smoke it!'
 end
+
+get '/healthcheck' do
+  
+end
