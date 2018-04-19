@@ -1,6 +1,6 @@
 require 'bundler/setup'
 require 'delayed/command'
-Bundler.require(:default)
+Bundler.require(:default,ENV['ENV'])
 
 require_rel '../lib/requirer.rb'
 

@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'bundler'
-Bundler.require(:default)
+Bundler.require(:default,ENV['ENV'])
 require 'sinatra'
 
 require_rel '../lib/requirer.rb'

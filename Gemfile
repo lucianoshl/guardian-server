@@ -15,16 +15,19 @@ gem 'delayed_job'
 gem 'delayed_job_mongoid'
 gem 'daemons'
 
-# deploy
-gem 'foreman'
-
-# developer
-gem "pry"
-gem "pry-nav"
-gem "rack-graphiql"
-gem "sinatra-reloader"
-
 # general
 gem 'require_all'
 gem 'logger'
 gem 'rake'
+
+gem "rack-graphiql"
+
+group :test, :development do
+  gem "pry"
+  gem "pry-nav"
+  gem "sinatra-reloader"
+end
+
+group :production do
+  gem 'foreman'
+end
