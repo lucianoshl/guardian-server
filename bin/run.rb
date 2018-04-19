@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'bundler'
-Bundler.require(:default,ENV['ENV'])
+Bundler.require(:default, ENV['ENV'])
 require 'sinatra'
 
 require_rel '../lib/requirer.rb'
@@ -14,5 +16,4 @@ get '/graphiql' do
 end
 
 get '/healthcheck' do
-
 end

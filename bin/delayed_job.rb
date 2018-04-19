@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 require 'delayed/command'
-Bundler.require(:default,ENV['ENV'])
+Bundler.require(:default, ENV['ENV'])
 
 require_rel '../lib/requirer.rb'
 

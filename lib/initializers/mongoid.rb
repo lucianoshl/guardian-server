@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Mongoid.logger = Logger.new(STDOUT)
 Mongoid.logger.level = -1
 

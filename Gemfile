@@ -2,30 +2,31 @@
 
 ruby '2.5.1'
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 # app
-gem "sinatra", require: false
-gem "mongoid"
+gem 'mongoid'
+gem 'sinatra', require: false
 
 # jobs
+gem 'daemons'
 gem 'delayed_job'
 gem 'delayed_job_mongoid'
-gem 'daemons'
 
 # general
-gem 'require_all'
 gem 'logger'
 gem 'rake'
+gem 'require_all'
 
-gem "rack-graphiql"
+gem 'rack-graphiql'
 
 group :test, :development do
-  gem "pry"
-  gem "pry-nav"
-  gem "sinatra-reloader"
+  gem 'pry'
+  gem 'pry-nav'
+  gem 'rubocop', require: false
+  gem 'sinatra-reloader'
 end
 
 group :production do
