@@ -20,7 +20,7 @@ describe Property do
       OpenStruct.new(hash: 1),
       { hash: { hash: 1 } }
     ])
-  end 
+  end
 
   it 'error in mongoid types' do
     expect do
