@@ -12,7 +12,7 @@ gem 'mongoid'
 gem 'rack'
 gem 'rack-contrib'
 gem 'rack-mount'
-gem 'sinatra', require: false
+gem 'sinatra'
 
 # jobs
 gem 'daemons'
