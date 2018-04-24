@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'sinatra/base'
+require 'sinatra/json'
+
 class GuardianSinatraApp < Sinatra::Base
   get '/' do
     erb :index

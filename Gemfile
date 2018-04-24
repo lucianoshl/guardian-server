@@ -10,8 +10,8 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 gem 'graphql'
 gem 'mongoid'
 gem 'rack'
-gem 'rack-mount'
 gem 'rack-contrib'
+gem 'rack-mount'
 gem 'sinatra', require: false
 
 # jobs
