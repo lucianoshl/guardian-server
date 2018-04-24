@@ -16,4 +16,11 @@ namespace 'guardian' do
     queue = ARGV.empty? ? '' : " --queue=#{ARGV[0]}"
     sh("ENV=#{ENV['ENV']} bundle exec ruby ./bin/delayed_job.rb run#{queue}")
   end
+
+  desc 'Run console'
+  task :console do
+    ARGV.shift
+    queue = ARGV.empty? ? '' : " --queue=#{ARGV[0]}"
+    sh("ENV=#{ENV['ENV']} bundle exec ruby ./bin/console.rb")
+  end
 end
