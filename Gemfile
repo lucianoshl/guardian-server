@@ -9,6 +9,8 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 # app
 gem 'graphql'
 gem 'mongoid'
+gem 'rack'
+gem 'rack-mount'
 gem 'rack-contrib'
 gem 'sinatra', require: false
 

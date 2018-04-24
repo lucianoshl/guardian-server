@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class Guardian < Sinatra::Base
+class GuardianSinatraApp < Sinatra::Base
   get '/' do
-    'Put this in your pipe & smoke it!'
+    erb :index
   end
 
   post '/graphql' do
