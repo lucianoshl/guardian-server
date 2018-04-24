@@ -1,0 +1,12 @@
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+
+Style/Documentation:
+  Enabled: false 
+
+Metrics/LineLength:
+  Enabled: true
+  Max: 100
+
+Layout/IndentArray:
+  Enabled: false 
