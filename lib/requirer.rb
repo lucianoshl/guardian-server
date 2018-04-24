@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-$DEBUG = true
-
 require_rel './extensions'
 require_rel './initializers'
 require_rel './graphql_model'

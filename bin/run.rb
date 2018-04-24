@@ -8,6 +8,7 @@ require 'sinatra/json'
 require 'rack/contrib'
 
 require_rel '../lib/requirer.rb'
+require_rel '../lib/sinatra'
 
 get '/' do
   'Put this in your pipe & smoke it!'
