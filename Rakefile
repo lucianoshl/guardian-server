@@ -22,7 +22,6 @@ namespace 'guardian' do
 
   desc 'Run console'
   task :console do
-    ARGV.shift
     sh("ENV=#{ENV['ENV']} bundle exec ruby ./bin/console.rb")
   end
 end
