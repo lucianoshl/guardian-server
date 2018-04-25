@@ -29,7 +29,7 @@ namespace 'guardian' do
   end
 end
 
-if ENV['ENV'].eq? 'test'
+if ENV['ENV'] == 'test'
   require 'rspec/core/rake_task'
   require 'coveralls/rake/task'
   desc 'Run RSpec'
