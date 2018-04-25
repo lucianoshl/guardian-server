@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-
 ENV['ENV'] ||= 'development'
 ENV['RACK_ENV'] = ENV['ENV'] || 'development'
 
 require 'rubygems'
 require 'rake'
-require 'rspec/core/rake_task'
-require 'coveralls/rake/task'
 
 namespace 'guardian' do
 
@@ -32,9 +29,13 @@ namespace 'guardian' do
   end
 end
 
-desc 'Run RSpec'
-RSpec::Core::RakeTask.new do |t|
-  t.verbose = false
+if ENV['ENV'].eq? 'test'
+  require 'rspec/core/rake_task'
+  require 'coveralls/rake/task'
+  desc 'Run RSpec'
+  RSpec::Core::RakeTask.new do |t|
+    t.verbose = false
+  end
+  task default: :spec
+  Coveralls::RakeTask.new
 end
-task default: :spec
-Coveralls::RakeTask.new
