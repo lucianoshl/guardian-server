@@ -12,6 +12,6 @@ jobs:
       script: bundle exec rspec spec
       after_script:
         - bundle exec rake coveralls:push
-        - ./cc-test-reporter after-build --exit-code $EXIT_CODE
+        - ./cc-test-reporter after-build
 stages:
   - test
