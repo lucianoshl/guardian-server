@@ -28,7 +28,6 @@ gem 'rack-graphiql'
 
 group :test do
   gem 'coveralls', require: false
-  gem 'rspec'
   gem 'simplecov', require: false
   gem 'simplecov-console', require: false
 end
@@ -42,6 +41,7 @@ group :test, :development do
   gem 'pry'
   gem 'pry-nav'
   gem 'pry-stack_explorer'
+  gem 'rspec'
 end
 
 group :production do

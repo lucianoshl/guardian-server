@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 ENV['ENV'] ||= 'test'
+ENV['RACK_ENV'] = ENV['ENV']
 require 'rubygems'
 require 'bundler'
 Bundler.require(:default, ENV['ENV'])
