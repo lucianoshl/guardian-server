@@ -6,6 +6,9 @@ require 'bundler'
 Bundler.require(:default, ENV['ENV'])
 
 require_rel '../lib/requirer.rb'
+require 'coveralls'
+require 'simplecov'
+require 'simplecov-console'
 
 Coveralls.wear!
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
