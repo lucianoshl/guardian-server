@@ -26,14 +26,14 @@ gem 'require_all'
 
 gem 'rack-graphiql'
 
-group :test do 
+group :test do
   gem 'coveralls', require: false
   gem 'rspec'
   gem 'simplecov', require: false
   gem 'simplecov-console', require: false
 end
 
-group :development do 
+group :development do
   gem 'rubocop', require: false
   gem 'sinatra-reloader'
 end
