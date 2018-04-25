@@ -3,7 +3,13 @@
 ENV['ENV'] ||= 'development'
 ENV['RACK_ENV'] = ENV['ENV'] || 'development'
 
+desc 'default task'
+task :default do
+  puts 'my default task'
+end
+
 namespace 'guardian' do
+
   desc 'Run webapp'
   task :server do
     ENV['PORT'] = ENV['PORT'] || '3000'
