@@ -3,4 +3,4 @@ rvm:
  - 2.5.1
 bundler_args: --jobs=2
 script:
-  - bundle exec rake spec
+  - bundle exec rspec
