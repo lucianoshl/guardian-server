@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+
 ENV['ENV'] ||= 'development'
 ENV['RACK_ENV'] = ENV['ENV'] || 'development'
 
-desc 'default task'
-task :default do
-  puts 'my default task'
-end
+require 'rubygems'
+require 'rake'
+require 'rspec/core/rake_task'
+require 'coveralls/rake/task'
 
 namespace 'guardian' do
 
@@ -30,3 +31,10 @@ namespace 'guardian' do
     sh("ENV=#{ENV['ENV']} bundle exec ruby ./bin/console.rb")
   end
 end
+
+desc 'Run RSpec'
+RSpec::Core::RakeTask.new do |t|
+  t.verbose = false
+end
+task default: :spec
+Coveralls::RakeTask.new

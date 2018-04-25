@@ -2,5 +2,9 @@ language: ruby
 rvm:
  - 2.5.1
 bundler_args: --jobs=2
-script:
-  - bundle exec rspec
+notifications:
+    - false
+scripts:
+  - bundle exec rspec spec
+after_script:
+  - bundle exec rake coveralls:push  
