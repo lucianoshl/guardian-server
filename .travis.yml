@@ -1,3 +1,6 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=e7f5d9a518ee5fa811fa38642f11119a495545796b1b3d929eadc0ae40229037
 language: ruby
 rvm:
  - 2.5.1
@@ -12,6 +15,6 @@ jobs:
       script: bundle exec rspec spec
       after_script:
         - bundle exec rake coveralls:push
-        - ./cc-test-reporter after-build
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 stages:
   - test
