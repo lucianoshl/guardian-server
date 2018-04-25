@@ -27,6 +27,7 @@ gem 'require_all'
 gem 'rack-graphiql'
 
 group :test, :development do
+  gem 'coveralls', require: false
   gem 'pry'
   gem 'pry-nav'
   gem 'pry-stack_explorer'
