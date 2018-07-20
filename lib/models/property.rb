@@ -28,6 +28,6 @@ class Property
   end
 
   def deserialize
-    value.nil? ? nil : YAML.safe_load(value, [Symbol, OpenStruct])
+    value.nil? ? nil : YAML.safe_load(value, [Symbol, OpenStruct, HTTP::Cookie, Time], [], true)
   end
 end

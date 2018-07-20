@@ -21,6 +21,7 @@ gem 'delayed_job_mongoid'
 
 # general
 gem 'logger'
+gem 'mechanize'
 gem 'rake'
 gem 'require_all'
 
@@ -40,6 +41,7 @@ end
 group :test, :development do
   gem 'pry'
   gem 'pry-nav'
+  gem 'pry-rescue'
   gem 'pry-stack_explorer'
   gem 'rspec'
 end

@@ -43,6 +43,15 @@ RSpec.configure do |config|
     end
   end
 
+  config.before :each do
+    stub_account = Account.new(
+      username: ENV['STUB_USER'],
+      password: ENV['SUB_PASS'],
+      world: ENV['STUB_WORLD']
+    )
+    Account.stub(:main) { stub_account }
+  end
+
   config.after :all do
     Mongoid.purge!
   end
