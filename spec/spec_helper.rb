@@ -46,7 +46,7 @@ RSpec.configure do |config|
   config.before :each do
     stub_account = Account.new(
       username: ENV['STUB_USER'],
-      password: ENV['SUB_PASS'],
+      password: ENV['STUB_PASS'],
       world: ENV['STUB_WORLD']
     )
     Account.stub(:main) { stub_account }
