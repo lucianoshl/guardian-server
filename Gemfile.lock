@@ -1,9 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    active_attr (0.11.0)
-      activemodel (>= 3.0.2, < 6.0)
-      activesupport (>= 3.0.2, < 6.0)
     activemodel (5.2.0)
       activesupport (= 5.2.0)
     activesupport (5.2.0)
@@ -173,7 +170,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active_attr
   coveralls
   daemons
   delayed_job

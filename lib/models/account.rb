@@ -13,7 +13,9 @@ class Account
     parameters = [username, password, '2.7.8']
     result = Client::Mobile.logged.post('https://www.tribalwars.com.br/m/m/login', parameters)
     Property.put('cookies', Client::Mobile.logged.cookies)
-    JSON.parse(result.body)
+    result = JSON.parse(result.body)
+    throw Exception.new(result['error']) unless result['error'].nil?
+    result
   end
 
   def worlds
