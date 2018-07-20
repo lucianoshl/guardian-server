@@ -1,0 +1,10 @@
+<link href="https://getbootstrap.com/docs/4.1/examples/sign-in/signin.css" rel="stylesheet">
+<form class="form-signin text-center" action="/" method="POST">
+  <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+  <label for="account" class="sr-only" >TW Account</label>
+  <input type="account" id="account" name="account[username]" class="form-control" placeholder="Account" required autofocus autocomplete="off">
+  <label for="tw_pass" class="sr-only">Password</label>
+  <input type="tw_pass" id="tw_pass" class="form-control" placeholder="Password" required autocomplete="off" name="account[password]">
+  <hr/>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+</form>
