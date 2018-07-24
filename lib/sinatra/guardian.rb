@@ -5,7 +5,6 @@ require 'sinatra'
 # require 'sinatra/json'
 
 class GuardianSinatraApp < Sinatra::Base
-  register Sinatra::Reloader
 
   get '/overlay' do
     page = Client::Logged.global.get("/game.php?#{params.to_query}",nil,nil) 
