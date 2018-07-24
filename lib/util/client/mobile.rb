@@ -20,16 +20,16 @@ class Client::Mobile < Mechanize
   end
 
   def post(uri, query = {}, headers = {})
-    # puts "POST: #{inject_global(uri, query)} with #{query}"
     super(inject_global(uri, query), query.to_json, headers)
   end
 
   def get(uri, parameters = [], referer = nil, headers = {})
-    # puts "GET: #{inject_global(uri)} with #{parameters}"
     super(inject_global(uri), parameters, referer, headers)
   end
 
   def inject_global(uri, query = {})
+    uri = inject_base(uri) unless uri.include?('http')
+
     uri = URI.parse(uri)
     parameters = Rack::Utils.parse_nested_query(uri.query).merge(@global_args)
     parameters['hash'] = Digest::SHA1.hexdigest('2sB2jaeNEG6C01QOTldcgCKO-' + query.to_json)
@@ -38,5 +38,9 @@ class Client::Mobile < Mechanize
 
   def add_global_arg(name, value)
     @global_args[name] = value
+  end
+
+  def inject_base(uri)
+    "https://#{Account.main.world}.tribalwars.com.br/#{uri}"
   end
 end

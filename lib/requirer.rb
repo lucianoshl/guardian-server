@@ -12,6 +12,8 @@ require_rel './initializers'
 # require_rel './graphql_model'
 
 require_with_base_folder_as_namespace('screen')
+require_with_base_folder_as_namespace('event')
+require_with_base_folder_as_namespace('service')
 
 Dir.glob("#{File.dirname(__FILE__)}/models/*").map do |folder|
   autoload_rel folder, base_dir: folder

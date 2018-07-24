@@ -20,10 +20,12 @@ gem 'delayed_job'
 gem 'delayed_job_mongoid'
 
 # general
+gem 'filewatcher'
 gem 'logger'
 gem 'mechanize'
 gem 'rake'
 gem 'require_all'
+gem 'wisper'
 
 gem 'rack-graphiql'
 
