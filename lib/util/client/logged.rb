@@ -29,26 +29,28 @@ class Client::Logged
   end
 
   def post(*args)
-    result = @client.send(:post, args)
+    args.unshift(:post)
+    result = @client.send(*args)
     tries = 0
     until check_is_logged(result)
       raise Exception, 'Invalid login' if tries > 0
       @client.login
       reload_cookies
-      result = @client.send(:post, args)
+      result = @client.send(:post, *args)
       tries += 1
     end
     result
   end
 
   def get(*args)
-    result = @client.send(:get, args)
+    args.unshift(:get)
+    result = @client.send(*args)
     tries = 0
     until check_is_logged(result)
       raise Exception, 'Invalid login' if tries > 0
       @client.login
       reload_cookies
-      result = @client.send(:get, args)
+      result = @client.send(*args)
       tries += 1
     end
     result
@@ -56,5 +58,9 @@ class Client::Logged
 
   def check_is_logged(page)
     !page.uri.to_s.include?('www')
+  end
+
+  def cookies
+    @client.cookies
   end
 end

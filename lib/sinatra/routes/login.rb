@@ -29,7 +29,6 @@ module Routes::Login
       account.save
       result = proxy_request('https://www.tribalwars.com.br/')
       redirect '/'
-
     end
 
     app.post '/page/join/:world/confirm' do
@@ -38,8 +37,5 @@ module Routes::Login
       account.save
       return proxy_request('https://www.tribalwars.com.br/')
     end
-
-
-    
   end
 end

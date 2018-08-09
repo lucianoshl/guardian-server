@@ -14,23 +14,23 @@ module Helpers::RequestProxy
     client = @@client
 
     uri = base + request.env['PATH_INFO']
-    if method.eql? :get
-      result = client.get(uri, nil, nil, headers)
-    else
-      result = client.post(uri, params.to_query, headers)
-    end
+    result = if method.eql? :get
+               client.get(uri, nil, nil, headers)
+             else
+               client.post(uri, params.to_query, headers)
+             end
 
-    if result.code == "302"
+    if result.code == '302'
       redirect_uri = URI.parse(result.header['location'])
       redirect redirect_uri.to_s.split(redirect_uri.host).last
       return ''
     end
 
-    return result.body
+    result.body
   end
 
   def fix_header_value(value)
-    value.gsub(/domain=(.+?),/,"domain=#{request.host}")
+    value.gsub(/domain=(.+?),/, "domain=#{request.host}")
   end
 
   def generate_headers

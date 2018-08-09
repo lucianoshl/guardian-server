@@ -8,12 +8,10 @@ class Client::Desktop < Mechanize
   end
 
   def post(uri, query = {}, headers = {})
-    binding.pry
-    super(inject_global(uri, query), query.to_json, headers)
+    super(inject_global(uri), query, headers)
   end
 
   def get(uri, parameters = [], referer = nil, headers = {})
-    binding.pry
     super(inject_global(uri), parameters, referer, headers)
   end
 
@@ -23,10 +21,23 @@ class Client::Desktop < Mechanize
   end
 
   def inject_base(uri)
-    "https://#{Account.main.world}.tribalwars.com.br/#{uri}"
+    "https://#{Account.main.world}.tribalwars.com.br#{uri}"
   end
 
   def login
-    binding.pry
+    account = Account.main
+    login_page = get('https://www.tribalwars.com.br')
+    headers = {}
+    headers['X-CSRF-Token'] = login_page.search('meta[name=csrf-token]').attr('content').text
+    headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    headers['X-Requested-With'] = 'XMLHttpRequest'
+
+    world_select_page = post('https://www.tribalwars.com.br/page/auth', {
+     username: account.username,
+     password: account.password,
+     remember: 1
+     },headers)
+    get("https://www.tribalwars.com.br/page/play/#{account.world}")
+    Property.put("#{self.class}_cookies", cookies)
   end
 end
