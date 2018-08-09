@@ -1,24 +1,29 @@
 # frozen_string_literal: true
 
-def require_with_base_folder_as_namespace(folder)
-  base_folder = "#{File.dirname(__FILE__)}/#{folder}/"
-  Dir.glob("#{base_folder}/*").map do |file|
-    autoload_rel file, base_dir: base_folder
+module Requirer
+  def self.with_base_folder_as_namespace(folder)
+    base_folder = "#{File.dirname(__FILE__)}/#{folder}/"
+    Dir.glob("#{base_folder}/*").map do |file|
+      autoload_rel file, base_dir: base_folder
+    end
+  end
+
+  def self.with_sub_folder_as_namespace(folder)
+    Dir.glob("#{File.dirname(__FILE__)}/#{folder}/*").map do |element|
+      autoload_rel element, base_dir: element
+    end
+  end
+
+  def self.general
+    require_rel './extensions'
+    require_rel './initializers'
+
+    Requirer.with_base_folder_as_namespace('screen')
+    Requirer.with_base_folder_as_namespace('event')
+    Requirer.with_base_folder_as_namespace('service')
+    Requirer.with_sub_folder_as_namespace('models')
+    Requirer.with_sub_folder_as_namespace('util')
   end
 end
 
-require_rel './extensions'
-require_rel './initializers'
-# require_rel './graphql_model'
-
-require_with_base_folder_as_namespace('screen')
-require_with_base_folder_as_namespace('event')
-require_with_base_folder_as_namespace('service')
-
-Dir.glob("#{File.dirname(__FILE__)}/models/*").map do |folder|
-  autoload_rel folder, base_dir: folder
-end
-
-Dir.glob("#{File.dirname(__FILE__)}/util/*").map do |folder|
-  autoload_rel folder, base_dir: folder
-end
+Requirer.general

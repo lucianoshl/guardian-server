@@ -35,4 +35,8 @@ class Account
   def self.main
     where(main: true).first
   end
+
+  def world_uri
+    "http://#{world}.tribalwars.com.br"
+  end
 end

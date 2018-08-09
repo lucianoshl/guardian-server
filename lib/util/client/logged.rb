@@ -1,47 +1,54 @@
 # frozen_string_literal: true
 
-class Client::Logged < Client::Mobile
+require_rel './desktop.rb'
+require_rel './mobile.rb'
 
+class Client::Logged
   class << self
-    def global
-      @global = Client::Logged.new if @global.nil?
-      @global
+    def mobile
+      @mobile = Client::Logged.new(Client::Mobile.new) if @mobile.nil?
+      @mobile
+    end
+
+    def desktop
+      @desktop = Client::Logged.new(Client::Desktop.new) if @desktop.nil?
+      @desktop
     end
   end
 
-  def initialize(*args)
-    super
+  def initialize(client)
+    @client = client
     reload_cookies
   end
 
   def reload_cookies
-    cookie_jar.clear
-    Property.get('cookies', []).map do |cookie|
-      cookie_jar.add(cookie)
+    @client.cookie_jar.clear
+    Property.get("#{@client.class}_cookies", []).map do |cookie|
+      @client.cookie_jar.add(cookie)
     end
   end
 
   def post(*args)
-    result = super
+    result = @client.send(:post, args)
     tries = 0
     until check_is_logged(result)
       raise Exception, 'Invalid login' if tries > 0
-      Account.main.world_login
+      @client.login
       reload_cookies
-      result = super
+      result = @client.send(:post, args)
       tries += 1
     end
     result
   end
 
   def get(*args)
-    result = super
+    result = @client.send(:get, args)
     tries = 0
     until check_is_logged(result)
       raise Exception, 'Invalid login' if tries > 0
-      Account.main.world_login
+      @client.login
       reload_cookies
-      result = super
+      result = @client.send(:get, args)
       tries += 1
     end
     result
