@@ -53,7 +53,9 @@ RSpec.configure do |config|
   end
 
   config.after :all do
+    cookies = Property.where(key: /_cookies/).to_a
     Mongoid.purge!
+    cookies.map(&:clone).map(&:save)
   end
 
   # rspec-expectations config goes here. You can use an alternate
