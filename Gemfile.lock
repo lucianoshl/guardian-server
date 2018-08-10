@@ -14,6 +14,7 @@ GEM
       debug_inspector (>= 0.0.1)
     bson (4.3.0)
     coderay (1.1.2)
+    colorize (0.8.1)
     concurrent-ruby (1.0.5)
     connection_pool (2.2.2)
     coveralls (0.8.22)
@@ -162,6 +163,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  colorize
   coveralls
   daemons
   delayed_job

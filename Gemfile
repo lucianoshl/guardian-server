@@ -26,6 +26,7 @@ gem 'mechanize'
 gem 'rake'
 gem 'require_all'
 gem 'wisper'
+gem 'colorize'
 
 gem 'rack-graphiql'
 

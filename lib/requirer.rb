@@ -18,11 +18,12 @@ module Requirer
     require_rel './extensions'
     require_rel './initializers'
 
+    Requirer.with_sub_folder_as_namespace('util')
+
     Requirer.with_base_folder_as_namespace('screen')
     Requirer.with_base_folder_as_namespace('event')
     Requirer.with_base_folder_as_namespace('service')
     Requirer.with_sub_folder_as_namespace('models')
-    Requirer.with_sub_folder_as_namespace('util')
   end
 end
 
