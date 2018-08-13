@@ -3,16 +3,30 @@
 class Screen::Base < Screen::Logged
   include Screen::Parser
 
-  attr_accessor :quests, :server_time
+  attr_accessor :quests, :server_time, :player, :village
 
   def initialize
     super
   end
 
   def parse(page)
+    game_data = parse_json_argument(page,'TribalWars.updateGameData')
+    self.server_time = parse_server_time(page)
+    self.player = parse_player(page,game_data)
+    self.village = parse_village(page,game_data)
+  end
+
+  def parse_server_time(page)
     time_server_str = "#{page.search('#serverDate').text} #{page.search('#serverTime').text}"
-    self.server_time = Time.parse time_server_str
-    # quest_hash = parse_json_argument(page, 'Quests.setQuestData')
-    # self.quests = quest_hash.values.map { |a| Quest::Abstract.create(a) }
+    Time.parse time_server_str
+  end
+
+  def parse_player(page,game_data)
+    Player.new(game_data['player'].select_keys(:id,:name,:rank,:points))
+  end
+
+  def parse_village(page,game_data)
+    village = Village.new(game_data['village'].select_keys(:id,:name,:x,:y))
+    village
   end
 end

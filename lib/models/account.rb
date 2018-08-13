@@ -9,6 +9,8 @@ class Account
   field :world, type: String
   field :main, type: Boolean
 
+  has_one :player
+
   def self.main
     where(main: true).first
   end
