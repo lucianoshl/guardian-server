@@ -3,6 +3,7 @@
 class Task::PlayerMonitoringTask < Task::Abstract
 
   runs_every 10.minutes
+  
   def run
     nearby = Service::Map.find_nearby(Account.main.player.villages,20)
 
@@ -11,8 +12,8 @@ class Task::PlayerMonitoringTask < Task::Abstract
     all_allies = all_players.values.map{|a| a.ally}.compact.uniq.to_index{|a| a.id}
 
     save_or_update(Village,all_villages)
-    # save_or_update(Player,all_players)
-    # save_or_update(Ally,all_allies)
+    save_or_update(Player,all_players)
+    save_or_update(Ally,all_allies)
 
   end
 
@@ -24,11 +25,11 @@ class Task::PlayerMonitoringTask < Task::Abstract
     unsaved_ids = list_ids - saved_ids
 
     to_save = index.select_keys(*unsaved_ids).values.map{ |a| model.new(a.to_h)}
-    Parallel.map(to_save, in_threads: 3, progress: "Saving #{model.name}") do |v|
+    Parallel.map(to_save, in_threads: 8, progress: "Saving #{model.name}") do |v|
       raise Exception.new("Error saving village #{v.errors.to_a}") if !v.save
     end
 
-    Parallel.map(saved, in_threads: 1, progress: "Merging #{model.name}") do |v|
+    Parallel.map(saved, in_threads: 8, progress: "Merging #{model.name}") do |v|
       v.merge_non_nil(index[v.id]).save
     end
   end
