@@ -10,9 +10,17 @@ class Village
   field :y, type: Integer
 
   belongs_to :player, optional: true
+  embeds_many :evolution, class_name: 'PointsEvolution'
 
-  before_save
-    
+  before_save do |news|
+    if evolution.empty?
+      evolution << PointsEvolution.new(current: points, diference: 0, causes: ['startup'])
+    else
+      diference = self.points - evolution.last.current
+      unless diference.zero?
+        evolution << PointsEvolution.new(current: points, diference: diference)
+      end
+    end
   end
 
   def distance other
