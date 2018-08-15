@@ -9,8 +9,13 @@ class Village
   field :x, type: Integer
   field :y, type: Integer
 
+  field :status, type: String
+  field :next_event, type: String
+
   belongs_to :player, optional: true
   embeds_many :evolution, class_name: 'PointsEvolution'
+
+  scope :targets, -> { not_in(player_id: [ Account.main.player.id ]) }
 
   before_save do |news|
     if evolution.empty?
@@ -25,14 +30,5 @@ class Village
 
   def distance other
     Math.sqrt ((self.x - other.x)**2 + (self.y - other.y)**2)
-  end
-
-  def merge_non_nil other
-    hash_values = other.to_h
-    hash_values.delete(:id)
-    hash_values.map do |k,v|
-      self[k] = v
-    end
-    self
   end
 end

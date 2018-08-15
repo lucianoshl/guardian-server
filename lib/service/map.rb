@@ -72,7 +72,8 @@ class Service::Map
         id: k.to_i,
         name: v[0],
         points: v[1].number_part,
-        ally_id: allies[v[2].number_part]&.id
+        ally_id: allies[v[2].number_part]&.id,
+        ally: allies[v[2].number_part]
       })
       [p.id,p]
     end).to_h
@@ -83,13 +84,25 @@ class Service::Map
     @json.map do |json_item|
       x = json_item['data']['x']
       y = json_item['data']['y']
-      json_item['data']['villages'].each_with_index do |v,i|
-        current_x = x + i.to_i
+
+      next if json_item['data']['villages'].empty?
+
+      if json_item['data']['villages'].class == Array
+        aux = json_item['data']['villages']
+        json_item['data']['villages'] = aux.to_index{|a| aux.index(a).to_s}
+      end
+
+      json_item['data']['villages'].map do |k,v|
+        current_x = x + k.to_i
 
         if (v.class == Array)
-          binding.pry if v.size != 2
-          current_x += v.first.to_i
-          v = v.last
+          if v.size != 2
+            v = v.to_index{|a| v.index(a).to_s}
+          else
+            current_x += v.first.to_i
+            v = v.last
+          end
+
         end
 
         v.each do |k,v_info|
@@ -100,6 +113,7 @@ class Service::Map
             name: v_info[2],
             points: v_info[3].number_part,
             player_id: players[v_info[4].to_i]&.id,
+            player: players[v_info[4].to_i],
             x: current_x,
             y: current_y
           })

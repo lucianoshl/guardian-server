@@ -14,7 +14,6 @@ class Task::PlayerMonitoringTask < Task::Abstract
     save_or_update(Village,all_villages)
     save_or_update(Player,all_players)
     save_or_update(Ally,all_allies)
-
   end
 
   def save_or_update(model,index)
@@ -25,12 +24,14 @@ class Task::PlayerMonitoringTask < Task::Abstract
     unsaved_ids = list_ids - saved_ids
 
     to_save = index.select_keys(*unsaved_ids).values.map{ |a| model.new(a.to_h)}
+
     Parallel.map(to_save, in_threads: 8, progress: "Saving #{model.name}") do |v|
-      raise Exception.new("Error saving village #{v.errors.to_a}") if !v.save
+      raise Exception.new("Error saving #{model.name} #{v.errors.to_a}") if !v.save
     end
 
     Parallel.map(saved, in_threads: 8, progress: "Merging #{model.name}") do |v|
-      v.merge_non_nil(index[v.id]).save
+      merged = v.merge_non_nil(index[v.id])
+      raise Exception.new("Error saving #{model.name} #{merged.errors.to_a}") if !merged.save
     end
   end
 
