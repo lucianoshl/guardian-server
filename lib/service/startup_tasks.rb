@@ -5,6 +5,7 @@ class Service::StartupTasks
   def first_login_event
     fill_user_information
     fill_units_information
+    create_tasks
   end
 
   def fill_user_information
@@ -20,6 +21,10 @@ class Service::StartupTasks
     units = unit_data.map do |k,v|
         Unit.new(v).save
     end
+  end
+
+  def create_tasks
+    Task::PlayerMonitoringTask.new.save
   end
 
 end

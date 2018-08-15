@@ -8,4 +8,8 @@ class String
         .tr('-', '_')
         .downcase
   end
+
+  def number_part
+    self.scan(/\d+/).join().to_i
+  end
 end

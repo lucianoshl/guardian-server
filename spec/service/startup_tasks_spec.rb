@@ -2,6 +2,7 @@
 
 describe Service::StartupTasks do
   it 'fill_user_information' do
-    Service::StartupTasks.new.fill_user_information
+    Task::PlayerMonitoringTask.new.run
+    Task::PlayerMonitoringTask.new.run
   end
 end

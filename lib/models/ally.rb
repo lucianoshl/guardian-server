@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
-class Player
+class Ally
   include Mongoid::Document
   include Mongoid::Timestamps
 
   field :name, type: String
   field :points, type: Integer
-  field :rank, type: Integer
+  field :short, type: Integer
 
-  has_many :villages
-  belongs_to :account, optional: true
-  belongs_to :ally, optional: true
+  has_many :players
 end
