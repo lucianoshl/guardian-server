@@ -44,6 +44,9 @@ RSpec.configure do |config|
   end
 
   config.before :each do
+
+    Report.any_instance.stub(:erase).and_return(nil)
+
     stub_account = Account.new(
       username: ENV['STUB_USER'],
       password: ENV['STUB_PASS'],

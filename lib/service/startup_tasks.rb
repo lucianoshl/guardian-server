@@ -29,8 +29,6 @@ class Service::StartupTasks
     end
   end
 
-<<<<<<< Updated upstream
-=======
   def fill_buildings_information
     page = Mechanize.new.get("http://br.twstats.com/#{Account.main.world}/index.php?page=buildings")
     buildings = page.search('.r1,.r2').map do |row|
@@ -59,7 +57,6 @@ class Service::StartupTasks
     buildings.map(&:save)
   end
 
->>>>>>> Stashed changes
   def create_tasks
     monitor_task = Task::PlayerMonitoringTask.new
     monitor_task.run

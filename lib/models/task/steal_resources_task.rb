@@ -5,7 +5,8 @@ class Task::StealResourcesTask < Task::Abstract
   runs_every 10.minutes
   
   def run
-  	steal_candidates.map do |target|
+    Service::Report.sync
+  	steal_candidates.map do |distance,candidates,target|
   		binding.pry
   	end
   end
@@ -18,7 +19,7 @@ class Task::StealResourcesTask < Task::Abstract
     Village.targets.in(status: ['strong','ally',nil]).update_all(status: 'not_initialized')
 
 
-    strong_player = Player.gte(points: current_points*0.6).pluck(:id)
+    strong_player = Player.gte(points: current_points*0.6).pluck(:id) - [current_player.id]
     Village.targets.in(player_id: strong_player).update_all(status: 'strong')
 
     if !current_ally.nil?
@@ -35,14 +36,19 @@ class Task::StealResourcesTask < Task::Abstract
   def sort_by_priority(targets)
     villages = Account.main.player.villages
     distances = targets.map do |target|
-      min_distance = (villages.map do |village|
-        village.distance(target)
-      end).min
-      [min_distance,target]
+      villages = villages.select{|a| target.distance(a) <= 20 }
+      villages = villages.sort{|a,b| target.distance(a) <=> target.distance(b) }
+
+      unless villages.empty?
+        [
+          villages.first.distance(target),
+          villages,
+          target
+        ]
+      end
     end
 
-    distances.sort{|a,b| a.first <=> b.first }
-    binding.pry
+    distances.compact.sort{|a,b| a.first <=> b.first }
   end
 
 
