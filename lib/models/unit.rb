@@ -32,4 +32,12 @@ class Unit
   field :shortname, type: String
   field :desc, type: String
   field :desc_abilities, type: Array
+
+  def self.ids
+    Unit.all.pluck(:id)
+  end
+
+  def equivalent(other,field)
+    self[field].to_f/other[field]
+  end
 end

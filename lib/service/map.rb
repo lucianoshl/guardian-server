@@ -5,7 +5,14 @@ class Service::Map
   def self.find_nearby(villages,distance)
     client = Client::Desktop.new
     targets = villages.map{|v| generate_targets_for_village(v,distance).keys }.flatten.uniq
-    @json = JSON.parse(client.get("/map.php?v=2&#{targets.map{|a| "#{a}=1"}.join("&")}").body)
+
+    get_limit = 1800/9
+    @json = []
+
+    targets.each_slice(get_limit) do |parts|
+      @json = @json.concat(JSON.parse(client.get("/map.php?v=2&#{parts.map{|a| "#{a}=1"}.join("&")}").body))
+    end
+
     values = save_villages(save_players(save_allies())).values
     
     puts "Extracted villages #{values.size}"
@@ -97,6 +104,8 @@ class Service::Map
 
         if (v.class == Array)
           if v.size != 2
+            v = v.to_index{|a| v.index(a).to_s}
+          elsif v.first.class == Array
             v = v.to_index{|a| v.index(a).to_s}
           else
             current_x += v.first.to_i

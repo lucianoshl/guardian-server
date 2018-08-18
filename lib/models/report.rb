@@ -7,6 +7,7 @@ class Report
   field :ocurrence, type: DateTime
   field :erase_uri, type: String
   field :has_troops, type: Boolean
+  field :read, type: Boolean, default: false
 
   belongs_to :origin, class_name: Village.to_s, optional: true
   belongs_to :target, class_name: Village.to_s, optional: true

@@ -10,7 +10,6 @@ class Service::Report
       report_screen = Screen::ReportList.new(mode: 'attack')
       break if report_screen.report_id_list.empty?
       report_screen.report_id_list.map {|report_id| process_report(report_id) }
-      binding.pry
       break if ENV['ENV'] == 'test'
     end
 

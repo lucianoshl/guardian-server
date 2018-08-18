@@ -2,9 +2,12 @@
 
 class Screen::Logged
   class << self
-    attr_accessor :_screen
+    attr_accessor :_screen, :_mode
     def screen(name)
       self._screen = name
+    end
+    def mode(name)
+      self._mode = name
     end
   end
 
@@ -16,7 +19,9 @@ class Screen::Logged
   end
 
   def merge_parameters(parameters)
-    parameters.merge(screen: self.class._screen)
+    r = parameters.merge(screen: self.class._screen)
+    r = r.merge(mode: self.class._mode) unless self.class._mode.nil?
+    r
   end
 
   def request(parameters, requests = 0)

@@ -25,7 +25,7 @@ class Service::StartupTasks
     client = Client::Logged.mobile
     unit_data = JSON.parse(client.get("/game.php?screen=unit_info&ajax=data").body)['unit_data']
     units = unit_data.map do |k,v|
-        Unit.new(v).save
+        Unit.new(v).upsert
     end
   end
 
@@ -54,7 +54,7 @@ class Service::StartupTasks
       building.build_time_factor = column[12].to_f
       building
     end
-    buildings.map(&:save)
+    buildings.map(&:upsert)
   end
 
   def create_tasks

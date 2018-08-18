@@ -15,15 +15,15 @@ class String
     begin
       if this.include?('hoje')
           formated = gsub(/hoje ../, Date.today.to_s)
-          result = Time.zone.parse(formated)
+          result = Time.parse(formated)
       elsif this.include?('amanhã') then
           tomorrow = Date.today + 1.day
           formated = gsub(/amanhã ../, tomorrow.to_s)
-          result =    Time.zone.parse(formated)
+          result =    Time.parse(formated)
       elsif this.include?('em') then
           date = scan(/em (\d+)\.(\d+)\./).flatten.concat([Time.now.year]).join('/').to_date
           hour = scan(/\d+\:\d+/).flatten.first
-          result = Time.zone.parse("#{date} #{hour}")
+          result = Time.parse("#{date} #{hour}")
           raise Exception.new("result < Time.now") if result < Time.now
           result =    result
       elsif scan(/... \d{1,2}, \d{4}/).size > 0 then

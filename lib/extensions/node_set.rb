@@ -7,4 +7,14 @@ class Nokogiri::XML::NodeSet
     end
     element
   end
+
+  def map_compact(&block)
+    map(&block).compact
+  end
+
+  def select_index(list)
+    list.map do |index|
+      self[index]
+    end
+  end
 end

@@ -44,7 +44,6 @@ RSpec.configure do |config|
   end
 
   config.before :each do
-
     Report.any_instance.stub(:erase).and_return(nil)
 
     stub_account = Account.new(
@@ -54,6 +53,7 @@ RSpec.configure do |config|
     )
 
     Account.stub(:main) { stub_account }
+    
     Service::StartupTasks.new.first_login_event
   end
 
