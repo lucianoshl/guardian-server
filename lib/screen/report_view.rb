@@ -16,9 +16,21 @@ class Screen::ReportView < Screen::Base
     report.erase_uri = page.search('a[href*=del_one]').attr('href').value
     report.id = report.erase_uri.scan(/id=(\d+)/).first.first.to_i
     report.ocurrence = report_table.search('tr > td')[1].text.strip.to_datetime
-    report.resources = Resource.parse(page.search('#attack_spy_resources').first)
+
     report.origin_id,report.target_id = page.search('.village_anchor').map{|a| a.attr('data-id').to_i}
     report.has_troops = page.search('#attack_info_def_units > tr:eq(2) > td').map{|a| a.text}.map(&:to_i).sum > 0
+
+    has_spy_information = page.search('#attack_spy_resources').size > 0
+    if has_spy_information
+      report.buildings = Buildings.new
+      (parse_table(page,'#attack_spy_buildings_left') + parse_table(page,'#attack_spy_buildings_right')).map do |tr|
+        img = tr.search('img')
+        next if img.empty?
+        building = tr.search('img').attr('src').text.scan(/buildings\/(.+)\./).first.first
+        report.buildings[building] =tr.search('td').last.text.to_i
+      end
+      report.resources = Resource.parse(page.search('#attack_spy_resources').first)
+    end
   end
 
   def erase

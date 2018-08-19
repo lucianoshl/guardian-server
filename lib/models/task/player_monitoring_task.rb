@@ -11,6 +11,9 @@ class Task::PlayerMonitoringTask < Task::Abstract
     all_players = nearby.values.map{|a| a.player}.compact.uniq.to_index{|a| a.id}
     all_allies = all_players.values.map{|a| a.ally}.compact.uniq.to_index{|a| a.id}
 
+    all_players.values.map {|a| a.ally = nil}
+    all_villages.values.map {|a| a.player = nil}
+
     save_or_update(Village,all_villages)
     save_or_update(Player,all_players)
     save_or_update(Ally,all_allies)
@@ -23,7 +26,13 @@ class Task::PlayerMonitoringTask < Task::Abstract
     saved_ids = saved.map(&:id)
     unsaved_ids = list_ids - saved_ids
 
-    to_save = index.select_keys(*unsaved_ids).values.map{ |a| model.new(a.to_h)}
+    to_save = index.select_keys(*unsaved_ids).values.map do |a| 
+      begin
+        model.new(a.to_h)
+      rescue Exception => e
+        binding.pry
+      end
+    end
 
     Parallel.map(to_save, in_threads: 8, progress: "Saving #{model.name}") do |v|
       raise Exception.new("Error saving #{model.name} #{v.errors.to_a}") if !v.save

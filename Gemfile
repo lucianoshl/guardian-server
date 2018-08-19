@@ -29,6 +29,8 @@ gem 'wisper'
 gem 'colorize'
 gem 'parallel'
 gem 'ruby-progressbar'
+gem 'cachy'
+gem 'moneta'
 
 
 gem 'rack-graphiql'

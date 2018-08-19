@@ -105,5 +105,17 @@ class Troop
     return false if (other.class != Troop)
     other.to_a == to_a
   end
+
+  def size
+    to_a.sum
+  end
+
+  def to_h
+    each.to_a.to_h
+  end
+
+  def to_s
+    to_h.select{|k,v| v > 0}.to_s
+  end
   
 end

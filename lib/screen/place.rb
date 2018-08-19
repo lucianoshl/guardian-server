@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Screen::Place < Screen::Base
+  include Logging
   screen :place
 
   attr_accessor :troops, :form, :commands, :error
@@ -31,6 +32,7 @@ class Screen::Place < Screen::Base
   end
 
   def send_attack(target,troops)
+    logger.info("Sending #{troops}")
     self.form.fields.map do |field|
       current = troops[field.name]
       unless current.nil?
@@ -51,16 +53,13 @@ class Screen::Place < Screen::Base
   def convert_error(message)
     if (message.include?('para novatos'))
       NewbieProtectionException.new(message)
+
+    elsif (message.include?('jogador foi banido'))
+      BannedPlayerException.new
+    elsif (message.include?('de ataque precisa do'))
+      NeedsMinimalPopulationException.new(message)
     else
       Exception.new(message)
     end
-  end
-end
-
-class NewbieProtectionException < Exception
-  attr_accessor :expiration
-
-  def initialize(message)
-    self.expiration = message.scan(/termina (.+)\./).first.first.to_datetime
   end
 end

@@ -9,12 +9,14 @@ class Village
   field :points, type: Integer
 
   field :status, type: String
-  field :next_event, type: String
+  field :next_event, type: DateTime
 
   belongs_to :player, optional: true
   embeds_many :evolution, class_name: 'PointsEvolution'
 
   scope :targets, -> { not_in(player_id: [ Account.main.player.id ]) }
+
+  has_many :reports, inverse_of: :target
 
   before_save do |news|
     if evolution.empty?
@@ -29,5 +31,9 @@ class Village
 
   def latest_valid_report
     Report.where(target: self, read: false).nin(resources: [nil]).order(ocurrence: 'desc').first
+  end
+
+  def to_s
+    "#{x}|#{y}"
   end
 end

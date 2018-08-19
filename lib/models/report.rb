@@ -13,6 +13,7 @@ class Report
   belongs_to :target, class_name: Village.to_s, optional: true
 
   embeds_one :resources, as: :resourcesable, class_name: Resource.to_s
+  embeds_one :buildings, class_name: Buildings.to_s
 
   def erase
     Client::Logged.mobile.get(self.erase_uri)
