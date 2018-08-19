@@ -44,20 +44,17 @@ RSpec.configure do |config|
   end
 
   config.before :each do
+    Report.any_instance.stub(:erase).and_return(nil)
+
     stub_account = Account.new(
       username: ENV['STUB_USER'],
       password: ENV['STUB_PASS'],
       world: ENV['STUB_WORLD']
     )
 
-    stub_account.player = Player.new
-    stub_account.player.villages = []
-    stub_account.player.villages << Village.new(x: 500,y: 500)
-    stub_account.player.villages << Village.new(x: 400,y: 400)
-    stub_account.player.villages << Village.new(x: 510,y: 510)
-
-
     Account.stub(:main) { stub_account }
+    
+    Service::StartupTasks.new.first_login_event
   end
 
   config.after :all do

@@ -2,15 +2,21 @@
 
 class Village
   include Mongoid::Document
+  include AbstractCoordinate
   include Mongoid::Timestamps
 
   field :name, type: String
   field :points, type: Integer
-  field :x, type: Integer
-  field :y, type: Integer
+
+  field :status, type: String
+  field :next_event, type: DateTime
 
   belongs_to :player, optional: true
   embeds_many :evolution, class_name: 'PointsEvolution'
+
+  scope :targets, -> { not_in(player_id: [ Account.main.player.id ]) }
+
+  has_many :reports, inverse_of: :target
 
   before_save do |news|
     if evolution.empty?
@@ -23,16 +29,11 @@ class Village
     end
   end
 
-  def distance other
-    Math.sqrt ((self.x - other.x)**2 + (self.y - other.y)**2)
+  def latest_valid_report
+    Report.where(target: self, read: false).nin(resources: [nil]).order(ocurrence: 'desc').first
   end
 
-  def merge_non_nil other
-    hash_values = other.to_h
-    hash_values.delete(:id)
-    hash_values.map do |k,v|
-      self[k] = v
-    end
-    self
+  def to_s
+    "#{x}|#{y}"
   end
 end

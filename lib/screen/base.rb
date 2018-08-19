@@ -5,7 +5,7 @@ class Screen::Base < Screen::Logged
 
   attr_accessor :quests, :server_time, :player, :village
 
-  def initialize
+  def initialize(args = {})
     super
   end
 
@@ -22,7 +22,9 @@ class Screen::Base < Screen::Logged
   end
 
   def parse_player(page,game_data)
-    Player.new(game_data['player'].select_keys(:id,:name,:rank,:points))
+    player_json = game_data['player'].select_keys(:id,:name,:rank,:points)
+    player_json[:id] = player_json[:id].to_i
+    Player.new(player_json)
   end
 
   def parse_village(page,game_data)

@@ -5,7 +5,14 @@ class Service::Map
   def self.find_nearby(villages,distance)
     client = Client::Desktop.new
     targets = villages.map{|v| generate_targets_for_village(v,distance).keys }.flatten.uniq
-    @json = JSON.parse(client.get("/map.php?v=2&#{targets.map{|a| "#{a}=1"}.join("&")}").body)
+
+    get_limit = 1800/9
+    @json = []
+
+    targets.each_slice(get_limit) do |parts|
+      @json = @json.concat(JSON.parse(client.get("/map.php?v=2&#{parts.map{|a| "#{a}=1"}.join("&")}").body))
+    end
+
     values = save_villages(save_players(save_allies())).values
     
     puts "Extracted villages #{values.size}"
@@ -72,7 +79,8 @@ class Service::Map
         id: k.to_i,
         name: v[0],
         points: v[1].number_part,
-        ally_id: allies[v[2].number_part]&.id
+        ally_id: allies[v[2].number_part]&.id,
+        ally: allies[v[2].number_part]
       })
       [p.id,p]
     end).to_h
@@ -83,13 +91,27 @@ class Service::Map
     @json.map do |json_item|
       x = json_item['data']['x']
       y = json_item['data']['y']
-      json_item['data']['villages'].each_with_index do |v,i|
-        current_x = x + i.to_i
+
+      next if json_item['data']['villages'].empty?
+
+      if json_item['data']['villages'].class == Array
+        aux = json_item['data']['villages']
+        json_item['data']['villages'] = aux.to_index{|a| aux.index(a).to_s}
+      end
+
+      json_item['data']['villages'].map do |k,v|
+        current_x = x + k.to_i
 
         if (v.class == Array)
-          binding.pry if v.size != 2
-          current_x += v.first.to_i
-          v = v.last
+          if v.size != 2
+            v = v.to_index{|a| v.index(a).to_s}
+          elsif v.first.class == Array
+            v = v.to_index{|a| v.index(a).to_s}
+          else
+            current_x += v.first.to_i
+            v = v.last
+          end
+
         end
 
         v.each do |k,v_info|
@@ -100,6 +122,7 @@ class Service::Map
             name: v_info[2],
             points: v_info[3].number_part,
             player_id: players[v_info[4].to_i]&.id,
+            player: players[v_info[4].to_i],
             x: current_x,
             y: current_y
           })

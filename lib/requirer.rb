@@ -17,6 +17,7 @@ module Requirer
   def self.general
     require_rel './extensions'
     require_rel './initializers'
+    require_rel './exception'
 
     Requirer.with_sub_folder_as_namespace('util')
 
