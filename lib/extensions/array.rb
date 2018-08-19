@@ -6,7 +6,7 @@ class Array
   end
 
   def pmap
-    parameter = 3
+    parameter = 4
     Parallel.map(self, in_threads: parameter || 1){ |i| yield(i) }
   end
 

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-describe Property do
+describe Troop do
+
+  before(:all) do
+    Service::StartupTasks.new.fill_units_information
+  end
 
   it 'test_distribute_1' do
     troop = Troop.new(spear:76,sword:36,spy:83)

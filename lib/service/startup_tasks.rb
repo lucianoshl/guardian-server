@@ -83,7 +83,7 @@ class Service::StartupTasks
       building.build_time_factor = column[12].to_f
       building
     end
-    buildings.map(&:save)
+    buildings.map(&:upsert)
   end
 
 

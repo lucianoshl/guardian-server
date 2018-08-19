@@ -1,7 +1,6 @@
 class Building
   include Mongoid::Document
   field :name, type: String
-  field :label, type: String
 
   field :max_level, type: Integer
   field :min_level, type: Integer

@@ -36,25 +36,35 @@ SimpleCov.start
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+
+
+
 RSpec.configure do |config|
-  config.before :all do
+
     unless Mongoid.default_client.options[:database].ends_with?('-specs')
       raise('In test env guardian needs a specific base for test (ends with -specs)')
     end
-  end
-
-  config.before :each do
-    Report.any_instance.stub(:erase).and_return(nil)
-
-    stub_account = Account.new(
+    class Account
+     @@stub = Account.new(
       username: ENV['STUB_USER'],
       password: ENV['STUB_PASS'],
       world: ENV['STUB_WORLD']
     )
+     def self.main
+       @@stub
+     end
+    end
 
-    Account.stub(:main) { stub_account }
-    
     Service::StartupTasks.new.first_login_event
+
+  
+  # config.before :all do
+
+  # end
+
+  config.before :each do
+    Report.any_instance.stub(:erase).and_return(nil)
   end
 
   config.after :all do
