@@ -18,6 +18,11 @@ class Report
   embeds_one :pillage, as: :resourcesable, class_name: Resource.to_s
   embeds_one :buildings, class_name: Buildings.to_s
 
+  embeds_one :atk_troops, class_name: Troop
+  embeds_one :atk_losses, class_name: Troop
+  embeds_one :def_troops, class_name: Troop
+  embeds_one :def_losses, class_name: Troop
+
   def erase
     Client::Logged.mobile.get(self.erase_uri)
   end

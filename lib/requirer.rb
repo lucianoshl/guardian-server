@@ -25,6 +25,10 @@ module Requirer
     Requirer.with_base_folder_as_namespace('event')
     Requirer.with_base_folder_as_namespace('service')
     Requirer.with_sub_folder_as_namespace('models')
+
+    Requirer.with_base_folder_as_namespace('./graphql_model/types')
+    require_rel './graphql_model/query.rb'
+    require_rel './graphql_model/schema.rb'
   end
 end
 

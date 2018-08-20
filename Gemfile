@@ -31,6 +31,7 @@ gem 'parallel'
 gem 'ruby-progressbar'
 gem 'cachy'
 gem 'moneta'
+gem 'json'
 
 
 gem 'rack-graphiql'

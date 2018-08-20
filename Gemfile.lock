@@ -176,6 +176,7 @@ DEPENDENCIES
   filewatcher
   foreman
   graphql
+  json
   logger
   mechanize
   moneta
