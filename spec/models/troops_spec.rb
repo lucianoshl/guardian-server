@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
 describe Troop do
-  before(:all) do
+  before(:each) do
+    Account.stub(:main) do
+      Account.new(
+        username: ENV['STUB_USER'],
+        password: ENV['STUB_PASS'],
+        world: ENV['STUB_WORLD']
+      )
+    end
     Service::StartupTasks.new.fill_units_information
   end
 

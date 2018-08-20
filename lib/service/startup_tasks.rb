@@ -22,8 +22,7 @@ class Service::StartupTasks
   end
 
   def fill_units_information
-    client = Client::Logged.mobile
-    unit_data = JSON.parse(client.get('/game.php?screen=unit_info&ajax=data').body)['unit_data']
+    unit_data = Screen::UnitInfo.new.json['unit_data']
     units = unit_data.map do |_k, v|
       Unit.new(v).upsert
     end
