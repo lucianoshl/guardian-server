@@ -1,6 +1,7 @@
 class Troop
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Logging
 
   Unit.ids.map do |id|
     field id.to_sym, type: Integer, default: 0
@@ -31,6 +32,7 @@ class Troop
   end
 
   def upgrade(disponible,type = :attack)
+    logger.trace("Start upgrade for troop=#{self.to_s}")
     result = self.clone
     to_insert = Unit.all.sort(:"#{type}" => 'desc').to_a
     to_remove = Unit.nin(id: [:spy]).sort(:"#{type}" => 'asc').to_a
@@ -59,6 +61,7 @@ class Troop
             disponible[insert_unit.id] = 0
             result[remove_unit.id] += 1
           end
+          resolved = true
         end
         break if resolved
       end
@@ -116,6 +119,29 @@ class Troop
 
   def to_s
     to_h.select{|k,v| v > 0}.to_s
+  end
+
+  def self.from_a array
+    result = Troop.new
+    Unit.ids.each_with_index do |id,index|
+      result[id] = array[index]
+    end
+    result
+  end
+
+  def upgrade_until_win(disponible)
+    result = self.clone
+    loop do
+      win = Service::Simulator.run(result)
+      return result if win
+      new_troop = result.upgrade(disponible - result)
+      if new_troop == result
+        raise UpgradeIsImpossibleException.new
+      else
+        result = new_troop
+      end
+    end
+    binding.pry
   end
   
 end

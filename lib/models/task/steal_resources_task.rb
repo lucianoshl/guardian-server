@@ -6,15 +6,21 @@ class Task::StealResourcesTask < Task::Abstract
   include Logging
   
   def run
+    @spy_is_researched = Screen::Smith.spy_is_researched?
     @@places = {}
     Service::Report.sync
     steal_candidates
-    criteria = Village.targets.lte(next_event: Time.now).sort(next_event: 'asc')
+    criteria = Village.targets.lte(next_event: Time.now)
+
+    unless @spy_is_researched
+      criteria = criteria.in(player_id: [nil])
+    end
+    criteria = criteria.sort(next_event: 'asc')
 
     logger.info("Running for #{criteria.count} targets")
 
-
-    while target = criteria.first do
+    while target = sort_by_priority(criteria.to_a).first do
+      target = target.last
       logger.info("#{criteria.count} targets now running for #{target} current_status=#{target.status} ")
       original_status = target.status
       @origin = Account.main.player.villages.first
@@ -26,6 +32,8 @@ class Task::StealResourcesTask < Task::Abstract
         send_to('banned',Time.now + 1.day)
       rescue NewbieProtectionException => e
         send_to('not_initialized',e.expiration)
+      rescue UpgradeIsImpossibleException => e
+        send_to('waiting_troops',next_returning_command.arrival)
       rescue NeedsMinimalPopulationException => e
         # TODO: calculate resource production
         send_to('waiting_resource_production',Time.now + 1.hour)
@@ -46,7 +54,7 @@ class Task::StealResourcesTask < Task::Abstract
 
   def waiting_report
     report = @target.latest_valid_report
-    if (report.nil? || report.resources.nil?)
+    if (report.nil?)
       command = place(@origin.id).commands.leaving.select{|a| a.target == @target}.first
       command.nil? ? send_spies : send_to('waiting_report',command.arrival)
     else
@@ -61,8 +69,29 @@ class Task::StealResourcesTask < Task::Abstract
       command = place_screen.send_attack(@target,Troop.new(spy: spy_qte))
       send_to('waiting_report',command.arrival)
     else
+      send_to_waiting_spies
+
+    end
+  end
+
+  def send_to_waiting_spies
+    if @spy_is_researched
       Village.where(status: 'waiting_spies').update_all(next_event: next_returning_command.arrival)
       send_to('waiting_spies', next_returning_command.arrival)
+    else
+      last_report = @target.reports.last
+      wait_report_production = last_report.nil? ? false : last_report.full_pillage == false
+      if (place.troops.carry >= 200 && !wait_report_production)
+        troops,remaining = place.troops.distribute(200)
+        result = troops.upgrade_until_win(place.troops)
+        command = place.send_attack(@target,result)
+        send_to('waiting_report',command.arrival)
+      elsif wait_report_production
+        send_to('waiting_resource_production',Time.now + 2.hour)
+      else
+        Village.in(status: ['not_initialized','waiting_troops']).update_all(next_event: next_returning_command.arrival, status: 'waiting_troops')
+        send_to('waiting_troops',next_returning_command.arrival)
+      end
     end
   end
 
@@ -163,7 +192,7 @@ class Task::StealResourcesTask < Task::Abstract
      send_to('has_troops',Time.now + 1.hour)
   end
 
-  def place(id)
+  def place(id = @origin.id)
     if @@places[id].nil?
       @@places[id] = Screen::Place.new(village: id)
     end

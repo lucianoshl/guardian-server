@@ -1,0 +1,2 @@
+class UpgradeIsImpossibleException < Exception
+end

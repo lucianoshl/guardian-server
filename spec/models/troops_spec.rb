@@ -24,11 +24,19 @@ describe Troop do
     troop = Troop.new(spear: 20)
     disponible = Troop.new(sword: 1)
     result = troop.upgrade(disponible)
-    pp result
-    pp disponible
     puts "Original carry: #{troop.carry}"
     puts "Upgrade carry: #{result.carry}"
     puts "Upgrade carry: #{result.carry}"
   end
+
+  # it 'test_upgrade_until_win_1' do
+  #   troop = Troop.from_a([8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+  #   disponible = Troop.from_a([8, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+  #   result = troop.upgrade_until_win(disponible)
+  #   puts "Troop     : #{troop.to_s}"
+  #   puts "disponible: #{disponible.to_s}"
+  #   puts "result    : #{result.to_s}"
+  #   disponible - result
+  # end
   
 end

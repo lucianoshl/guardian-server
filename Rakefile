@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require 'pry'
+require 'require_all'
 
 ENV['ENV'] ||= 'development'
 ENV['RACK_ENV'] = ENV['ENV'] || 'development'
@@ -23,6 +25,16 @@ namespace 'guardian' do
   desc 'Run console'
   task :console do
     sh("ENV=#{ENV['ENV']} bundle exec ruby ./bin/console.rb")
+  end
+
+  desc 'Run command'
+  task :run do
+    require 'bundler/setup'
+    require 'delayed/command'
+    Bundler.require(:default, ENV['ENV'])
+    require_rel './lib/requirer.rb'
+    eval(ARGV.last)
+    exit(0)
   end
 end
 

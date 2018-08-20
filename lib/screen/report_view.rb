@@ -20,6 +20,12 @@ class Screen::ReportView < Screen::Base
     report.origin_id,report.target_id = page.search('.village_anchor').map{|a| a.attr('data-id').to_i}
     report.has_troops = page.search('#attack_info_def_units > tr:eq(2) > td').map{|a| a.text}.map(&:to_i).sum > 0
 
+    unless page.search('#attack_results').empty?
+      report.pillage = Resource.parse(page.search('#attack_results').first)
+      pillage,capacity = page.search('#attack_results').first.text.strip.scan(/(\d+)\/(\d+)/).flatten.map(&:to_i)
+      report.full_pillage = capacity == pillage
+    end
+
     has_spy_information = page.search('#attack_spy_resources').size > 0
     if has_spy_information
       report.buildings = Buildings.new
