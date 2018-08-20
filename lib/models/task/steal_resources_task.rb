@@ -111,6 +111,7 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def send_to(status, time = Time.now)
+    logger.info("Moving to #{status} until #{time}")
     time += 1.second
     @target.status = status
     @target.next_event = time
