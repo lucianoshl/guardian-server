@@ -19,7 +19,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     logger.info("Running for #{criteria.count} targets")
 
-    while target = sort_by_priority(criteria.to_a).first do
+    while target = criteria.first do
       target = target.last
       logger.info("#{criteria.count} targets now running for #{target} current_status=#{target.status} ")
       original_status = target.status
@@ -33,7 +33,7 @@ class Task::StealResourcesTask < Task::Abstract
       rescue NewbieProtectionException => e
         send_to('not_initialized',e.expiration)
       rescue UpgradeIsImpossibleException => e
-        send_to('waiting_troops',next_returning_command.arrival)
+        send_to('waiting_strong_troops',next_returning_command.arrival)
       rescue NeedsMinimalPopulationException => e
         # TODO: calculate resource production
         send_to('waiting_resource_production',Time.now + 1.hour)
@@ -54,7 +54,7 @@ class Task::StealResourcesTask < Task::Abstract
 
   def waiting_report
     report = @target.latest_valid_report
-    if (report.nil?)
+    if (report.nil? || report.resources.nil?)
       command = place(@origin.id).commands.leaving.select{|a| a.target == @target}.first
       command.nil? ? send_spies : send_to('waiting_report',command.arrival)
     else
@@ -97,8 +97,6 @@ class Task::StealResourcesTask < Task::Abstract
 
   def send_pillage_troop(report)
 
-    binding.pry if report.buildings.wall > 0
-
     total = report.resources.total
     total = 100 if total < 100
     place = place(@origin.id)
@@ -109,17 +107,7 @@ class Task::StealResourcesTask < Task::Abstract
       return send_to('waiting_troops',next_returning_command.arrival)
     end
 
-    loop do
-      win = Service::Simulator.run(to_send)
-      break if win
-      remaining = place.troops - to_send
-      new_troop = to_send.upgrade(remaining)
-      if new_troop == to_send
-        return send_to('waiting_strong_troops',next_returning_command.arrival)
-      else
-        to_send = new_troop
-      end
-    end
+    to_send = to_send.upgrade_until_win(place.troops)
 
     if (place.troops.spy > 0)
       to_send.spy += 1
@@ -139,8 +127,10 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def spy_qte
+    1
+    # binding.pry
     # TODO: make this based in simulator
-    @target.player.nil? ? 1 : 5
+    # @target.player.nil? ? 1 : 5
   end
 
   def steal_candidates
