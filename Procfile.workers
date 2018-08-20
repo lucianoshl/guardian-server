@@ -1,3 +1,3 @@
 web_app: bundle exec rake guardian:server
-normal_queue: rake guardian:worker normal_priority
-high___queue: rake guardian:worker high_priority
+normal_queue: rake guardian:worker normal
+high___queue: rake guardian:worker high

@@ -19,6 +19,7 @@ class Task::Abstract
 
   after_initialize do
     self.runs_every = self.class._runs_every
+    self.queue = 'normal'
   end
 
   before_save do
@@ -38,7 +39,7 @@ class Task::Abstract
 
   def schedule
     logger.debug("Scheduling #{self.class} run in #{next_execution}".white.on_red)
-    job = delay(run_at: next_execution).execute
+    job = delay(run_at: next_execution, queue: self.queue).execute
     self.class.where(id: id).update_all(job_id: job.id)
   end
 
