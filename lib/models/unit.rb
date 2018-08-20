@@ -42,4 +42,11 @@ class Unit
   def equivalent(other, field)
     self[field].to_f / other[field]
   end
+
+  after_upsert do
+    troop_has_field = Troop.fields.keys.include? self.id
+    unless troop_has_field
+      Troop.field id.to_sym, type: Integer, default: 0
+    end
+  end
 end
