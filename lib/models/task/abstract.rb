@@ -12,6 +12,7 @@ class Task::Abstract
   end
 
   field :runs_every, type: Integer
+  field :queue, type: String
   field :last_execution, type: DateTime
   field :next_execution, type: DateTime
 
