@@ -6,6 +6,7 @@ class Screen::Logged
     def screen(name)
       self._screen = name
     end
+
     def mode(name)
       self._mode = name
     end

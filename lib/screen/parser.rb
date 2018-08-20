@@ -5,13 +5,11 @@ module Screen::Parser
     JSON.parse(page.body.scan(/#{function}\(({.+})\)/).flatten.first)
   end
 
-  def parse_table(page,selector,remove_columns: [])
+  def parse_table(page, selector, remove_columns: [])
     page.search("#{selector} tr").map_compact do |tr|
       if tr.search('th').empty?
-        unless remove_columns.empty?
-          tr.search('td').select_index(remove_columns).map(&:remove)
-        end
-        tr 
+        tr.search('td').select_index(remove_columns).map(&:remove) unless remove_columns.empty?
+        tr
       end
     end
   end

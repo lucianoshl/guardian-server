@@ -6,14 +6,14 @@ module Mongoid::Document
     self
   end
 
-  def merge_non_nil other
-    current_attrs = (self.class.fields.keys -  ['_id'] + ['id']).map(&:to_sym)
+  def merge_non_nil(other)
+    current_attrs = (self.class.fields.keys - ['_id'] + ['id']).map(&:to_sym)
     hash_values = other.to_h
 
-    hash_values = hash_values.select_keys(*current_attrs).select{|k,v| !v.nil?}
+    hash_values = hash_values.select_keys(*current_attrs).reject { |_k, v| v.nil? }
 
     hash_values.delete(:id)
-    hash_values.map do |k,v|
+    hash_values.map do |k, v|
       self[k] = v
     end
     self

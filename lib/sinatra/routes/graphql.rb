@@ -16,6 +16,5 @@ module Routes::Graphql
     app.get '/graphiql' do
       Rack::GraphiQL.new(endpoint: '/graphql').call(request.env)
     end
-
   end
 end

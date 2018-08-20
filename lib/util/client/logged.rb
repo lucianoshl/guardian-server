@@ -63,8 +63,8 @@ class Client::Logged
   def cookies
     @client.cookies
   end
-  
+
   def submit(form, button = nil, headers = {})
-    @client.submit(form,button,headers)
+    @client.submit(form, button, headers)
   end
 end

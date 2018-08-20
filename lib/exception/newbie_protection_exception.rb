@@ -1,4 +1,6 @@
-class NewbieProtectionException < Exception
+# frozen_string_literal: true
+
+class NewbieProtectionException < RuntimeError
   attr_accessor :expiration
 
   def initialize(message)

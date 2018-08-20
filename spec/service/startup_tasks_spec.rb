@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
 describe Service::StartupTasks do
-
-    before do
-      player = Player.new
-      player.villages = []
-      player.villages << Village.new(x: 500,y: 500)
-      player.villages << Village.new(x: 400,y: 400)
-      player.villages << Village.new(x: 510,y: 510)
-      Account.main.stub(:player) { player }
-    end
+  before do
+    player = Player.new
+    player.villages = []
+    player.villages << Village.new(x: 500, y: 500)
+    player.villages << Village.new(x: 400, y: 400)
+    player.villages << Village.new(x: 510, y: 510)
+    Account.main.stub(:player) { player }
+  end
 
   it 'test_evolution' do
     Task::PlayerMonitoringTask.new.run
@@ -20,8 +19,6 @@ describe Service::StartupTasks do
   end
 
   it 'test_startup' do
-  	Service::StartupTasks.new.first_login_event
+    Service::StartupTasks.new.first_login_event
   end
-
-
 end

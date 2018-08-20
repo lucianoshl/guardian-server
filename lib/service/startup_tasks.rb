@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Service::StartupTasks
-
   def first_login_event
     fill_user_information
     fill_units_information
@@ -12,21 +11,21 @@ class Service::StartupTasks
   def fill_user_information
     main_account = Account.main
 
-  	main_screen = Screen::Main.new
+    main_screen = Screen::Main.new
     main_screen.player.upsert
 
-    main_account.player = main_screen.player 
+    main_account.player = main_screen.player
     main_account.player.save
-    
+
     main_screen.village.player = main_screen.player
     main_screen.village.upsert
   end
 
   def fill_units_information
     client = Client::Logged.mobile
-    unit_data = JSON.parse(client.get("/game.php?screen=unit_info&ajax=data").body)['unit_data']
-    units = unit_data.map do |k,v|
-        Unit.new(v).upsert
+    unit_data = JSON.parse(client.get('/game.php?screen=unit_info&ajax=data').body)['unit_data']
+    units = unit_data.map do |_k, v|
+      Unit.new(v).upsert
     end
   end
 
@@ -35,7 +34,7 @@ class Service::StartupTasks
     buildings = page.search('.r1,.r2').map do |row|
       building = Building.new
 
-      column = row.search('td').map(&:text) 
+      column = row.search('td').map(&:text)
 
       building.id = row.search('a').attr('href').value.scan(/detail=(.+)/).first.first
       building.name = column[0]
@@ -63,8 +62,8 @@ class Service::StartupTasks
     buildings = page.search('.r1,.r2').map do |row|
       building = Building.new
 
-      column = row.search('td').map(&:text) 
-      
+      column = row.search('td').map(&:text)
+
       building.id = row.search('a').attr('href').value.scan(/detail=(.+)/).first.first
       building.name = column[0]
 
@@ -85,14 +84,10 @@ class Service::StartupTasks
     end
     buildings.map(&:upsert)
   end
-
-
-    
 
   def create_tasks
     monitor_task = Task::PlayerMonitoringTask.new
     monitor_task.run
     monitor_task.save
   end
-
 end

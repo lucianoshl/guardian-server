@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class Resource
   include Mongoid::Document
 
   field :wood, type: Integer, default: 0
   field :stone, type: Integer, default: 0
   field :iron, type: Integer, default: 0
-  
+
   embedded_in :resourcesable, polymorphic: true
 
   after_initialize do
@@ -18,13 +20,13 @@ class Resource
   end
 
   def self.parse(obj)
-    if obj.search('#wood').length > 0
+    if !obj.search('#wood').empty?
       element = obj.search('#wood').first
       wood = element.nil? ? 0 : element.number_part
       element = obj.search('#stone').first
       stone = element.nil? ? 0 : element.number_part
       element = obj.search('#iron').first
-      iron = element.nil? ? 0 : element.number_part 
+      iron = element.nil? ? 0 : element.number_part
     else
       element = obj.search('.wood')
       wood = element.first.nil? ? 0 : element.first.parent.number_part
@@ -42,35 +44,35 @@ class Resource
   end
 
   def *(other)
-    result = self.clone
+    result = clone
     result.wood *= other
     result.stone *= other
     result.iron *= other
-    return result
+    result
   end
 
   def /(other)
-    result = OpenStruct.new self.clone.to_h
+    result = OpenStruct.new clone.to_h
     result.wood /= other
     result.stone /= other
     result.iron /= other
-    return result
+    result
   end
 
   def +(other)
-    result = self.clone
+    result = clone
     result.wood += other.wood
     result.stone += other.stone
     result.iron += other.iron
-    return result
+    result
   end
 
   def -(other)
-    result = self.clone
+    result = clone
     result.wood -= other.wood
     result.stone -= other.stone
     result.iron -= other.iron
-    return result
+    result
   end
 
   def to_h
@@ -86,35 +88,33 @@ class Resource
   end
 
   def to_html
-      %{
-        <div>
-          <span class="nowrap">
-            <span class="icon header wood"></span>
-            <span class="value">#{wood}</span>
-          </span>
-          <span class="nowrap">
-            <span class="icon header stone"></span>
-            <span class="value">#{stone}</span>
-          </span>
-          <span class="nowrap">
-            <span class="icon header iron"></span>
-            <span class="value">#{iron}<span>
-          </span>
-        </div>
-      }
+    %(
+      <div>
+        <span class="nowrap">
+          <span class="icon header wood"></span>
+          <span class="value">#{wood}</span>
+        </span>
+        <span class="nowrap">
+          <span class="icon header stone"></span>
+          <span class="value">#{stone}</span>
+        </span>
+        <span class="nowrap">
+          <span class="icon header iron"></span>
+          <span class="value">#{iron}<span>
+        </span>
+      </div>
+    )
   end
-
 end
-
 
 class Hash
   def to_resource
-    hash = self.with_indifferent_access
+    hash = with_indifferent_access
     result = Resource.new
-    result.wood = hash["wood"]
-    result.stone = hash["stone"]
-    result.iron = hash["iron"]
-    return result
+    result.wood = hash['wood']
+    result.stone = hash['stone']
+    result.iron = hash['iron']
+    result
   end
 end
 
@@ -124,6 +124,6 @@ class Array
     result.wood = self[0]
     result.stone = self[1]
     result.iron = self[2]
-    return result
+    result
   end
 end

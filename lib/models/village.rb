@@ -14,18 +14,16 @@ class Village
   belongs_to :player, optional: true
   embeds_many :evolution, class_name: 'PointsEvolution'
 
-  scope :targets, -> { not_in(player_id: [ Account.main.player.id ]) }
+  scope :targets, -> { not_in(player_id: [Account.main.player.id]) }
 
   has_many :reports, inverse_of: :target
 
-  before_save do |news|
+  before_save do |_news|
     if evolution.empty?
       evolution << PointsEvolution.new(current: points, diference: 0, causes: ['startup'])
     else
-      diference = self.points - evolution.last.current
-      unless diference.zero?
-        evolution << PointsEvolution.new(current: points, diference: diference)
-      end
+      diference = points - evolution.last.current
+      evolution << PointsEvolution.new(current: points, diference: diference) unless diference.zero?
     end
   end
 

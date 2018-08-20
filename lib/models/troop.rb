@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Troop
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -8,7 +10,7 @@ class Troop
   end
 
   def distribute(resources)
-    current = self.clone
+    current = clone
     result = Troop.new
     units = Unit.all.sort(speed: 'desc').to_a
 
@@ -16,24 +18,23 @@ class Troop
     loop do
       found_unit_candidate = false
       units.map do |unit|
-        if (unit.carry > 0)
-          while current[unit.id] > 0 && resources >= 0
-            current[unit.id] -= 1
-            result[unit.id] += 1
-            resources -= unit.carry
-            found_unit_candidate = true
-          end
+        next unless unit.carry > 0
+        while current[unit.id] > 0 && resources >= 0
+          current[unit.id] -= 1
+          result[unit.id] += 1
+          resources -= unit.carry
+          found_unit_candidate = true
         end
       end
-      break if !found_unit_candidate
+      break unless found_unit_candidate
       break if resources <= 0
     end
-    [result,resources]
+    [result, resources]
   end
 
-  def upgrade(disponible,type = :attack)
-    logger.trace("Start upgrade for troop=#{self.to_s}")
-    result = self.clone
+  def upgrade(disponible, type = :attack)
+    logger.trace("Start upgrade for troop=#{self}")
+    result = clone
     to_insert = Unit.all.sort(:"#{type}" => 'desc').to_a
     to_remove = Unit.nin(id: [:spy]).sort(:"#{type}" => 'asc').to_a
 
@@ -43,19 +44,19 @@ class Troop
         next if insert_unit[type] <= remove_unit[type]
         next if disponible[insert_unit.id] <= 0
         next if result[remove_unit.id] <= 0
-        carry_equivalent = insert_unit.equivalent(remove_unit,:carry)
-        if (carry_equivalent > 1)
+        carry_equivalent = insert_unit.equivalent(remove_unit, :carry)
+        if carry_equivalent > 1
           result[remove_unit.id] -= carry_equivalent.floor
           result[insert_unit.id] += 1
           disponible[remove_unit.id] += carry_equivalent.floor
           disponible[insert_unit.id] -= 1
           resolved = true
         else
-          equivalent = (1/carry_equivalent).ceil
+          equivalent = (1 / carry_equivalent).ceil
           result[remove_unit.id] -= 1
           result[insert_unit.id] += equivalent
           disponible[remove_unit.id] += 1
-          if (equivalent <= disponible[insert_unit.id])
+          if equivalent <= disponible[insert_unit.id]
             disponible[insert_unit.id] -= equivalent
           else
             disponible[insert_unit.id] = 0
@@ -68,13 +69,13 @@ class Troop
       break if resolved
     end
 
-    raise Exception.new('Invalid logic') if disponible.has_negative? ||  result.has_negative?
+    raise Exception, 'Invalid logic' if disponible.has_negative? || result.has_negative?
 
     result
   end
 
   def each(&block)
-    attrs = self.attributes.clone
+    attrs = attributes.clone
     attrs.delete('_id')
     attrs.map(&block)
   end
@@ -84,28 +85,28 @@ class Troop
   end
 
   def carry
-    self.each{|unit,qte| Unit.find(unit).carry * qte}.sum
+    each { |unit, qte| Unit.find(unit).carry * qte }.sum
   end
 
   def has_negative?
-    to_a.select{|a| a < 0}.size > 0
+    !to_a.select { |a| a < 0 }.empty?
   end
 
   def to_a
-    self.each.to_a.to_h.values
+    each.to_a.to_h.values
   end
 
   def -(other)
-    result = self.clone
-    result.each do |troop,qte|
+    result = clone
+    result.each do |troop, _qte|
       result[troop] -= other[troop]
     end
-    raise Exception.new('Invalid operation') if result.has_negative?
+    raise Exception, 'Invalid operation' if result.has_negative?
     result
   end
 
   def ==(other)
-    return false if (other.class != Troop)
+    return false if other.class != Troop
     other.to_a == to_a
   end
 
@@ -118,30 +119,29 @@ class Troop
   end
 
   def to_s
-    to_h.select{|k,v| v > 0}.to_s
+    to_h.select { |_k, v| v > 0 }.to_s
   end
 
-  def self.from_a array
+  def self.from_a(array)
     result = Troop.new
-    Unit.ids.each_with_index do |id,index|
+    Unit.ids.each_with_index do |id, index|
       result[id] = array[index]
     end
     result
   end
 
   def upgrade_until_win(disponible)
-    result = self.clone
+    result = clone
     loop do
       win = Service::Simulator.run(result)
       return result if win
       new_troop = result.upgrade(disponible - result)
       if new_troop == result
-        raise UpgradeIsImpossibleException.new
+        raise UpgradeIsImpossibleException
       else
         result = new_troop
       end
     end
     binding.pry
   end
-  
 end

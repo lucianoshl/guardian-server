@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Building
   include Mongoid::Document
   field :name, type: String
@@ -18,18 +20,18 @@ class Building
 
   def cost(level)
     resource = Resource.new
-    resource.wood = (wood * wood_factor ** (level - 1)).round
-    resource.stone = (stone * stone_factor ** (level - 1)).round
-    resource.iron = (iron * iron_factor ** (level - 1)).round
+    resource.wood = (wood * wood_factor**(level - 1)).round
+    resource.stone = (stone * stone_factor**(level - 1)).round
+    resource.iron = (iron * iron_factor**(level - 1)).round
     resource
   end
 
   def population_cost(level)
-    population(level) - population(level-1)
+    population(level) - population(level - 1)
   end
 
   def population(level)
-    (attributes["pop"] * pop_factor ** (level - 1)).round
+    (attributes['pop'] * pop_factor**(level - 1)).round
   end
 
   def self.ids

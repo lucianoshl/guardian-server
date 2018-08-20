@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Unit
   include Mongoid::Document
   include Mongoid::Timestamps
-  
+
   field :id, type: String
   field :image, type: String
   field :type, type: String
@@ -37,7 +39,7 @@ class Unit
     Unit.all.pluck(:id)
   end
 
-  def equivalent(other,field)
-    self[field].to_f/other[field]
+  def equivalent(other, field)
+    self[field].to_f / other[field]
   end
 end

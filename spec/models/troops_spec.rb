@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 describe Troop do
-
   before(:all) do
     Service::StartupTasks.new.fill_units_information
   end
 
   it 'test_distribute_1' do
-    troop = Troop.new(spear:76,sword:36,spy:83)
+    troop = Troop.new(spear: 76, sword: 36, spy: 83)
     result = troop.distribute(1458)
     pp result
   end
@@ -38,5 +37,4 @@ describe Troop do
   #   puts "result    : #{result.to_s}"
   #   disponible - result
   # end
-  
 end

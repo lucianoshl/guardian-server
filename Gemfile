@@ -20,19 +20,18 @@ gem 'delayed_job'
 gem 'delayed_job_mongoid'
 
 # general
+gem 'cachy'
+gem 'colorize'
 gem 'filewatcher'
+gem 'json'
 gem 'logger'
 gem 'mechanize'
+gem 'moneta'
+gem 'parallel'
 gem 'rake'
 gem 'require_all'
-gem 'wisper'
-gem 'colorize'
-gem 'parallel'
 gem 'ruby-progressbar'
-gem 'cachy'
-gem 'moneta'
-gem 'json'
-
+gem 'wisper'
 
 gem 'rack-graphiql'
 

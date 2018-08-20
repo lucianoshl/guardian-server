@@ -1,4 +1,6 @@
-class NeedsMinimalPopulationException < Exception
+# frozen_string_literal: true
+
+class NeedsMinimalPopulationException < RuntimeError
   attr_accessor :population
 
   def initialize(message)

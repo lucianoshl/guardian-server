@@ -10,10 +10,10 @@ class Screen::Base < Screen::Logged
   end
 
   def parse(page)
-    game_data = parse_json_argument(page,'TribalWars.updateGameData')
+    game_data = parse_json_argument(page, 'TribalWars.updateGameData')
     self.server_time = parse_server_time(page)
-    self.player = parse_player(page,game_data)
-    self.village = parse_village(page,game_data)
+    self.player = parse_player(page, game_data)
+    self.village = parse_village(page, game_data)
   end
 
   def parse_server_time(page)
@@ -21,14 +21,14 @@ class Screen::Base < Screen::Logged
     Time.parse time_server_str
   end
 
-  def parse_player(page,game_data)
-    player_json = game_data['player'].select_keys(:id,:name,:rank,:points)
+  def parse_player(_page, game_data)
+    player_json = game_data['player'].select_keys(:id, :name, :rank, :points)
     player_json[:id] = player_json[:id].to_i
     Player.new(player_json)
   end
 
-  def parse_village(page,game_data)
-    village = Village.new(game_data['village'].select_keys(:id,:name,:x,:y))
+  def parse_village(_page, game_data)
+    village = Village.new(game_data['village'].select_keys(:id, :name, :x, :y))
     village
   end
 end
