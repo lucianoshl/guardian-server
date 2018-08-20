@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'pry'
 require 'require_all'
 
 ENV['ENV'] ||= 'development'
