@@ -16,7 +16,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     logger.info("Running for #{criteria.count} targets")
 
-    while target = criteria.first do
+    while target = criteria.first
       logger.info("#{criteria.count} targets now running for #{target} current_status=#{target.status} ")
       original_status = target.status
       @origin = Account.main.player.villages.first

@@ -14,4 +14,14 @@ class Account
   def self.main
     where(main: true).first
   end
+
+  def self.stub_account
+    Account.stub(:main) do
+      Account.new(
+        username: ENV['STUB_USER'],
+        password: ENV['STUB_PASS'],
+        world: ENV['STUB_WORLD']
+      )
+    end
+  end
 end

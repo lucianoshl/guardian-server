@@ -2,13 +2,7 @@
 
 describe Troop do
   before(:each) do
-    Account.stub(:main) do
-      Account.new(
-        username: ENV['STUB_USER'],
-        password: ENV['STUB_PASS'],
-        world: ENV['STUB_WORLD']
-      )
-    end
+    Account.stub_account
     Service::StartupTasks.new.fill_units_information
   end
 

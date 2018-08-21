@@ -40,7 +40,7 @@ class Task::Abstract
 
   def schedule
     logger.debug("Scheduling #{self.class} run in #{next_execution}".white.on_red)
-    job = delay(run_at: next_execution, queue: self.queue).execute
+    job = delay(run_at: next_execution, queue: queue).execute
     self.class.where(id: id).update_all(job_id: job.id)
   end
 

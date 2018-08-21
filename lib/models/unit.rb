@@ -44,9 +44,7 @@ class Unit
   end
 
   after_upsert do
-    troop_has_field = Troop.fields.keys.include? self.id
-    unless troop_has_field
-      Troop.field id.to_sym, type: Integer, default: 0
-    end
+    troop_has_field = Troop.fields.key?(id)
+    Troop.field id.to_sym, type: Integer, default: 0 unless troop_has_field
   end
 end
