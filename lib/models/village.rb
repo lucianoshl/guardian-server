@@ -28,10 +28,14 @@ class Village
   end
 
   def latest_valid_report
-    Report.where(target: self, read: false).nin(resources: [nil]).order(ocurrence: 'desc').first
+    Report.where(target: self, read: false).gte(ocurrence: Time.now - 5.hours).nin(resources: [nil]).order(ocurrence: 'desc').first
   end
 
   def to_s
     "#{x}|#{y}"
+  end
+
+  def self.reset_all
+    Village.update_all(next_event: nil, status: nil)
   end
 end

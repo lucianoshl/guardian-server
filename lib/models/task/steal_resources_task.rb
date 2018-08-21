@@ -5,6 +5,7 @@ class Task::StealResourcesTask < Task::Abstract
   include Logging
 
   def run
+    @distance = Property.get('STEAL_RESOURCES_DISTANCE',10)
     @spy_is_researched = Screen::Smith.spy_is_researched?
     @@places = {}
     Service::Report.sync
@@ -16,7 +17,9 @@ class Task::StealResourcesTask < Task::Abstract
 
     logger.info("Running for #{criteria.count} targets")
 
-    while target = criteria.first
+    while target = sort_by_priority(criteria).first
+      logger.info('-' * 50)
+      target = target.last
       logger.info("#{criteria.count} targets now running for #{target} current_status=#{target.status} ")
       original_status = target.status
       @origin = Account.main.player.villages.first
@@ -49,6 +52,10 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def waiting_report
+    if (@origin.distance(@target) > @distance)
+      return send_to('far_away',Time.now + 1.day)
+    end
+
     report = @target.latest_valid_report
     if report.nil? || report.resources.nil?
       command = place(@origin.id).commands.leaving.select { |a| a.target == @target }.first
@@ -197,6 +204,10 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def banned
+    waiting_report
+  end
+
+  def far_away
     waiting_report
   end
 end
