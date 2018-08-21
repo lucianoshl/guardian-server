@@ -99,6 +99,7 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def send_pillage_troop(report)
+
     total = report.resources.total
     total = 100 if total < 100
     place = place(@origin.id)
@@ -107,7 +108,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     return send_to('waiting_troops', next_returning_command.arrival) if to_send.total.zero?
 
-    to_send = to_send.upgrade_until_win(place.troops)
+    to_send = to_send.upgrade_until_win(place.troops, report.buildings.wall)
 
     to_send.spy += 1 if place.troops.spy > 0
 
