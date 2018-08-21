@@ -7,6 +7,8 @@ class Report
   field :ocurrence, type: DateTime
   field :erase_uri, type: String
 
+  field :dot, type: String
+
   field :has_troops, type: Boolean
   field :read, type: Boolean, default: false
   field :full_pillage, type: Boolean
@@ -25,5 +27,9 @@ class Report
 
   def erase
     Client::Logged.mobile.get(erase_uri)
+  end
+
+  def win?
+    self.dot != 'red'
   end
 end

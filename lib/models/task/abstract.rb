@@ -15,6 +15,7 @@ class Task::Abstract
   field :queue, type: String
   field :last_execution, type: DateTime
   field :next_execution, type: DateTime
+  field :enabled, type: Boolean, default: true
 
   belongs_to :job, class_name: 'Delayed::Backend::Mongoid::Job', optional: true
 

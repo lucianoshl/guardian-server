@@ -6,7 +6,7 @@ module Routes::Login
       @main_account = Account.main
       return proxy_request('https://www.tribalwars.com.br/') if @main_account.nil?
       return proxy_request('https://www.tribalwars.com.br/') if @main_account.world.nil?
-      return 'nothins'
+      return erb :home
     end
 
     app.post '/page/auth' do

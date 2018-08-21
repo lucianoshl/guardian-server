@@ -2,6 +2,7 @@
 
 class Screen::ReportView < Screen::Base
   screen :report
+  mode :all
 
   attr_accessor :report
 
@@ -11,8 +12,11 @@ class Screen::ReportView < Screen::Base
 
   def parse(page)
     super
+
     report_table = page.search('.quickedit-label').parent_until { |a| a.name == 'table' }
     report = self.report = Report.new
+
+    report.dot = page.search('img[src*=dots]').attr('src').value.scan(/dots\/(.+)\.png/).first.first
     report.erase_uri = page.search('a[href*=del_one]').attr('href').value
     report.id = report.erase_uri.scan(/id=(\d+)/).first.first.to_i
     report.ocurrence = report_table.search('tr > td')[1].text.strip.to_datetime
