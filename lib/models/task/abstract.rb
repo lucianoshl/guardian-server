@@ -30,7 +30,7 @@ class Task::Abstract
 
   after_save do
     schedule unless next_execution.nil?
-    log.debug("Task Saved: #{attributes.json}")
+    logger.debug("Task Saved: #{attributes.json}")
   end
 
   def execute
