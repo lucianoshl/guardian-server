@@ -42,9 +42,9 @@ class Task::StealResourcesTask < Task::Abstract
     end
 
     next_event = Village.targets.order(next_event: 'asc').first.next_event
-    possible_next_event = Time.now + 5.minutes
+    # possible_next_event = Time.now + 5.minutes
 
-    next_event > possible_next_event ? possible_next_event : next_event
+    # next_event > possible_next_event ? possible_next_event : next_event
   end
 
   def not_initialized
