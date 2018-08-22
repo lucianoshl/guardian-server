@@ -26,10 +26,12 @@ class Report
   embeds_one :def_losses, class_name: Troop
 
   def erase
-    Client::Logged.mobile.get(erase_uri)
+    if self.win?
+      Client::Logged.mobile.get(erase_uri)
+    end
   end
 
   def win?
-    self.dot != 'red'
+    dot != 'red'
   end
 end
