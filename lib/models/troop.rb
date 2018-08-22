@@ -130,7 +130,7 @@ class Troop
     result
   end
 
-  def upgrade_until_win(disponible,wall=0,moral=100)
+  def upgrade_until_win(disponible, wall = 0, moral = 100)
     result = clone
     loop do
       win = Service::Simulator.run(result)

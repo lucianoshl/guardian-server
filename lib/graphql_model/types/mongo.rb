@@ -1,84 +1,102 @@
 # frozen_string_literal: true
 
-Types.const_set(:MongoTypes, [Village, Player, Report, Resource, Troop])
+module MongoTypes
+  include Logging
 
-def field_map(name, field, types)
-  map = {}
-  map[BSON::ObjectId] = types.ID
-  map[Integer] = types.Int
-  map[Time] = Types::DateTimeType
-  map[DateTime] = Types::DateTimeType
-  map[String] = types.String
-  map[Mongoid::Boolean] = types.Boolean
+  @@types = {}
 
-  from_hash = map[field.options[:type]]
-  return [name, from_hash] unless from_hash.nil?
+  def self.field_map(name, field, types)
+    map = {}
+    map[BSON::ObjectId] = types.ID
+    map[Integer] = types.Int
+    map[Time] = Types::DateTimeType
+    map[DateTime] = Types::DateTimeType
+    map[String] = types.String
+    map[Mongoid::Boolean] = types.Boolean
 
-  if field.class == Mongoid::Fields::ForeignKey
-    final_name = field.metadata[:name].to_s
-    class_name_raw = field.options[:metadata].class_name || field.options[:metadata].name
-    class_name = class_name_raw.to_s.camelize.constantize
-    final_class = Types.const_get(class_name.to_s)
+    from_hash = map[field.options[:type]]
+    return [name, from_hash] unless from_hash.nil?
 
-    return nil if final_class.class == Class
+    if field.class == Mongoid::Fields::ForeignKey
+      final_name = field.metadata[:name].to_s
+      class_name_raw = field.options[:metadata].class_name || field.options[:metadata].name
+      class_name = class_name_raw.to_s.camelize.constantize
+      final_class = @@types[class_name]
 
-    return [final_name, final_class]
+      return nil if final_class.nil?
+
+      return [final_name, final_class]
+    end
+
+    if field.class == Mongoid::Relations::Metadata && [Mongoid::Relations::Referenced::In, Mongoid::Relations::Embedded::One, Mongoid::Relations::Referenced::One].include?(field[:relation])
+      final_name = field.name.to_s
+      class_name = (field[:class_name] || field[:name]).to_s.camelize.constantize
+      final_class = @@types[class_name]
+
+
+      return nil if final_class.nil?
+
+      return [final_name, final_class]
+    end
+
+    if field.class == Mongoid::Relations::Metadata && [Mongoid::Relations::Embedded::Many, Mongoid::Relations::Referenced::Many].include?(field[:relation])
+      final_name = field.name.to_s
+
+      class_name = (field[:class_name] || field[:name].to_s.singularize).to_s.camelize.constantize
+      final_class = @@types[class_name]
+
+      return nil if final_class.nil?
+
+      return [final_name, types[final_class]]
+    end
+
+    if field.class == Mongoid::Relations::Metadata && [Mongoid::Relations::Embedded::In].include?(field[:relation])
+      return nil
+    end
+
+    binding.pry
   end
 
-  if field.class == Mongoid::Relations::Metadata && [Mongoid::Relations::Referenced::In, Mongoid::Relations::Embedded::One].include?(field[:relation])
-    final_name = field.name.to_s
-    class_name = (field[:class_name] || field[:name]).to_s.camelize.constantize
-    final_class = Types.const_get(class_name.to_s)
+  def self.build(models)
+    models.map do |model|
 
-    return nil if final_class.class == Class
+      @@types[model] = GraphQL::ObjectType.define do
+        logger.debug("Creating GraphQL model for #{model}")
+        logger.debug("Available fields #{model.fields.merge(model.relations).keys}")
 
-    return [final_name, final_class]
-  end
+        name model.to_s.gsub('::', '_')
+        description "Representation of #{model} in guardian"
 
-  if field.class == Mongoid::Relations::Metadata && [Mongoid::Relations::Embedded::Many, Mongoid::Relations::Referenced::Many].include?(field[:relation])
-    final_name = field.name.to_s
+        model.fields.merge(model.relations).map do |name, field|
+          target_field = MongoTypes.field_map(name, field, types)
+          puts "field #{name} not mapped in GraphQL" if target_field.nil?
 
-    class_name = (field[:class_name] || field[:name].to_s.singularize).to_s.camelize.constantize
-    final_class = Types.const_get(class_name.to_s)
-
-    return nil if final_class.class == Class
-
-    return [final_name, types[final_class]]
-  end
-
-  if field.class == Mongoid::Relations::Metadata && [Mongoid::Relations::Embedded::In].include?(field[:relation])
-    return nil
-  end
-
-  binding.pry
-
-  # key = field.options[:type]
-  # if key == Object
-  #   target_name =
-  #   key = target_name.to_s.camelize.constantize
-  # end
-
-  # return types.ID if key == BSON::ObjectId
-
-  # result = map[key]
-  # return result unless result.nil?
-
-  # result =  Types.const_get(key.to_s)
-  # return nil if result.class != GraphQL::ObjectType
-
-  # puts "not defined for #{key}" if result.nil?
-  # return result
-end
-
-Types::MongoTypes.map do |model|
-  object_type = GraphQL::ObjectType.define do
-    name model.to_s
-    description "Representation of #{model} in guardian"
-    model.fields.merge(model.relations).map do |name, field|
-      target_field = field_map(name, field, types)
-      puts "type #{field.options[:type]} not mapped in GraphQL" if target_field.nil?
-      field(target_field.first, target_field.last) unless target_field.nil?
+          field(target_field.first, target_field.last) unless target_field.nil?
+        end
+      end
     end
   end
-  Types.const_set(model.to_s, object_type)
+
+  def self.generate_arguments(model,types)
+    map = {}
+    map[BSON::ObjectId] = types.ID
+    map[Integer] = types.Int
+    map[Time] = Types::DateTimeType
+    map[DateTime] = Types::DateTimeType
+    map[String] = types.String
+    map[Mongoid::Boolean] = types.Boolean
+
+    (model.fields.map do |name,field|
+      type = map[field.options[:type]]
+      unless type.nil?
+        [name,type]
+      end
+    end).compact
+  end
+
+  def self.index
+    @@types
+  end
 end
+
+MongoTypes.build([Village, Player, Report, Resource, Troop, Delayed::Backend::Mongoid::Job, Task::Abstract])

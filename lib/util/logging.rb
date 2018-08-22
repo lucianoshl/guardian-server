@@ -6,6 +6,7 @@ module Logging
   class << self
     def logger
       @logger ||= Logger.new($stdout)
+      @logger.level = Logger::DEBUG
       # @logger.formatter = proc do |_severity, _datetime, _progname, msg|
       #   "#{msg}\n"
       # end

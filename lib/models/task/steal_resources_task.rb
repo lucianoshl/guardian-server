@@ -5,7 +5,7 @@ class Task::StealResourcesTask < Task::Abstract
   include Logging
 
   def run
-    @distance = Property.get('STEAL_RESOURCES_DISTANCE',10)
+    @distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
     @spy_is_researched = Screen::Smith.spy_is_researched?
     @@places = {}
     Service::Report.sync
@@ -52,9 +52,7 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def waiting_report
-    if (@origin.distance(@target) > @distance)
-      return send_to('far_away',Time.now + 1.day)
-    end
+    return send_to('far_away', Time.now + 1.day) if @origin.distance(@target) > @distance
 
     report = @target.latest_valid_report
     if report.nil? || report.resources.nil?
@@ -99,7 +97,6 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def send_pillage_troop(report)
-
     total = report.resources.total
     total = 100 if total < 100
     place = place(@origin.id)
