@@ -36,6 +36,7 @@ class Task::Abstract
     self.next_execution = run
     self.last_execution = Time.now
     self.next_execution = calc_next_execution if self.next_execution.nil?
+    logger.info("Task #{self.class} scheduled for #{self.next_execution}")
     save
   end
 
