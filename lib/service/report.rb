@@ -5,12 +5,17 @@ class Service::Report
 
   def self.sync
     logger.info('Loading reports: start')
-    loop do
-      report_screen = Screen::ReportList.new(mode: 'attack')
-      break if report_screen.report_id_list.empty?
-      report_screen.report_id_list.map { |report_id| process_report(report_id) }
-      break if ENV['ENV'] == 'test'
+    report_screen = Screen::ReportList.new(mode: 'attack')
+
+    report_ids = []
+
+    (1..report_screen.pages).map do |page|
+      report_screen = Screen::ReportList.new(mode: 'attack', from: (page-1)*12)
+      report_ids = report_ids.concat(report_screen.report_id_list)
     end
+    report_ids -= Report.in(id: report_ids).pluck(:id)
+
+    report_ids.map { |report_id| process_report(report_id) }
 
     logger.info('Loading reports: end')
   end
