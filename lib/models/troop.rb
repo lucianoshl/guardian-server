@@ -10,7 +10,7 @@ class Troop
   end
 
   def distribute(resources)
-    current = clone
+    current = Troop.new(attributes.clone)
     result = Troop.new
     units = Unit.all.sort(speed: 'desc').to_a
 
@@ -33,7 +33,8 @@ class Troop
   end
 
   def upgrade(disponible, type = :attack)
-    logger.trace("Start upgrade for troop=#{self}")
+    #logger.info("Start upgrade for troop     =#{self}")
+    #logger.info("                  disponible=#{disponible}")
     result = clone
     to_insert = Unit.all.sort(:"#{type}" => 'desc').to_a
     to_remove = Unit.nin(id: [:spy]).sort(:"#{type}" => 'asc').to_a
@@ -54,13 +55,13 @@ class Troop
         else
           equivalent = (1 / carry_equivalent).ceil
           result[remove_unit.id] -= 1
-          result[insert_unit.id] += equivalent
           disponible[remove_unit.id] += 1
           if equivalent <= disponible[insert_unit.id]
+            result[insert_unit.id] += equivalent
             disponible[insert_unit.id] -= equivalent
           else
             disponible[insert_unit.id] = 0
-            result[remove_unit.id] += 1
+            result[insert_unit.id] += disponible[insert_unit.id]
           end
           resolved = true
         end
@@ -70,7 +71,7 @@ class Troop
     end
 
     raise Exception, 'Invalid logic' if disponible.has_negative? || result.has_negative?
-
+    logger.info("                  result    =#{result}")
     result
   end
 
@@ -100,6 +101,15 @@ class Troop
     result = clone
     result.each do |troop, _qte|
       result[troop] -= other[troop]
+    end
+    raise Exception, 'Invalid operation' if result.has_negative?
+    result
+  end
+
+  def +(other)
+    result = clone
+    result.each do |troop, _qte|
+      result[troop] += other[troop]
     end
     raise Exception, 'Invalid operation' if result.has_negative?
     result
@@ -142,6 +152,5 @@ class Troop
         result = new_troop
       end
     end
-    binding.pry
   end
 end
