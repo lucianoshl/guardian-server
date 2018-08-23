@@ -20,6 +20,7 @@ class Screen::ReportView < Screen::Base
     report.erase_uri = page.search('a[href*=del_one]').attr('href').value
     report.id = report.erase_uri.scan(/id=(\d+)/).first.first.to_i
     report.ocurrence = report_table.search('tr > td')[1].text.strip.to_datetime
+    report.moral = report_table.search('h4')[1].text.number_part
 
     report.origin_id, report.target_id = page.search('.village_anchor').map { |a| a.attr('data-id').to_i }
     report.has_troops = page.search('#attack_info_def_units > tr:eq(2) > td').map(&:text).map(&:to_i).sum > 0

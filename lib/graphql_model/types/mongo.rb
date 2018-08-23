@@ -12,6 +12,7 @@ module MongoTypes
     map[Time] = Types::DateTimeType
     map[DateTime] = Types::DateTimeType
     map[String] = types.String
+    map[Float] = types.Float
     map[Mongoid::Boolean] = types.Boolean
 
     from_hash = map[field.options[:type]]

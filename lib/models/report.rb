@@ -6,6 +6,7 @@ class Report
 
   field :ocurrence, type: DateTime
   field :erase_uri, type: String
+  field :moral, type: Integer
 
   field :dot, type: String
 
