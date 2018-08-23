@@ -34,10 +34,11 @@ class Task::Abstract
   end
 
   def execute
+    puts "Current jobs #{Delayed::Backend::Mongoid::Job.count}".white.on_red
     self.next_execution = run
     self.last_execution = Time.now
     self.next_execution = calc_next_execution if self.next_execution.nil?
-    logger.info("Task #{self.class} scheduled for #{self.next_execution}")
+    logger.info("Task #{self.class} scheduled for #{self.next_execution.to_s.on_red.white}")
     save
   end
 

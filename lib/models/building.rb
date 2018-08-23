@@ -18,6 +18,11 @@ class Building
   field :iron, type: Integer
   field :pop, type: Integer
 
+  after_upsert do
+    troop_has_field = Buildings.fields.key?(id)
+    Buildings.field id.to_sym, type: Integer, default: 0 unless troop_has_field
+  end
+
   def cost(level)
     resource = Resource.new
     resource.wood = (wood * wood_factor**(level - 1)).round

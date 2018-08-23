@@ -57,6 +57,11 @@ class Client::Logged
   end
 
   def check_is_logged(page)
+    begin
+      json = JSON.parse(page.body)
+      return !json['error'].include?('expirou')
+    rescue
+    end
     !page.uri.to_s.include?('www')
   end
 

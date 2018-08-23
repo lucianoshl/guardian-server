@@ -29,21 +29,8 @@ class Screen::Logged
     uri = "#{base_url}/game.php"
     uri += "?#{parameters.to_query}" unless parameters.empty?
     result = @client.get(uri)
-    unless check_is_logged(result)
-      raise('Error in login') if requests > 1
-      do_login
-      return request(parameters, requests + 1)
-    end
-    result
   end
 
-  def do_login
-    Account.main.world_login
-  end
-
-  def check_is_logged(page)
-    !page.uri.to_s.include?('www')
-  end
 
   def base_url
     "http://#{Account.main.world}.tribalwars.com.br"

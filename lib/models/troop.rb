@@ -133,7 +133,7 @@ class Troop
   def upgrade_until_win(disponible, wall = 0, moral = 100)
     result = clone
     loop do
-      win = Service::Simulator.run(result)
+      win = Service::Simulator.run(result,wall: wall, moral: moral)
       return result if win
       new_troop = result.upgrade(disponible - result)
       if new_troop == result
