@@ -16,14 +16,23 @@ QueryType = GraphQL::ObjectType.define do
 
       description "Representation of #{model} in guardian"
       resolve ->(_obj, _args, _ctx) {
-        model.first
+        filters = _args.argument_values.map do |k,v|
+          v = v.value
+          v = v.to_i if (k == 'id')
+          [k,v]
+        end
+        model.where(filters.to_h).first
       }
     end
 
     field "#{model.to_s.gsub('::', '_').downcase}s", types[grahql_object] do
       description "Representation of #{model} in guardian"
       resolve ->(_obj, _args, _ctx) {
-        model.limit(5).to_a
+        filters = _args.argument_values.map do |k,v|
+          v = v.to_i if (k == 'id')
+          [k,v.value]
+        end
+        model.where(filters.to_h)
       }
     end
   end

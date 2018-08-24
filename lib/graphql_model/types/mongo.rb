@@ -5,7 +5,12 @@ module MongoTypes
 
   @@types = {}
 
+  def self.fix_id_field(field_name)
+    field_name == '_id' ? 'id' : field_name
+  end
+
   def self.field_map(name, field, types)
+
     map = {}
     map[BSON::ObjectId] = types.ID
     map[Integer] = types.Int
@@ -72,7 +77,10 @@ module MongoTypes
           target_field = MongoTypes.field_map(name, field, types)
           puts "field #{name} not mapped in GraphQL" if target_field.nil?
 
-          field(target_field.first, target_field.last) unless target_field.nil?
+          unless target_field.nil?
+            field_name = MongoTypes.fix_id_field(target_field.first)
+            field(field_name, target_field.last) 
+          end
         end
       end
     end
@@ -90,7 +98,7 @@ module MongoTypes
     (model.fields.map do |name,field|
       type = map[field.options[:type]]
       unless type.nil?
-        [name,type]
+        [fix_id_field(name),type]
       end
     end).compact
   end
