@@ -36,8 +36,7 @@ module MongoTypes
 
     if field.class == Mongoid::Relations::Metadata && [Mongoid::Relations::Referenced::In, Mongoid::Relations::Embedded::One, Mongoid::Relations::Referenced::One].include?(field[:relation])
       final_name = field.name.to_s
-      class_name = (field[:class_name] || field[:name]).to_s.camelize.constantize
-      final_class = @@types[class_name]
+      final_class = @@types[field.relation_class]
 
 
       return nil if final_class.nil?
@@ -48,8 +47,7 @@ module MongoTypes
     if field.class == Mongoid::Relations::Metadata && [Mongoid::Relations::Embedded::Many, Mongoid::Relations::Referenced::Many].include?(field[:relation])
       final_name = field.name.to_s
 
-      class_name = (field[:class_name] || field[:name].to_s.singularize).to_s.camelize.constantize
-      final_class = @@types[class_name]
+      final_class = @@types[field.relation_class]
 
       return nil if final_class.nil?
 
@@ -79,7 +77,22 @@ module MongoTypes
 
           unless target_field.nil?
             field_name = MongoTypes.fix_id_field(target_field.first)
-            field(field_name, target_field.last) 
+            field(field_name, target_field.last) do
+              # if field.class == Mongoid::Relations::Metadata
+              #   MongoTypes.generate_arguments(field.relation_class,types).map do |field_name,type|
+              #     argument(field_name,type)
+              #     binding.pry
+              #     resolve ->(query, _args, _ctx) {
+              #       filters = _args.argument_values.map do |k,v|
+              #         v = v.value
+              #         v = v.to_i if (k == 'id')
+              #         [k,v]
+              #       end
+              #       field.relation_class.where(filters.to_h)
+              #     }
+              #   end
+              # end
+            end
           end
         end
       end

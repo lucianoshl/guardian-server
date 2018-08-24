@@ -32,7 +32,7 @@ QueryType = GraphQL::ObjectType.define do
           v = v.to_i if (k == 'id')
           [k,v.value]
         end
-        model.where(filters.to_h)
+        model.where(filters.to_h).to_a
       }
     end
   end
