@@ -48,6 +48,11 @@ class Task::Abstract
     self.class.where(id: id).update_all(job_id: job.id)
   end
 
+  def run_now
+    self.job.delete
+    self.save
+  end
+
   def calc_next_execution
     return Time.now if last_execution.nil?
     return last_execution + runs_every.to_f / 1.day unless runs_every.nil?
