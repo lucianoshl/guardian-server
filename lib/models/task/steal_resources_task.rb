@@ -58,7 +58,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     report = @target.latest_valid_report
 
-    if (report.dot == "red")
+    if (!report.nil? && report.dot == "red")
       return send_to('has_troops')
     end
 
