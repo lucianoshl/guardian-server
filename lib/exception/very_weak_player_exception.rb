@@ -1,0 +1,3 @@
+class VeryWeakPlayerException < Exception
+
+end

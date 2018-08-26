@@ -51,9 +51,10 @@ class Screen::Place < Screen::Base
   def convert_error(message)
     if message.include?('para novatos')
       NewbieProtectionException.new(message)
-
     elsif message.include?('jogador foi banido')
       BannedPlayerException.new
+    elsif message.include?('apenas poderá atacar e ser atacado se a razão')
+      VeryWeakPlayerException.new
     elsif message.include?('de ataque precisa do')
       NeedsMinimalPopulationException.new(message)
     else
@@ -61,3 +62,6 @@ class Screen::Place < Screen::Base
     end
   end
 end
+
+
+

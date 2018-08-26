@@ -33,6 +33,8 @@ class Task::StealResourcesTask < Task::Abstract
         send_to('not_initialized', e.expiration)
       rescue UpgradeIsImpossibleException => e
         send_to('waiting_strong_troops', next_returning_command.arrival)
+      rescue VeryWeakPlayerException => e
+        send_to('weak_player', Time.now + 1.day)
       rescue NeedsMinimalPopulationException => e
         # TODO: calculate resource production
         send_to('waiting_resource_production', Time.now + 1.hour)
@@ -208,4 +210,9 @@ class Task::StealResourcesTask < Task::Abstract
   def far_away
     waiting_report
   end
+
+  def weak_player
+    waiting_report
+  end
+
 end
