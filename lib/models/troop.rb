@@ -60,8 +60,8 @@ class Troop
             result[insert_unit.id] += equivalent
             disponible[insert_unit.id] -= equivalent
           else
-            disponible[insert_unit.id] = 0
             result[insert_unit.id] += disponible[insert_unit.id]
+            disponible[insert_unit.id] = 0
           end
           resolved = true
         end
