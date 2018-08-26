@@ -57,7 +57,12 @@ class Task::StealResourcesTask < Task::Abstract
     return send_to('far_away', Time.now + 1.day) if @origin.distance(@target) > @distance
 
     report = @target.latest_valid_report
-    if report.nil? || report.resources.nil?
+
+    if (report.dot == "red")
+      return send_to('has_troops')
+    end
+
+    if (report.nil? || report.resources.nil?)
       command = place(@origin.id).commands.leaving.select { |a| a.target == @target }.first
       command.nil? ? send_spies : send_to('waiting_report', command.arrival)
     else
