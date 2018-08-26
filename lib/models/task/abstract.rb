@@ -16,12 +16,14 @@ class Task::Abstract
   field :last_execution, type: DateTime
   field :next_execution, type: DateTime
   field :enabled, type: Boolean, default: true
+  field :name, type: String
 
   belongs_to :job, class_name: 'Delayed::Backend::Mongoid::Job', optional: true
 
   after_initialize do
     self.runs_every = self.class._runs_every
     self.queue = 'normal'
+    self.name = self.class.name
   end
 
   before_save do
