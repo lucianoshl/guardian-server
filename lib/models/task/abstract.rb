@@ -51,6 +51,7 @@ class Task::Abstract
   end
 
   def run_now
+    self.last_execution = nil
     self.job.delete
     self.save
   end
