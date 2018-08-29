@@ -5,7 +5,8 @@ module Routes::HealthCheck
     app.get '/healthcheck' do
       begin
         job_error = Delayed::Backend::Mongoid::Job.nin(last_error: [nil]).count > 0
-        validations = [job_error] 
+        inconsistent_job_size = Delayed::Backend::Mongoid::Job.count != Task::Abstract.count
+        validations = [job_error,inconsistent_job_size] 
         system_error = validations.select{|a| a}.size > 0
         status = system_error ? 500 : 200
         status status
