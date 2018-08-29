@@ -11,8 +11,9 @@ describe Service::Simulator do
     Service::Simulator.run(spear: 5)
   end
 
-  it 'simulate_2' do
-    Troop.new(spear:20).upgrade_until_win(Troop.new(spear: 20, sword: 5), 5)
-    Troop.new(spear:20).upgrade_until_win(Troop.new(spear: 20, sword: 5), 5)
+  it 'test_cache' do
+    method = lambda { Troop.new(spear:20).upgrade_until_win(Troop.new(spear: 20, sword: 5), 5) }
+    expect { method.call }.to raise_error(UpgradeIsImpossibleException)
+    expect { method.call }.to raise_error(UpgradeIsImpossibleException)
   end
 end

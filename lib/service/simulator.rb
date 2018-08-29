@@ -15,6 +15,8 @@ class Service::Simulator
       win = screen.atk_looses.total.zero?
       result = SimulatorResult.new(key: key, win: win)
       result.save
+    else
+      logger.info("Reading from cache result is #{result.win}")
     end
 
     return result.win
