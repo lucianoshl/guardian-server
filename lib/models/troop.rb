@@ -140,6 +140,11 @@ class Troop
   end
 
   def upgrade_until_win(disponible, wall = 0, moral = 100)
+    begin
+      disponible - self
+    rescue
+      raise Exception.new('self must be included in disponible')
+    end
     result = clone
     loop do
       win = Service::Simulator.run(result,wall: wall, moral: moral)

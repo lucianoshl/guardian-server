@@ -4,11 +4,19 @@ class Service::Simulator
   include Logging
 
   def self.run(attack, defence: Troop.new, wall: 0, moral: 100)
-    key = [attack.to_a.to_s, defence.to_a.to_s, wall.to_s, moral.to_s].join(' ')
-    Cachy.cache(key) do
+    key = (attack.to_a + defence.to_a + [wall,moral]).join(',')
+
+    logger.info("Running simulator for #{attack}")
+
+    result = SimulatorResult.where(key: key).first
+    if result.nil?
       screen = Screen::Simulator.new
       screen.simulate(attack, defence, wall, moral)
-      screen.atk_looses.total.zero?
+      win = screen.atk_looses.total.zero?
+      result = SimulatorResult.new(key: key, win: win)
+      result.save
     end
+
+    return result.win
   end
 end
