@@ -15,7 +15,7 @@ class Screen::Logged
   attr_accessor :server_time
 
   def initialize(args = {})
-    @client = Client::Logged.new(Client::Mobile.new)
+    @client = Client::Logged.new(Client::Logged.mobile)
     parse(request(merge_parameters(args)))
   end
 
