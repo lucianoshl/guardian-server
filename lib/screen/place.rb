@@ -57,11 +57,14 @@ class Screen::Place < Screen::Base
       VeryWeakPlayerException.new
     elsif message.include?('de ataque precisa do')
       NeedsMinimalPopulationException.new(message)
+    elsif message.include?('Alvo não existe')
+      RemovedPlayerException.new(message)
     else
       Exception.new(message)
     end
   end
 end
+
 
 
 

@@ -35,6 +35,8 @@ class Task::StealResourcesTask < Task::Abstract
         send_to('waiting_strong_troops', next_returning_command.arrival)
       rescue VeryWeakPlayerException => e
         send_to('weak_player', Time.now + 1.day)
+      rescue RemovedPlayerException => e
+        send_to('removed_player', Time.now + 1.day)
       rescue NeedsMinimalPopulationException => e
         # TODO: calculate resource production
         send_to('waiting_resource_production', Time.now + 1.hour)
@@ -217,6 +219,10 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def weak_player
+    waiting_report
+  end
+
+  def removed_player
     waiting_report
   end
 
