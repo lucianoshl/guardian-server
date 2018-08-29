@@ -13,9 +13,11 @@ Delayed::Worker.backend = :mongoid
 
 queue_name = ARGV.select{|a| a =~ /--queue=/}.first.scan(/--queue=(.+)/).first.first
 
-Delayed::Backend::Mongoid::Job.where(queue: queue_name).map do |job|
-  job.unlock
-  job.save
+if ENV['ENV'] == 'production'
+  Delayed::Backend::Mongoid::Job.where(queue: queue_name).map do |job|
+    job.unlock
+    job.save
+  end
 end
 
 Delayed::Command.new(ARGV).daemonize
