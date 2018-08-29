@@ -71,7 +71,6 @@ class Troop
     end
 
     raise Exception, 'Invalid logic' if disponible.has_negative? || result.has_negative?
-    logger.info("                  result    =#{result}")
     result
   end
 
