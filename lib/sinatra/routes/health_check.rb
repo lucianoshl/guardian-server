@@ -6,7 +6,7 @@ module Routes::HealthCheck
       begin
         errors = Service::HealthCheck.check_system
         status errors.empty? ? 200 : 500
-        body errors
+        body errors.to_json
       rescue
         status 500
       end
