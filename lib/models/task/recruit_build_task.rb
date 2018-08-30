@@ -11,7 +11,11 @@ class Task::RecruitBuildTask < Task::Abstract
     nil
   end
 
-  def run_for_village village
+  def run_for_village(village)
+    recruit(village)
+  end
+
+  def recruit(village)
     queue_size = self.runs_every * 2
     model = generate_target_model
     train_screen = Screen::Train.new(village: village.id)
