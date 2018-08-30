@@ -10,7 +10,7 @@ module Screen::Parser
     has_thead = page.search("#{selector} > thead").size > 0
     has_tbody = page.search("#{selector} > tbody").size > 0
     
-    if (has_thead && has_tbody)
+    if (has_thead || has_tbody)
       tr_list = page.search("#{selector} > thead > tr, #{selector} > tbody > tr")
     else
       tr_list = page.search("#{selector} > tr")

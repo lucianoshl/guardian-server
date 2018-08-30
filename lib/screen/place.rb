@@ -18,7 +18,7 @@ class Screen::Place < Screen::Base
   end
 
   def parse_commands(page)
-    parse_table(page, '#commands_outgoings').map do |tr|
+    parse_table(page, '#commands_outgoings > table').map do |tr|
       link = tr.search('a')
       link_href = link.attr('href')
       command = Command.new
