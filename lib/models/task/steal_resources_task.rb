@@ -56,7 +56,12 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def waiting_report
-    return send_to('far_away', Time.now + 1.day) if @origin.distance(@target) > @distance
+    
+    if @origin.distance(@target) > @distance
+      next_execution = Time.now + 1.day
+      Village.where(status: 'far_away').update_all(next_event: next_execution)
+      return send_to('far_away', next_execution) 
+    end
 
     report = @target.latest_valid_report
 
