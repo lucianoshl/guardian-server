@@ -3,7 +3,6 @@
 describe Task::StealResourcesTask do
 
 	before(:each) do
-		Account.stub_account
 		Service::StartupTasks.new.fill_buildings_information
 		Service::StartupTasks.new.fill_units_information
 	end

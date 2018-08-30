@@ -2,7 +2,6 @@
 
 describe Troop do
   before(:each) do
-    Account.stub_account
     Service::StartupTasks.new.fill_units_information
   end
 

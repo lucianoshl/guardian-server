@@ -44,6 +44,9 @@ RSpec.configure do |config|
   
   config.before :each do
     Report.any_instance.stub(:erase).and_return(nil)
+  end
+
+  config.before :all do 
     Account.stub_account
   end
 

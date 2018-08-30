@@ -16,12 +16,11 @@ class Account
   end
 
   def self.stub_account
-    Account.stub(:main) do
-      Account.new(
-        username: ENV['STUB_USER'],
-        password: ENV['STUB_PASS'],
-        world: ENV['STUB_WORLD']
-      )
-    end
+    Account.new(
+      username: ENV['STUB_USER'],
+      password: ENV['STUB_PASS'],
+      world: ENV['STUB_WORLD'],
+      main: true
+    ).save
   end
 end

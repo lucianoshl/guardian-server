@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 describe Screen::Main do
-  before(:each) do
-    Account.stub_account
-  end
 
   it 'main screen health check' do
     server_time = Screen::Main.new.server_time

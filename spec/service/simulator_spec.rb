@@ -3,7 +3,6 @@
 describe Service::Simulator do
 
   before do
-    Account.stub_account
     Service::StartupTasks.new.fill_units_information
   end
 
