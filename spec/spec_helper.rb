@@ -43,6 +43,7 @@ RSpec.configure do |config|
   end
   
   config.before :each do
+    Screen::Train.any_instance.stub(:train).and_return(nil)
     Report.any_instance.stub(:erase).and_return(nil)
   end
 

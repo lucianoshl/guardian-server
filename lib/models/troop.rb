@@ -33,8 +33,6 @@ class Troop
   end
 
   def upgrade(disponible, type = :attack)
-    #logger.info("Start upgrade for troop     =#{self}")
-    #logger.info("                  disponible=#{disponible}")
     result = clone
     to_insert = Unit.all.sort(:"#{type}" => 'desc').to_a
     to_remove = Unit.nin(id: [:spy]).sort(:"#{type}" => 'asc').to_a

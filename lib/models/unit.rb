@@ -35,6 +35,10 @@ class Unit
   field :desc, type: String
   field :desc_abilities, type: Array
 
+  def self.get(id)
+    Unit.where(id: id).first
+  end
+
   def self.ids
     Unit.all.pluck(:id)
   end
