@@ -6,7 +6,17 @@ module Screen::Parser
   end
 
   def parse_table(page, selector, remove_columns: [])
-    page.search("#{selector} > thead > tr, #{selector} > tbody > tr").map_compact do |tr|
+    tr_list = []
+    has_thead = page.search("#{selector} > thead").size > 0
+    has_tbody = page.search("#{selector} > tbody").size > 0
+    
+    if (has_thead && has_tbody)
+      tr_list = page.search("#{selector} > thead > tr, #{selector} > tbody > tr")
+    else
+      tr_list = page.search("#{selector} > tr")
+    end
+    
+    tr_list.map_compact do |tr|
       if tr.search('th').empty?
         tr.search('td').select_index(remove_columns).map(&:remove) unless remove_columns.empty?
         tr
