@@ -1,38 +1,8 @@
 # frozen_string_literal: true
 
-class Screen::Logged
-  class << self
-    attr_accessor :_screen, :_mode
-    def screen(name)
-      self._screen = name
-    end
-
-    def mode(name)
-      self._mode = name
-    end
-  end
-
-  attr_accessor :server_time
-
+class Screen::Logged < Screen::Abstract
   def initialize(args = {})
     @client = Client::Logged.new(Client::Mobile.new)
-    parse(request(merge_parameters(args)))
-  end
-
-  def merge_parameters(parameters)
-    r = parameters.merge(screen: self.class._screen)
-    r = r.merge(mode: self.class._mode) unless self.class._mode.nil?
-    r
-  end
-
-  def request(parameters, requests = 0)
-    uri = "#{base_url}/game.php"
-    uri += "?#{parameters.to_query}" unless parameters.empty?
-    result = @client.get(uri)
-  end
-
-
-  def base_url
-    "http://#{Account.main.world}.tribalwars.com.br"
+    super
   end
 end
