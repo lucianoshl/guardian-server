@@ -63,5 +63,6 @@ class Service::StartupTasks
     monitor_task = Task::PlayerMonitoringTask.new
     monitor_task.run
     monitor_task.save
+    Task::RecruitBuildTask.new.save
   end
 end

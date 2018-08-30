@@ -8,6 +8,7 @@ class Task::RecruitBuildTask < Task::Abstract
     Account.main.player.villages.map do |village|
       run_for_village(village)
     end
+    nil
   end
 
   def run_for_village village
