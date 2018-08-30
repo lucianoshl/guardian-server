@@ -1,14 +1,20 @@
 # frozen_string_literal: true
 
 class Screen::Abstract
+  include Screen::Parser
+
   class << self
-    attr_accessor :_screen, :_mode
+    attr_accessor :_screen, :_mode, :_entry
     def screen(name)
       self._screen = name
     end
 
     def mode(name)
       self._mode = name
+    end
+
+    def entry(name)
+      self._entry = name
     end
   end
 
@@ -24,7 +30,7 @@ class Screen::Abstract
   end
 
   def request(parameters, requests = 0)
-    uri = "#{base_url}/game.php"
+    uri = "#{base_url}/#{self.class._entry || 'game.php'}"
     uri += "?#{parameters.to_query}" unless parameters.empty?
     result = @client.get(uri)
   end

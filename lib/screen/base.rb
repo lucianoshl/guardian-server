@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Screen::Base < Screen::Logged
-  include Screen::Parser
 
   attr_accessor :quests, :server_time, :player, :village
 
