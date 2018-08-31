@@ -9,10 +9,10 @@ class Troop
     field id.to_sym, type: Integer, default: 0
   end
 
-  def distribute(resources)
+  def distribute(resources, type = :speed)
     current = Troop.new(attributes.clone)
     result = Troop.new
-    units = Unit.all.sort(speed: 'desc').to_a
+    units = Unit.all.sort(:"#{type}" => 'desc').to_a
 
     found_unit_candidate = nil
     loop do
@@ -44,6 +44,8 @@ class Troop
         next if disponible[insert_unit.id] <= 0
         next if result[remove_unit.id] <= 0
         carry_equivalent = insert_unit.equivalent(remove_unit, :carry)
+        next if carry_equivalent.zero?
+
         if carry_equivalent > 1
           result[remove_unit.id] -= carry_equivalent.floor
           result[insert_unit.id] += 1

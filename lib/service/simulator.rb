@@ -21,4 +21,10 @@ class Service::Simulator
 
     return result.win
   end
+
+  def self.online_run(attack: Troop.new, defence: Troop.new, wall: 0, moral: 100)
+  end
+
+  def self.offline_run(attack: Troop.new, defence: Troop.new, wall: 0, moral: 100)
+  end
 end

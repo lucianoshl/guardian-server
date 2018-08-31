@@ -115,9 +115,15 @@ class Task::StealResourcesTask < Task::Abstract
     total = 100 if total < 100
     place = place(@origin.id)
 
-    to_send, remaining = place.troops.distribute(total)
+    distribute_type = report.buildings.wall > 0 ? :attack : :speed
+
+    to_send, remaining = place.troops.distribute(total,distribute_type)
 
     return send_to('waiting_troops', next_returning_command.arrival) if to_send.total.zero?
+
+    if place.troops.ram >= report.rams_to_destroy_wall
+      to_send.ram += report.rams_to_destroy_wall
+    end
 
     to_send = to_send.upgrade_until_win(place.troops, report.buildings.wall, report.moral)
 

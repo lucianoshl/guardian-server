@@ -44,6 +44,7 @@ class Unit
   end
 
   def equivalent(other, field)
+    return 0 if other[field].zero?
     self[field].to_f / other[field]
   end
 

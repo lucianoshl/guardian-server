@@ -35,4 +35,33 @@ class Report
   def win?
     dot != 'red'
   end
+
+  def rams_to_destroy_wall
+    wall = (self.buildings.wall || "0").to_i
+
+    results = {}
+    results[0] = 0
+    results[1] = 2 
+    results[2] = 7
+    results[3] = 13
+    results[4] = 20
+    results[5] = 28
+    results[6] = 37
+    results[7] = 48
+    results[8] = 60
+    results[9] = 74
+    results[10] = 90
+    results[11] = 108
+    results[12] = 129
+    results[13] = 153
+    results[14] = 180
+    results[15] = 211
+    results[16] = 246
+    results[17] = 286
+    results[18] = 330
+    results[19] = 380
+    results[20] = 437
+
+    return results[wall]
+  end
 end
