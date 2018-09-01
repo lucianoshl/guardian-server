@@ -59,7 +59,7 @@ class Task::RecruitBuildTask < Task::Abstract
 
   def generate_target_model
     buildings_pop = 5000
-    model = TroopModel.new(spear: 1.0/3, sword: 1.0/3, archer: 1.0/3, spy: 1000, ram: 200)
+    model = TroopModel.new(spear: 1.0/3, sword: 1.0/3, archer: 1.0/3, spy: 1000)
 
     troops_population = 24000 - buildings_pop
 
