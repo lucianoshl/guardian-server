@@ -73,7 +73,7 @@ class Task::StealResourcesTask < Task::Abstract
       command = place(@origin.id).commands.leaving.select { |a| a.target == @target }.first
       command.nil? ? send_spies : send_to('waiting_report', command.arrival)
     else
-      report.has_troops ? send_to('has_troops') : send_pillage_troop(report)
+      report.has_troops ? send_spies : send_pillage_troop(report)
     end
   end
 
