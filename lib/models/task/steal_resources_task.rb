@@ -66,7 +66,7 @@ class Task::StealResourcesTask < Task::Abstract
     report = @target.latest_valid_report
 
     if (!report.nil? && report.dot == "red")
-      return send_to('has_troops')
+      return send_to('has_spies')
     end
 
     if (report.nil? || report.resources.nil?)
@@ -192,9 +192,16 @@ class Task::StealResourcesTask < Task::Abstract
     send_to('strong', Time.now + 1.day)
   end
 
+  # deprecated
   def has_troops
-    send_to('has_troops', Time.now + 1.hour)
+    send_spies
   end
+
+  def has_spies
+    send_to('has_spies', Time.now + 1.hour)
+  end
+
+  
 
   def place(id = @origin.id)
     @@places[id] = Screen::Place.new(village: id) if @@places[id].nil?
