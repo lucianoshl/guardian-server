@@ -2,7 +2,7 @@
 
 class Screen::Base < Screen::Logged
 
-  attr_accessor :quests, :server_time, :player, :village, :resources, :farm, :storage
+  attr_accessor :quests, :server_time, :player, :village, :resources, :farm, :storage, :incomings
 
   def initialize(args = {})
     super
@@ -16,6 +16,7 @@ class Screen::Base < Screen::Logged
     self.resources = Resource.new(game_data['village'].select_keys(:wood,:stone,:iron))
     self.storage = parse_storage(page)
     self.farm = parse_farm(page)
+    self.incomings = game_data['player']['incomings'].to_i
   end
 
   def parse_server_time(page)
