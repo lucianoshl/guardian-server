@@ -15,7 +15,7 @@ class Service::HealthCheck
     end
 
     validations << validation('invalid_jobs') do
-      Delayed::Backend::Mongoid::Job.lte(run_at: Time.now - 5.minutes).count > 0
+      Delayed::Backend::Mongoid::Job.lte(run_at: Time.now - 10.minutes).count > 0
     end
 
     system_error = validations.select{|a| a.with_error }
