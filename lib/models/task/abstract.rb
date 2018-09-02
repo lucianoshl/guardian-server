@@ -59,6 +59,16 @@ class Task::Abstract
 
   def calc_next_execution
     return Time.now if last_execution.nil?
-    return last_execution + runs_every.to_f / 1.day unless runs_every.nil?
+    return possible_next_execution(last_execution)
+  end
+
+  def possible_next_execution(base = Time.now)
+    if base.class == Time
+      base = base.to_datetime
+    end
+
+    unless runs_every.nil?
+      return base + runs_every.to_f / 1.day 
+    end
   end
 end

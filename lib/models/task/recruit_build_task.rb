@@ -1,20 +1,6 @@
 # frozen_string_literal: true
 
-class Task::RecruitBuildTask < Task::Abstract
-  include Logging
-  runs_every 30.minutes
-
-  def run
-    Account.main.player.villages.map do |village|
-      run_for_village(village)
-    end
-    nil
-  end
-
-  def run_for_village(village)
-    recruit(village)
-  end
-
+module Recruiter
   def recruit(village)
     queue_size = self.runs_every * 2
     model = generate_target_model
@@ -77,6 +63,77 @@ class Task::RecruitBuildTask < Task::Abstract
 
     model
   end
+end
 
+module Builder
+  def build village
+    main = Screen::Main.new(id: village.id)
+    if main.storage.warning && !main.in_queue?(:storage)
+      return main.possible_build?(:storage) ? main.build(:storage) : nil
+    end
+
+    if main.farm.warning && !main.in_queue?(:farm)
+      return main.possible_build?(:farm) ? main.build(:farm) : nil
+    end
+
+    model = select_model_item(village.building_model,main).each.to_a
+
+    model = model.select do |building,level|
+      !main.buildings_meta[building].nil? && level > 0
+    end
+
+    model = model.sort do |a,b|
+      a_meta = main.buildings_meta[a.first]
+      b_meta = main.buildings_meta[b.first]
+      a_cost = Resource.new(a_meta.select_keys(:wood,:stone,:iron)).total
+      b_cost = Resource.new(b_meta.select_keys(:wood,:stone,:iron)).total
+      a_cost <=> b_cost
+    end
+
+    model.map do |building,level|
+      if main.possible_build?(building)
+        return main.build(building)
+      end
+    end
+
+    return nil
+  end
+
+  def select_model_item(list,main)
+    finded = false
+    list.each do |item|
+      item.each do |building,level|
+        extra_level = main.in_queue?(building) ? 1 : 0
+        finded ||= (main.buildings[building] + extra_level) < level
+      end
+      return item if finded
+    end
+  end
+end
+
+class Task::RecruitBuildTask < Task::Abstract
+  include Logging
+  include ::Builder
+  include Recruiter
+  runs_every 30.minutes
+
+  def run
+    Account.main.player.villages.map do |village|
+      run_for_village(village)
+    end
+    nil
+  end
+
+  def run_for_village(village)
+    recruit(village)
+    next_execution = nil
+
+    unless select_model_item(village.building_model,main).nil?
+      next_execution = build(village)
+    end
+
+    return nil if next_execution.nil?
+    next_execution < possible_next_execution ? next_execution : possible_next_execution
+  end
 
 end

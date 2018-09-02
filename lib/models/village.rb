@@ -46,4 +46,13 @@ class Village
   def self.reset_all
     Village.update_all(next_event: nil, status: nil)
   end
+
+  def building_model
+    model = []
+    model << Buildings.new(wall: 20)
+    model << Buildings.new(wood: 10, stone: 10, iron: 10)
+    model << Buildings.new(market: 10)
+    model << Buildings.new(barracks: 20)
+    model
+  end
 end
