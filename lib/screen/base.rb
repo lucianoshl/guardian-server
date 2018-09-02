@@ -47,7 +47,7 @@ class Screen::Base < Screen::Logged
 
   def parse_storage(page)
     storage = OpenStruct.new
-    storage.current = resources.total
+    storage.current = resources.to_h.values.max
     storage.max = page.search('#storage').number_part
     storage.free = storage.max - storage.current
     storage.percent = storage.current.to_f/storage.max
