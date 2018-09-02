@@ -77,6 +77,7 @@ class Troop
   def each(&block)
     attrs = attributes.clone
     attrs.delete('_id')
+    attrs.delete('_type')
     attrs.map(&block)
   end
 
@@ -101,7 +102,7 @@ class Troop
     result.each do |troop, _qte|
       result[troop] -= other[troop]
     end
-    raise Exception, 'Invalid operation' if result.has_negative?
+    # raise Exception, 'Invalid operation' if result.has_negative?
     result
   end
 
@@ -110,7 +111,7 @@ class Troop
     result.each do |troop, _qte|
       result[troop] += other[troop]
     end
-    raise Exception, 'Invalid operation' if result.has_negative?
+    # raise Exception, 'Invalid operation' if result.has_negative?
     result
   end
 
@@ -139,6 +140,14 @@ class Troop
     result
   end
 
+  def remove_negative
+    result = Troop.new
+    each do |unit,qte|
+      result[unit] = qte < 0 ? 0 : qte
+    end
+    result
+  end
+
   def upgrade_until_win(disponible, wall = 0, moral = 100)
     begin
       disponible - self
@@ -150,6 +159,7 @@ class Troop
       win = Service::Simulator.run(result,wall: wall, moral: moral)
       return result if win
       new_troop = result.upgrade(disponible - result)
+      raise Exception.new('Invalid state') if new_troop.has_negative?
       if new_troop == result
         raise UpgradeIsImpossibleException
       else

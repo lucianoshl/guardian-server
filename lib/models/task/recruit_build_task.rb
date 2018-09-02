@@ -3,8 +3,8 @@
 module Recruiter
   def recruit(village)
     queue_size = self.runs_every * 2
-    model = generate_target_model
     train_screen = Screen::Train.new(village: village.id)
+    model = generate_target_model(train_screen)
     resources = train_screen.resources
 
     now = Time.now
@@ -43,7 +43,7 @@ module Recruiter
     
   end
 
-  def generate_target_model
+  def generate_target_model(train_screen)
     buildings_pop = 5000
     model = TroopModel.new(spear: 1.0/3, sword: 1.0/3, archer: 1.0/3, spy: 1000)
 
@@ -61,7 +61,7 @@ module Recruiter
       end
     end
 
-    model
+    (model - train_screen.troops).remove_negative
   end
 end
 
