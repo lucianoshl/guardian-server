@@ -67,7 +67,7 @@ end
 
 module Builder
   def build village
-    main = Screen::Main.new(id: village.id)
+    main = @main
     if main.storage.warning && !main.in_queue?(:storage)
       return main.possible_build?(:storage) ? main.build(:storage) : nil
     end
@@ -128,7 +128,9 @@ class Task::RecruitBuildTask < Task::Abstract
     recruit(village)
     next_execution = nil
 
-    unless select_model_item(village.building_model,main).nil?
+    @main = Screen::Main.new(id: village.id)
+
+    unless select_model_item(village.building_model,@main).nil?
       next_execution = build(village)
     end
 
