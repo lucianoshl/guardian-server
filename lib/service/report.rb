@@ -3,16 +3,18 @@
 class Service::Report
   include Logging
 
-  def self.sync
+  def self.sync(modes: ['attack'] )
     logger.info('Loading reports: start')
-    report_screen = Screen::ReportList.new(mode: 'attack')
-
     report_ids = []
 
-    (1..report_screen.pages).map do |page|
-      report_screen = Screen::ReportList.new(mode: 'attack', from: (page - 1) * 12)
-      report_ids = report_ids.concat(report_screen.report_id_list)
+    modes.map do |mode|
+      report_screen = Screen::ReportList.new(mode: mode)
+      (1..report_screen.pages).map do |page|
+        report_screen = Screen::ReportList.new(mode: mode, from: (page - 1) * 12)
+        report_ids = report_ids.concat(report_screen.report_id_list)
+      end
     end
+
     report_ids -= Report.in(id: report_ids).pluck(:id)
 
     report_ids.map { |report_id| process_report(report_id) }
@@ -25,4 +27,5 @@ class Service::Report
     report.save if Report.where(id: report.id).count.zero?
     report.erase
   end
+  
 end

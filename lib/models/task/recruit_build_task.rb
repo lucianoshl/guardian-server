@@ -36,8 +36,6 @@ module Recruiter
     if to_train.total > 0
       logger.info("Recruting: #{to_train}")
       train_screen.train(to_train)
-    else
-      logger.info('it is not necessary recruit any unit'.black.on_white)
     end
   end
 
@@ -64,6 +62,7 @@ end
 module Builder
   def build(village)
     main = @main
+
     if main.storage.warning && !main.in_queue?(:storage)
       return main.possible_build?(:storage) ? main.build(:storage) : nil
     end

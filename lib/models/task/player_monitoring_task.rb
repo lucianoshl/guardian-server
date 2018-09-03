@@ -27,8 +27,6 @@ class Task::PlayerMonitoringTask < Task::Abstract
 
     to_save = index.select_keys(*unsaved_ids).values.map do |a|
       model.new(a.to_h)
-    rescue Exception => e
-      binding.pry
     end
 
     Parallel.map(to_save, in_threads: 8, progress: "Saving #{model.name}") do |v|
