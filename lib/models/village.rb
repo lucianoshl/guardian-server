@@ -53,4 +53,8 @@ class Village
     model << Buildings.new(barracks: 25, market: 15, smith: 20)
     model
   end
+
+  def train_model
+    TroopModel.new(spear: 1.0 / 3, sword: 1.0 / 3, archer: 1.0 / 3, spy: 1000)
+  end
 end
