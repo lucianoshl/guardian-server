@@ -48,12 +48,19 @@ class Screen::ReportView < Screen::Base
     catapult_label = Unit.get(:catapult).name.downcase
 
     buildings_regex = Building.all.map(&:name).map(&:downcase).join('|')
-    catapult_damage_text = page.search("th:contains('#{catapult_label}')").first.next.next.text
-    ram_damage_text = page.search("th:contains('#{ram_label}')").first.next.next.text
+    catapult_damage_text = page.search("th:contains('#{catapult_label}')").first
+    unlexx catapult_damage_text.nil?
+      catapult_damage_text = catapult_damage_text.next.next.text
+      report.catapult_damage = catapult_damage_text.downcase.scan(/\d+|#{buildings_regex}/)
+      report.catapult_damage[0] = Buildings.where(name: /#{report.catapult_damage[0]}/i).first.id
+    end
 
-    report.ram_damage = ram_damage_text.scan(/\d+/)
-    report.catapult_damage = catapult_damage_text.downcase.scan(/\d+|#{buildings_regex}/)
-    report.catapult_damage[0] = Buildings.where(name: /#{report.catapult_damage[0]}/i).first.id
+    ram_damage_text = page.search("th:contains('#{ram_label}')").first
+    unless ram_damage_text.nil?
+      ram_damage_text = ram_damage_text.next.next.text
+      report.ram_damage = ram_damage_text.scan(/\d+/)
+    end
+    
     report.extra_info = parse_table(page,'#attack_info').map(&:text).map(&:strip)
 
     unless page.search('#attack_results').empty?
