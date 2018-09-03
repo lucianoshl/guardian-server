@@ -76,6 +76,6 @@ class Report
   end
 
   def has_troops
-    !win? || report.def_troops.total > 0
+    !win? || def_troops.total > 0
   end
 end
