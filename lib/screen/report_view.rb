@@ -49,7 +49,7 @@ class Screen::ReportView < Screen::Base
 
     buildings_regex = Building.all.map(&:name).map(&:downcase).join('|')
     catapult_damage_text = page.search("th:contains('#{catapult_label}')").first
-    unlexx catapult_damage_text.nil?
+    unless catapult_damage_text.nil?
       catapult_damage_text = catapult_damage_text.next.next.text
       report.catapult_damage = catapult_damage_text.downcase.scan(/\d+|#{buildings_regex}/)
       report.catapult_damage[0] = Buildings.where(name: /#{report.catapult_damage[0]}/i).first.id
