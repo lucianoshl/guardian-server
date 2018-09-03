@@ -104,7 +104,7 @@ module Builder
     list.each do |item|
       item.each do |building,level|
         extra_level = main.in_queue?(building) ? 1 : 0
-        finded ||= (main.buildings[building] + extra_level) < level
+        finded ||= (main.buildings[building] + extra_level) <= level
       end
       return item if finded
     end
