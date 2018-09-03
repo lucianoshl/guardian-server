@@ -8,8 +8,8 @@ class Screen::Place < Screen::Base
 
   def parse(page)
     super
-    self.troops = page.search('.unitsInput').map { |a| [a.attr('name'), a.attr('data-all-count').to_i] }.to_h
-    self.troops = Troop.new(troops)
+    hash_troops = page.search('.unitsInput').map { |a| [a.attr('name'), a.attr('data-all-count').to_i] }.to_h
+    self.troops = Troop.new(hash_troops)
     self.form = page.form
     commands = self.commands = OpenStruct.new(all: parse_commands(page))
     commands.returning = commands.all.select(&:returning)
