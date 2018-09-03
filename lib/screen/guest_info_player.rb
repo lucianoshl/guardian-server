@@ -6,12 +6,12 @@ class Screen::GuestInfoPlayer < Screen::Guest
 
   attr_accessor :villages
 
-  def initialize(args ={} )
+  def initialize(args = {})
     super
   end
 
   def parse(page)
-    self.villages = (parse_table(page,'#villages_list').map do |tr|
+    self.villages = (parse_table(page, '#villages_list').map do |tr|
       lines = tr.search('> td')
 
       if lines.size == 1
@@ -22,7 +22,7 @@ class Screen::GuestInfoPlayer < Screen::Guest
           extract_village(inner_tr)
         end
       else
-        extract_village(tr,lines)
+        extract_village(tr, lines)
       end
     end).flatten
   end

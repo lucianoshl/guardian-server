@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Screen::Base < Screen::Logged
-
   attr_accessor :quests, :server_time, :player, :village, :resources, :farm, :storage, :incomings
 
   def initialize(args = {})
@@ -13,7 +12,7 @@ class Screen::Base < Screen::Logged
     self.server_time = parse_server_time(page)
     self.player = parse_player(page, game_data)
     self.village = parse_village(page, game_data)
-    self.resources = Resource.new(game_data['village'].select_keys(:wood,:stone,:iron))
+    self.resources = Resource.new(game_data['village'].select_keys(:wood, :stone, :iron))
     self.storage = parse_storage(page)
     self.farm = parse_farm(page)
     self.incomings = game_data['player']['incomings'].to_i
@@ -40,7 +39,7 @@ class Screen::Base < Screen::Logged
     farm.current = page.search('#pop_current_label').number_part
     farm.max = page.search('#pop_max_label').number_part
     farm.free = farm.max - farm.current
-    farm.percent = farm.current.to_f/farm.max
+    farm.percent = farm.current.to_f / farm.max
     farm.warning = farm.percent > 0.8
     farm
   end
@@ -50,10 +49,8 @@ class Screen::Base < Screen::Logged
     storage.current = resources.to_h.values.max
     storage.max = page.search('#storage').number_part
     storage.free = storage.max - storage.current
-    storage.percent = storage.current.to_f/storage.max
+    storage.percent = storage.current.to_f / storage.max
     storage.warning = storage.percent > 0.8
     storage
   end
-
-  
 end

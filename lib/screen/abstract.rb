@@ -19,7 +19,7 @@ class Screen::Abstract
   end
 
   def initialize(args = {})
-    raise Exception.new("client not created in #{self.class}") if @client.nil?
+    raise Exception, "client not created in #{self.class}" if @client.nil?
     parse(request(merge_parameters(args)))
   end
 
@@ -29,7 +29,7 @@ class Screen::Abstract
     r
   end
 
-  def request(parameters, requests = 0)
+  def request(parameters, _requests = 0)
     uri = "#{base_url}/#{self.class._entry || 'game.php'}"
     uri += "?#{parameters.to_query}" unless parameters.empty?
     result = @client.get(uri)
@@ -38,5 +38,4 @@ class Screen::Abstract
   def base_url
     "http://#{Account.main.world}.tribalwars.com.br"
   end
-
 end

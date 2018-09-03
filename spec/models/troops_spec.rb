@@ -32,7 +32,7 @@ describe Troop do
   #   troop = Troop.new(spear:22, axe:3)
   #   disponible = Troop.new(spear:13, sword:10, axe: 1, spy:11)
   #   result = troop.upgrade(disponible)
-    
+
   # end
 
   # it 'test_upgrade_until_win_1' do

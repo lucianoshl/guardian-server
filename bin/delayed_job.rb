@@ -11,7 +11,7 @@ Delayed::Worker.logger.level = -1
 
 Delayed::Worker.backend = :mongoid
 
-queue_name = ARGV.select{|a| a =~ /--queue=/}.first.scan(/--queue=(.+)/).first.first
+queue_name = ARGV.select { |a| a =~ /--queue=/ }.first.scan(/--queue=(.+)/).first.first
 
 if ENV['ENV'] == 'production'
   Delayed::Backend::Mongoid::Job.where(queue: queue_name).map do |job|

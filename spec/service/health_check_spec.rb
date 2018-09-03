@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe Service::HealthCheck do
-
   it 'check_job_with_error' do
     job_with_error = Delayed::Backend::Mongoid::Job.new
     job_with_error.last_error = 'invalid network'

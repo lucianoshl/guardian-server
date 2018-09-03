@@ -31,12 +31,10 @@ class Village
     valid_report = Report.where(target: self, read: false).gte(ocurrence: Time.now - 5.hours).nin(resources: [nil]).order(ocurrence: 'desc').first
 
     if valid_report.nil?
-      last_report = self.reports.last
-      if valid_report.nil? && !last_report.nil? && last_report.dot == 'red'
-        return last_report
-      end
+      last_report = reports.last
+      return last_report if valid_report.nil? && !last_report.nil? && last_report.dot == 'red'
     end
-    return valid_report
+    valid_report
   end
 
   def to_s

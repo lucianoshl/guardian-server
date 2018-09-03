@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'date'
 class Time
   def to_datetime

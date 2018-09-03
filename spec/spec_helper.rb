@@ -41,13 +41,13 @@ RSpec.configure do |config|
   unless Mongoid.default_client.options[:database].ends_with?('-specs')
     raise('In test env guardian needs a specific base for test (ends with -specs)')
   end
-  
+
   config.before :each do
     Screen::Train.any_instance.stub(:train).and_return(nil)
     Report.any_instance.stub(:erase).and_return(nil)
   end
 
-  config.before :all do 
+  config.before :all do
     Account.stub_account
   end
 

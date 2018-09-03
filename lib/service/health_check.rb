@@ -18,13 +18,13 @@ class Service::HealthCheck
       Delayed::Backend::Mongoid::Job.lte(run_at: Time.now - 10.minutes).count > 0
     end
 
-    system_error = validations.select{|a| a.with_error }
+    system_error = validations.select(&:with_error)
   end
 
-  def self.validation name
-    OpenStruct.new({
+  def self.validation(name)
+    OpenStruct.new(
       name: name,
       with_error: yield
-    })
+    )
   end
 end

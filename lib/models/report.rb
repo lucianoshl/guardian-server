@@ -27,9 +27,7 @@ class Report
   embeds_one :def_losses, class_name: Troop
 
   def erase
-    if dot != 'red' && dot != 'yellow'
-      Client::Logged.mobile.get(erase_uri)
-    end
+    Client::Logged.mobile.get(erase_uri) if dot != 'red' && dot != 'yellow'
   end
 
   def win?
@@ -37,11 +35,11 @@ class Report
   end
 
   def rams_to_destroy_wall
-    wall = (self.buildings.wall || "0").to_i
+    wall = (buildings.wall || '0').to_i
 
     results = {}
     results[0] = 0
-    results[1] = 2 
+    results[1] = 2
     results[2] = 7
     results[3] = 13
     results[4] = 20
@@ -62,6 +60,6 @@ class Report
     results[19] = 380
     results[20] = 437
 
-    return results[wall]
+    results[wall]
   end
 end

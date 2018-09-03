@@ -48,27 +48,23 @@ class Task::Abstract
     logger.debug("Scheduling #{self.class} run in #{next_execution}".white.on_red)
     job = delay(run_at: next_execution, queue: queue).execute
     self.class.where(id: id).update_all(job_id: job.id)
-    self.reload
+    reload
   end
 
   def run_now
     self.last_execution = nil
-    self.job&.delete
-    self.save
+    job&.delete
+    save
   end
 
   def calc_next_execution
     return Time.now if last_execution.nil?
-    return possible_next_execution(last_execution)
+    possible_next_execution(last_execution)
   end
 
   def possible_next_execution(base = Time.now)
-    if base.class == Time
-      base = base.to_datetime
-    end
+    base = base.to_datetime if base.class == Time
 
-    unless runs_every.nil?
-      return base + runs_every.to_f / 1.day 
-    end
+    return base + runs_every.to_f / 1.day unless runs_every.nil?
   end
 end

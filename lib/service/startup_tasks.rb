@@ -21,7 +21,6 @@ class Service::StartupTasks
     main_screen.village.upsert
 
     Screen::GuestInfoPlayer.new(id: main_screen.player.id).villages.map(&:upsert)
-
   end
 
   def fill_units_information

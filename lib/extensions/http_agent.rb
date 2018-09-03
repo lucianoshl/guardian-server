@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # # http://scottwb.com/blog/2013/11/09/defeating-the-infamous-mechanize-too-many-connection-resets-bug/
 
 # class Mechanize::HTTP::Agent

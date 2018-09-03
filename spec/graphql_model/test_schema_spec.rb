@@ -6,7 +6,7 @@ describe do
       '{ village {x , y}}',
       variables: {},
       context: { current_user: nil }
-      ).to_json
+    ).to_json
     puts result
   end
 end

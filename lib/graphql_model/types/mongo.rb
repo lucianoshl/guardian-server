@@ -10,7 +10,6 @@ module MongoTypes
   end
 
   def self.field_map(name, field, types)
-
     map = {}
     map[BSON::ObjectId] = types.ID
     map[Integer] = types.Int
@@ -38,7 +37,6 @@ module MongoTypes
       final_name = field.name.to_s
       final_class = @@types[field.relation_class]
 
-
       return nil if final_class.nil?
 
       return [final_name, final_class]
@@ -63,7 +61,6 @@ module MongoTypes
 
   def self.build(models)
     models.map do |model|
-
       @@types[model] = GraphQL::ObjectType.define do
         logger.debug("Creating GraphQL model for #{model}")
         logger.debug("Available fields #{model.fields.merge(model.relations).keys}")
@@ -75,31 +72,30 @@ module MongoTypes
           target_field = MongoTypes.field_map(name, field, types)
           puts "field #{name} not mapped in GraphQL" if target_field.nil?
 
-          unless target_field.nil?
-            field_name = MongoTypes.fix_id_field(target_field.first)
-            field(field_name, target_field.last) do
-              # if field.class == Mongoid::Relations::Metadata
-              #   MongoTypes.generate_arguments(field.relation_class,types).map do |field_name,type|
-              #     argument(field_name,type)
-              #     binding.pry
-              #     resolve ->(query, _args, _ctx) {
-              #       filters = _args.argument_values.map do |k,v|
-              #         v = v.value
-              #         v = v.to_i if (k == 'id')
-              #         [k,v]
-              #       end
-              #       field.relation_class.where(filters.to_h)
-              #     }
-              #   end
-              # end
-            end
+          next if target_field.nil?
+          field_name = MongoTypes.fix_id_field(target_field.first)
+          field(field_name, target_field.last) do
+            # if field.class == Mongoid::Relations::Metadata
+            #   MongoTypes.generate_arguments(field.relation_class,types).map do |field_name,type|
+            #     argument(field_name,type)
+            #     binding.pry
+            #     resolve ->(query, _args, _ctx) {
+            #       filters = _args.argument_values.map do |k,v|
+            #         v = v.value
+            #         v = v.to_i if (k == 'id')
+            #         [k,v]
+            #       end
+            #       field.relation_class.where(filters.to_h)
+            #     }
+            #   end
+            # end
           end
         end
       end
     end
   end
 
-  def self.generate_arguments(model,types)
+  def self.generate_arguments(model, types)
     map = {}
     map[BSON::ObjectId] = types.ID
     map[Integer] = types.Int
@@ -108,11 +104,9 @@ module MongoTypes
     map[String] = types.String
     map[Mongoid::Boolean] = types.Boolean
 
-    (model.fields.map do |name,field|
+    (model.fields.map do |name, field|
       type = map[field.options[:type]]
-      unless type.nil?
-        [fix_id_field(name),type]
-      end
+      [fix_id_field(name), type] unless type.nil?
     end).compact
   end
 

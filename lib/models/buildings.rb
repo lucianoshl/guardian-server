@@ -14,9 +14,9 @@ class Buildings
     attrs.map(&block)
   end
 
-  def -(other)
+  def -(_other)
     result = Buildings.new
-    result.each do |key,value|
+    result.each do |key, value|
       result[key] = self[key] - value
     end
     result
@@ -27,9 +27,9 @@ class Buildings
   end
 
   def has_negative?
-    each do |name,qte| 
+    each do |_name, qte|
       return true if qte < 0
     end
-    return false
+    false
   end
 end

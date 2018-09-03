@@ -60,7 +60,7 @@ class Client::Logged
     begin
       json = JSON.parse(page.body)
       return !json['error'].include?('expirou')
-    rescue
+    rescue StandardError
     end
     !page.uri.to_s.include?('www')
   end

@@ -64,7 +64,3 @@ class Screen::Place < Screen::Base
     end
   end
 end
-
-
-
-

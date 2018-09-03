@@ -56,20 +56,17 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def waiting_report
-    
     if @origin.distance(@target) > @distance
       next_execution = Time.now + 1.day
       Village.where(status: 'far_away').update_all(next_event: next_execution)
-      return send_to('far_away', next_execution) 
+      return send_to('far_away', next_execution)
     end
 
     report = @target.latest_valid_report
 
-    if (!report.nil? && report.dot == "red")
-      return send_to('has_spies')
-    end
+    return send_to('has_spies') if !report.nil? && report.dot == 'red'
 
-    if (report.nil? || report.resources.nil?)
+    if report.nil? || report.resources.nil?
       command = place(@origin.id).commands.leaving.select { |a| a.target == @target }.first
       command.nil? ? send_spies : send_to('waiting_report', command.arrival)
     else
@@ -117,13 +114,11 @@ class Task::StealResourcesTask < Task::Abstract
 
     distribute_type = report.buildings.wall > 0 ? :attack : :speed
 
-    to_send, remaining = place.troops.distribute(total,distribute_type)
+    to_send, remaining = place.troops.distribute(total, distribute_type)
 
     return send_to('waiting_troops', next_returning_command.arrival) if to_send.total.zero?
 
-    if place.troops.ram >= report.rams_to_destroy_wall
-      to_send.ram += report.rams_to_destroy_wall
-    end
+    to_send.ram += report.rams_to_destroy_wall if place.troops.ram >= report.rams_to_destroy_wall
 
     to_send = to_send.upgrade_until_win(place.troops, report.buildings.wall, report.moral)
 
@@ -201,8 +196,6 @@ class Task::StealResourcesTask < Task::Abstract
     send_to('has_spies', Time.now + 1.hour)
   end
 
-  
-
   def place(id = @origin.id)
     @@places[id] = Screen::Place.new(village: id) if @@places[id].nil?
     @@places[id]
@@ -243,5 +236,4 @@ class Task::StealResourcesTask < Task::Abstract
   def removed_player
     waiting_report
   end
-
 end

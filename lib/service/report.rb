@@ -10,7 +10,7 @@ class Service::Report
     report_ids = []
 
     (1..report_screen.pages).map do |page|
-      report_screen = Screen::ReportList.new(mode: 'attack', from: (page-1)*12)
+      report_screen = Screen::ReportList.new(mode: 'attack', from: (page - 1) * 12)
       report_ids = report_ids.concat(report_screen.report_id_list)
     end
     report_ids -= Report.in(id: report_ids).pluck(:id)

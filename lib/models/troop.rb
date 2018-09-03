@@ -142,7 +142,7 @@ class Troop
 
   def remove_negative
     result = Troop.new
-    each do |unit,qte|
+    each do |unit, qte|
       result[unit] = qte < 0 ? 0 : qte
     end
     result
@@ -151,15 +151,15 @@ class Troop
   def upgrade_until_win(disponible, wall = 0, moral = 100)
     begin
       disponible - self
-    rescue
-      raise Exception.new('self must be included in disponible')
+    rescue StandardError
+      raise Exception, 'self must be included in disponible'
     end
     result = clone
     loop do
-      win = Service::Simulator.run(result,wall: wall, moral: moral)
+      win = Service::Simulator.run(result, wall: wall, moral: moral)
       return result if win
       new_troop = result.upgrade(disponible - result)
-      raise Exception.new('Invalid state') if new_troop.has_negative?
+      raise Exception, 'Invalid state' if new_troop.has_negative?
       if new_troop == result
         raise UpgradeIsImpossibleException
       else
