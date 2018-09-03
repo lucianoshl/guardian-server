@@ -5,7 +5,7 @@ module Screen::Parser
     JSON.parse(page.body.scan(/#{function}\(({.+})\)/).flatten.first)
   end
 
-  def parse_table(page, selector, remove_columns: [])
+  def parse_table(page, selector, remove_columns: [], include_header: false)
     tr_list = []
     has_thead = !page.search("#{selector} > thead").empty?
     has_tbody = !page.search("#{selector} > tbody").empty?
@@ -17,7 +17,7 @@ module Screen::Parser
               end
 
     tr_list.map_compact do |tr|
-      if tr.search('th').empty?
+      if tr.search('th').empty? || include_header
         tr.search('td').select_index(remove_columns).map(&:remove) unless remove_columns.empty?
         tr
       end

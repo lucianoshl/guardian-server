@@ -4,13 +4,15 @@ class Report
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field :ocurrence, type: DateTime
   field :erase_uri, type: String
   field :moral, type: Integer
 
   field :dot, type: String
+  field :ocurrence, type: DateTime
+  field :luck, type: String
 
-  field :has_troops, type: Boolean
+  field :night_bonus, type: Boolean
+
   field :read, type: Boolean, default: false
   field :full_pillage, type: Boolean
 
@@ -21,10 +23,20 @@ class Report
   embeds_one :pillage, as: :resourcesable, class_name: Resource.to_s
   embeds_one :buildings, class_name: Buildings.to_s
 
-  embeds_one :atk_troops, class_name: Troop
-  embeds_one :atk_losses, class_name: Troop
-  embeds_one :def_troops, class_name: Troop
-  embeds_one :def_losses, class_name: Troop
+  embeds_one :atk_troops, class_name: Troop.to_s
+  embeds_one :atk_losses, class_name: Troop.to_s
+  field :atk_bonus, type: Array
+
+  embeds_one :def_troops, class_name: Troop.to_s
+  embeds_one :def_losses, class_name: Troop.to_s
+  field :def_bonus, type: Array
+
+  embeds_one :def_away, class_name: Troop.to_s
+
+  field :catapult_damage, type: Array
+  field :ram_damage, type: Array
+  field :extra_info, type: Array
+
 
   def erase
     Client::Logged.mobile.get(erase_uri) if dot != 'red' && dot != 'yellow'
@@ -61,5 +73,9 @@ class Report
     results[20] = 437
 
     results[wall]
+  end
+
+  def has_troops
+    !win? || report.def_troops.total > 0
   end
 end

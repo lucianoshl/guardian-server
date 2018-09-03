@@ -56,7 +56,8 @@ module MongoTypes
       return nil
     end
 
-    binding.pry
+    # binding.pry
+    return nil
   end
 
   def self.build(models)
