@@ -97,9 +97,14 @@ module Builder
   def select_model_item(list, main)
     finded = false
     list.each do |item|
+      item = item.clone
       item.each do |building, level|
         extra_level = main.in_queue?(building) ? 1 : 0
-        finded ||= (main.buildings[building] + extra_level) < level
+
+        incomplete = (main.buildings[building] + extra_level) < level
+        item[building] = 0 unless incomplete
+
+        finded ||= incomplete
       end
       return item if finded
     end
