@@ -33,8 +33,11 @@ class Screen::ReportView < Screen::Base
 
     report.atk_troops = parse_units(attack_units,1)
     report.atk_losses = parse_units(attack_units,2)
-    report.def_troops = parse_units(defence_units,1)
-    report.def_losses = parse_units(defence_units,2)
+
+    unless defence_units.empty?
+      report.def_troops = parse_units(defence_units,1)
+      report.def_losses = parse_units(defence_units,2)
+    end
 
     attack_atk_table = parse_table(page,'#attack_info_att')
     report.atk_bonus = attack_atk_table[2..-1].map{|a| a.search('td').map(&:text).map(&:strip) }
@@ -88,7 +91,11 @@ class Screen::ReportView < Screen::Base
 
   def fix_bonus_names(bonus)
     bonus.map do |label,values|
-      [label,values.split("\n").map(&:strip)]
+      row = [label]
+      unless values.nil?
+        row << values.split("\n").map(&:strip)
+      end
+      row
     end
   end
 

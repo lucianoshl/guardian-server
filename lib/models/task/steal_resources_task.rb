@@ -17,7 +17,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     logger.info("Running for #{criteria.count} targets")
 
-    while target = sort_by_priority(criteria).first
+    while target = sort_by_priority(criteria).shift
       logger.info('-' * 50)
       target = target.last
       logger.info("#{criteria.count} targets now running for #{target} current_status=#{target.status} ")
