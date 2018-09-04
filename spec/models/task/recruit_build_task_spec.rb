@@ -31,6 +31,7 @@ describe Task::RecruitBuildTask do
     Screen::Main.any_instance.stub(:in_queue?).with('barracks').and_return true
     Screen::Main.any_instance.stub(:possible_build?).with(anything()).and_call_original
     Screen::Main.any_instance.stub(:possible_build?).with('barracks').and_return true
+    Screen::Main.any_instance.stub(:possible_build?).with('market').and_return true
 
     Village.any_instance.stub(:building_model).and_return([
         Buildings.new(main: 1),
