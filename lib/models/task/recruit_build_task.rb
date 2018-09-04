@@ -60,8 +60,7 @@ module Recruiter
 end
 
 module Builder
-  def build(village)
-    main = @main
+  def build(village, main)
 
     if main.storage.warning && !main.in_queue?(:storage)
       return main.possible_build?(:storage) ? main.build(:storage) : nil
@@ -86,7 +85,10 @@ module Builder
     end
 
     model.map do |building, _level|
-      return main.build(building) if main.possible_build?(building)
+      if main.possible_build?(building)
+        logger.info("Building #{building} in village #{village.id}")
+        return main.build(building) 
+      end
     end
 
     nil
@@ -101,6 +103,7 @@ module Builder
       end
       return item if finded
     end
+    nil
   end
 end
 
@@ -123,7 +126,7 @@ class Task::RecruitBuildTask < Task::Abstract
 
     @main = Screen::Main.new(id: village.id)
 
-    next_execution = build(village) unless select_model_item(village.building_model, @main).nil?
+    next_execution = build(village,@main) unless select_model_item(village.building_model, @main).nil?
 
     return nil if next_execution.nil?
     next_execution < possible_next_execution ? next_execution : possible_next_execution

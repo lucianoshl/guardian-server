@@ -26,9 +26,26 @@ describe Task::RecruitBuildTask do
   end
 
   it 'run with multiple candidates' do
-    Task::RecruitBuildTask.any_instance.stub(:select_model_item).and_return(Buildings.new(main: 2, barracks: 2))
+    Screen::Main.any_instance.stub(:buildings).and_return(Buildings.new(main: 5, barracks: 4, market: 1))
+    Screen::Main.any_instance.stub(:in_queue?).with(anything()).and_call_original
+    Screen::Main.any_instance.stub(:in_queue?).with('barracks').and_return true
+    Screen::Main.any_instance.stub(:possible_build?).with(anything()).and_call_original
+    Screen::Main.any_instance.stub(:possible_build?).with('barracks').and_return true
+
+    Village.any_instance.stub(:building_model).and_return([
+        Buildings.new(main: 1),
+        Buildings.new(main: 5, barracks: 5),
+        Buildings.new(market: 5)
+    ])
+
     Screen::Main.any_instance.stub(:build).and_return(Time.now + 2.hours)
-    Task::RecruitBuildTask.new.run
+    village = Account.main.player.villages.first
+    main_screen = Screen::Main.new(id: village.id)
+
+    expect(main_screen).to receive(:build).with('market')
+    expect(main_screen).not_to receive(:build).with('barracks')
+
+    Task::RecruitBuildTask.new.build(village, main_screen)
   end
 
 end
