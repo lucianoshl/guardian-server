@@ -20,23 +20,42 @@ module MongoInflector
     return Type::DateTime.definition if  [DateTime,Time].include? type
     return nil if [Array,Account].include? type
 
-    unless Type.constants.include?(type.to_s.to_sym)
+    graphql_type = Type::Base.get_graphql_type(type)
+    if graphql_type.nil?
       binding.pry
     else
-      result = Type.const_get(type.to_s.to_sym).definition
-      meta.is_list? ? types[result] : result
+      definition = graphql_type.definition
+      meta.is_list? ? types[definition] : definition
     end
   end
 end
 
 
 module Type::Base
+  @@mapping = {}
+
+  def self.hash
+    @@mapping
+  end
+
+  def self.register_type(graphqlType,mongoType)
+    puts "#{graphqlType} registeread #{mongoType}"
+    @@mapping[mongoType] = graphqlType
+  end
+
+  def self.get_graphql_type(mongoType)
+    @@mapping[mongoType]
+  end
+
   def self.included(base)
+
     class << base
       include MongoInflector
       def definition
         this = self
-        @target = target = this.to_s.demodulize.constantize
+        @target = target = class_base
+
+        Type::Base.register_type(self,target)
 
         @definition = GraphQL::ObjectType.define do
 
@@ -63,8 +82,15 @@ module Type::Base
       end
 
       def config(&block)
-        @@config_block = block unless block.nil?
-        @@config_block 
+        @config_block = block unless block.nil?
+        @config_block 
+      end
+
+      def class_base(clazz = nil)
+        if @class_base.nil?
+          @class_base = clazz.nil? ? to_s.demodulize.constantize : clazz
+        end
+        @class_base 
       end
     end
   end
