@@ -4,6 +4,8 @@ module Requirer
   def self.with_base_folder_as_namespace(folder)
     base_folder = "#{File.dirname(__FILE__)}/#{folder}/"
     Dir.glob("#{base_folder}/*").map do |file|
+      # binding.pry if folder.include?('mutation')
+
       autoload_rel file, base_dir: base_folder
     end
   end
@@ -26,9 +28,12 @@ module Requirer
     Requirer.with_base_folder_as_namespace('service')
     Requirer.with_sub_folder_as_namespace('models')
 
-    Requirer.with_base_folder_as_namespace('./graphql_model/types')
-    require_rel './graphql_model/query.rb'
-    require_rel './graphql_model/schema.rb'
+    Requirer.with_sub_folder_as_namespace('graphql_model')
+
+    # Requirer.with_base_folder_as_namespace('graphql_model/types')
+    # require_rel './graphql_model/query.rb'
+    # require_rel './graphql_model/mutation.rb'
+    # require_rel './graphql_model/schema.rb'
   end
 end
 

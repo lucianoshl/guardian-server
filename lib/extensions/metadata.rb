@@ -12,6 +12,10 @@ class Mongoid::Relations::Metadata
         Mongoid::Relations::Referenced::One].include?(relation)
       return (self[:class_name] || self[:name]).to_s.camelize.constantize
     end
-    binding.pry
+  end
+
+  def is_list?
+    [Mongoid::Relations::Embedded::Many,
+        Mongoid::Relations::Referenced::Many].include?(relation)
   end
 end

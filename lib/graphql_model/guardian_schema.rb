@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require_rel './query.rb'
-
 GuardianSchema = GraphQL::Schema.define do
-  query QueryType
+  query Type::Query
+  # mutation Mutation::Root
 end
