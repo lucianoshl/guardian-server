@@ -40,7 +40,7 @@ class Screen::Base < Screen::Logged
     farm.max = page.search('#pop_max_label').number_part
     farm.free = farm.max - farm.current
     farm.percent = farm.current.to_f / farm.max
-    farm.warning = farm.percent > 0.8
+    farm.warning = farm.percent > 0.9
     farm
   end
 
@@ -50,7 +50,7 @@ class Screen::Base < Screen::Logged
     storage.max = page.search('#storage').number_part
     storage.free = storage.max - storage.current
     storage.percent = storage.current.to_f / storage.max
-    storage.warning = storage.percent > 0.8
+    storage.warning = storage.percent > 0.9
     storage
   end
 end
