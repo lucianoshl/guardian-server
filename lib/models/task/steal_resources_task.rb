@@ -5,8 +5,14 @@ class Task::StealResourcesTask < Task::Abstract
   include Logging
 
   def run
+    smith_screen = Screen::Smith.new
+    @spy_is_researched = smith_screen.spy_is_researched?
+
+    # validate for 2 villages
+    suspend_task = check_attacks(smith_screen)
+    return (Screen::Place.new.incommings.last.arrival + 1.minute) if suspend_task
+
     @distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
-    @spy_is_researched = Screen::Smith.spy_is_researched?
     @@places = {}
     Service::Report.sync
     steal_candidates
@@ -183,6 +189,20 @@ class Task::StealResourcesTask < Task::Abstract
     distances.compact.sort_by(&:first)
   end
 
+  def check_attacks(screen)
+    # validate for 2 villages
+    !screen.incomings.zero?
+  end
+
+  def place(id = @origin.id)
+    @@places[id] = Screen::Place.new(village: id) if @@places[id].nil?
+    @@places[id]
+  end
+
+  def next_returning_command
+    place(@origin.id).commands.returning.first || place(@origin.id).commands.all.first
+  end
+
   def strong
     send_to('strong', Time.now + 1.day)
   end
@@ -194,15 +214,6 @@ class Task::StealResourcesTask < Task::Abstract
 
   def has_spies
     send_to('has_spies', Time.now + 1.hour)
-  end
-
-  def place(id = @origin.id)
-    @@places[id] = Screen::Place.new(village: id) if @@places[id].nil?
-    @@places[id]
-  end
-
-  def next_returning_command
-    place(@origin.id).commands.returning.first || place(@origin.id).commands.all.first
   end
 
   def waiting_spies

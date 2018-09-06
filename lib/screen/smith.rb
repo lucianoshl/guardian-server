@@ -19,8 +19,7 @@ class Screen::Smith < Screen::Base
     end
   end
 
-  def self.spy_is_researched?
-    researched_units = Screen::Smith.new.researched_units
+  def spy_is_researched?
     researched_units.spy == 1
   end
 end
