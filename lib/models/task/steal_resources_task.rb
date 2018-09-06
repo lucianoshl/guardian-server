@@ -10,7 +10,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     # validate for 2 villages
     suspend_task = check_attacks(smith_screen)
-    return (Screen::Place.new.incommings.last.arrival + 1.minute) if suspend_task
+    return (Screen::Place.new.incomings.last.arrival + 1.minute) if suspend_task
 
     @distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
     @@places = {}

@@ -4,7 +4,7 @@ class Screen::Place < Screen::Base
   include Logging
   screen :place
 
-  attr_accessor :troops, :form, :commands, :error, :incommings
+  attr_accessor :troops, :form, :commands, :error, :incomings
 
   def parse(page)
     super
@@ -15,10 +15,11 @@ class Screen::Place < Screen::Base
     commands.returning = commands.all.select(&:returning)
     commands.leaving = commands.all - commands.returning
     self.error = page.search('.error_box').text.strip
-    self.incommings = parse_incommings(page)
+    self.incomings = parse_incomings(page)
+    binding.pry
   end
 
-  def parse_incommings(page)
+  def parse_incomings(page)
     parse_table(page, '#commands_incomings table').map do |tr|
       link = tr.search('a')
       link_href = link.attr('href')
