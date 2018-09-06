@@ -16,7 +16,6 @@ class Screen::Place < Screen::Base
     commands.leaving = commands.all - commands.returning
     self.error = page.search('.error_box').text.strip
     self.incomings = parse_incomings(page)
-    binding.pry
   end
 
   def parse_incomings(page)
