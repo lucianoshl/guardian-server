@@ -28,6 +28,7 @@ module Routes::Login
       account.world = params[:world]
       account.save
       result = proxy_request('https://www.tribalwars.com.br/')
+      Event::FirstLogin.new
       redirect '/'
     end
 
@@ -35,6 +36,7 @@ module Routes::Login
       account = Account.main
       account.world = params[:world]
       account.save
+      Event::FirstLogin.new
       return proxy_request('https://www.tribalwars.com.br/')
     end
   end
