@@ -63,5 +63,6 @@ class Service::StartupTasks
     monitor_task.run
     monitor_task.save
     Task::RecruitBuildTask.new.save
+    Task::StealResourcesTask.new.save
   end
 end
