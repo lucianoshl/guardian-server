@@ -4,6 +4,10 @@ class Service::Simulator
   include Logging
 
   def self.win?(attack, defence: Troop.new, wall: 0, moral: 100)
+    simulate(attack, defence: defence, wall: wall, moral: moral).win
+  end
+
+  def self.simulate(attack, defence: Troop.new, wall: 0, moral: 100)
     key = (attack.to_a + defence.to_a + [wall, moral]).join(',')
 
     logger.info("Running simulator for #{attack}")
@@ -18,7 +22,6 @@ class Service::Simulator
     else
       logger.info("Reading from cache result is #{result.win}")
     end
-
-    result.win
+    result
   end
 end
