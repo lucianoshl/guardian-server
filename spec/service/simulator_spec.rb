@@ -6,7 +6,7 @@ describe Service::Simulator do
   end
 
   it 'simulate_1' do
-    Service::Simulator.run(spear: 5)
+    Service::Simulator.win?(spear: 5)
   end
 
   it 'test_cache' do

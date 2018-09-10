@@ -8,7 +8,7 @@ describe Service::Report do
   end
 
   it 'test report sync' do
-    Service::Report.sync(modes: ['attack','defense'])
+    Service::Report.sync(modes: ['attack'])
   end
 
   # it 'parse_specific_report' do

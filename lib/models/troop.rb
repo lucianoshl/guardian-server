@@ -156,7 +156,7 @@ class Troop
     end
     result = clone
     loop do
-      win = Service::Simulator.run(result, wall: wall, moral: moral)
+      win = Service::Simulator.win?(result, wall: wall, moral: moral)
       return result if win
       new_troop = result.upgrade(disponible - result)
       raise Exception, 'Invalid state' if new_troop.has_negative?

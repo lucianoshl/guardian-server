@@ -28,8 +28,10 @@ class String
         result = result
       elsif !scan(/... \d{1,2}, \d{4}/).empty?
         raw = this.gsub('Set', 'Sep').gsub('Out', 'Oct').gsub('Dez', 'Dec').gsub('Fev', 'Feb').gsub('Ago', 'Aug')
-        # TODO: verify if world has miliseconds
-        result = DateTime.strptime(raw, '%b %d, %Y %H:%M:%S:%L')
+
+        has_milliseconds = split(':').size > 3
+        miliseconds_format = has_milliseconds ? ':%L' : ''
+        result = DateTime.strptime(raw, "%b %d, %Y %H:%M:%S#{miliseconds_format}")
         result = result.to_datetime.change(offset: Time.now.strftime('%z'))
 
       elsif !scan(/\d+\.\d+\. .. \d+\:\d+/).empty? # ["22.09. às 13:45"]

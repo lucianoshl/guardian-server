@@ -39,7 +39,6 @@ module Type::Base
   end
 
   def self.register_type(graphqlType,mongoType)
-    puts "#{graphqlType} registeread #{mongoType}"
     @@mapping[mongoType] = graphqlType
   end
 
