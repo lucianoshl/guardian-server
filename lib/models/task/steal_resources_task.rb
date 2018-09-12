@@ -8,10 +8,6 @@ class Task::StealResourcesTask < Task::Abstract
     smith_screen = Screen::Smith.new
     @spy_is_researched = smith_screen.spy_is_researched?
 
-    # validate for 2 villages
-    suspend_task = check_attacks(smith_screen)
-    return (Screen::Place.new.incomings.last.arrival + 1.minute) if suspend_task
-
     @distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
     @@places = {}
     Service::Report.sync
@@ -84,7 +80,16 @@ class Task::StealResourcesTask < Task::Abstract
     place_screen = place(@origin.id)
     troops = place_screen.troops
     if troops.spy >= spy_qte
-      command = place_screen.send_attack(@target, Troop.new(spy: spy_qte))
+      troop = Troop.new(spy: spy_qte)
+      if place_screen.incomings.size > 0
+        travel_time = troop.travel_time(@target,@origin)
+        next_incoming = place_screen.incomings.first.arrival
+        back_time = Time.now + travel_time*2
+        if back_time.to_datetime > (next_incoming - 1.minute)
+          return send_to('waiting_incoming', next_incoming)
+        end
+      end
+      command = place_screen.send_attack(@target, troop)
       send_to('waiting_report', command.arrival)
     else
       send_to_waiting_spies
@@ -117,6 +122,7 @@ class Task::StealResourcesTask < Task::Abstract
     total = report.resources.total
     total = 100 if total < 100
     place = place(@origin.id)
+    place.troops.knight = 0
 
     distribute_type = report.buildings.wall > 0 ? :attack : :speed
 
@@ -129,6 +135,15 @@ class Task::StealResourcesTask < Task::Abstract
     to_send = to_send.upgrade_until_win(place.troops, report.buildings.wall, report.moral)
 
     to_send.spy += 1 if place.troops.spy > 0
+
+    if place.incomings.size > 0
+      travel_time = to_send.travel_time(@target,@origin)
+      next_incoming = place.incomings.first.arrival
+      back_time = Time.now + travel_time*2
+      if back_time.to_datetime > (next_incoming - 1.minute)
+        return send_to('waiting_incoming', next_incoming)
+      end
+    end
 
     command = place.send_attack(@target, to_send)
     send_to('waiting_report', command.arrival)
@@ -189,11 +204,6 @@ class Task::StealResourcesTask < Task::Abstract
     distances.compact.sort_by(&:first)
   end
 
-  def check_attacks(screen)
-    # validate for 2 villages
-    !screen.incomings.zero?
-  end
-
   def place(id = @origin.id)
     @@places[id] = Screen::Place.new(village: id) if @@places[id].nil?
     @@places[id]
@@ -245,6 +255,10 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def removed_player
+    waiting_report
+  end
+
+  def waiting_incoming
     waiting_report
   end
 end

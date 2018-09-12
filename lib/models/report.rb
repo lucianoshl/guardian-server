@@ -2,7 +2,6 @@
 
 class Report
   include Mongoid::Document
-  include Mongoid::Timestamps
 
   field :erase_uri, type: String
   field :moral, type: Integer

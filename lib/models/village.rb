@@ -3,7 +3,6 @@
 class Village
   include Mongoid::Document
   include AbstractCoordinate
-  include Mongoid::Timestamps
 
   field :name, type: String
   field :points, type: Integer
