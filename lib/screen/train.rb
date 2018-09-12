@@ -38,6 +38,8 @@ class Screen::Train < Screen::Base
       quote_item.finish = html_item.search('.btn-cancel').first.parent.previous.previous.text.to_datetime
       quote_item
     end
+    time_text = page.search("#replace_#{selector} > div:first > span:last").text
+    queue.next_finish = Time.parse(time_text).seconds_since_midnight unless time_text.empty?
     queue.finish = queue.itens.last&.finish
     queue
   end
