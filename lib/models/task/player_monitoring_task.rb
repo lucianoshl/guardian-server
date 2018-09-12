@@ -29,11 +29,13 @@ class Task::PlayerMonitoringTask < Task::Abstract
       model.new(a.to_h)
     end
 
-    Parallel.map(to_save, in_threads: 8, progress: "Saving #{model.name}") do |v|
+    logger.info("Saving #{model.name}")
+    Parallel.map(to_save, in_threads: 8) do |v|
       raise Exception, "Error saving #{model.name} #{v.errors.to_a}" unless v.save
     end
-
-    Parallel.map(saved, in_threads: 8, progress: "Merging #{model.name}") do |v|
+    
+    logger.info("Merging #{model.name}")
+    Parallel.map(saved, in_threads: 8) do |v|
       merged = v.merge_non_nil(index[v.id])
       raise Exception, "Error saving #{model.name} #{merged.errors.to_a}" unless merged.save
     end
