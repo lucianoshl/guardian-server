@@ -2,7 +2,6 @@
 
 class Troop
   include Mongoid::Document
-  include Mongoid::Timestamps
   include Logging
 
   Unit.ids.map do |id|

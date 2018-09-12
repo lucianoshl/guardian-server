@@ -2,7 +2,6 @@
 
 class Command
   include Mongoid::Document
-  include Mongoid::Timestamps
 
   field :arrival, type: DateTime
   field :returning, type: Boolean

@@ -2,7 +2,6 @@
 
 class Unit
   include Mongoid::Document
-  include Mongoid::Timestamps
 
   field :id, type: String
   field :image, type: String
