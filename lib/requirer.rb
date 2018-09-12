@@ -33,7 +33,8 @@ module Requirer
   end
 
   def self.configs
-    Cachy.cache_store = Moneta.new(:File, dir: "/tmp/guardian/#{Account.main.world}")
+    # fix this env var
+    Cachy.cache_store = Moneta.new(:File, dir: "/tmp/guardian/#{ENV['STUB_WORLD'] || Account.main.world}")
   end
 end
 
