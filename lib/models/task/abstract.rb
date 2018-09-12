@@ -46,12 +46,15 @@ class Task::Abstract
 
   def schedule
     logger.debug("Scheduling #{self.class} run in #{next_execution}".white.on_red)
-    job = delay(run_at: next_execution, queue: queue).execute
-    self.class.where(id: id).update_all(job_id: job.id)
+    relation_job = delay(run_at: next_execution, queue: queue).execute
+    if reload.job.nil?
+      self.class.where(id: id).update_all(job_id: relation_job.id)
+    end
     reload
   end
 
   def run_now
+    self.next_execution = nil
     self.last_execution = nil
     job&.delete
     save
@@ -66,5 +69,9 @@ class Task::Abstract
     base = base.to_datetime if base.class == Time
 
     return base + runs_every.to_f / 1.day unless runs_every.nil?
+  end
+
+  def self.remove_orphan_tasks
+    Delayed::Backend::Mongoid::Job.all.select{|a| a.task.nil?}.map(&:delete)
   end
 end
