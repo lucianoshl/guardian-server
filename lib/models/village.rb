@@ -55,6 +55,6 @@ class Village
   end
 
   def train_model
-    TroopModel.new(spear: 1.0 / 3, sword: 1.0 / 3, archer: 1.0 / 3, spy: 2000)
+    TroopModel.new(spear: 1.0 / 2, sword: 1.0 / 2, spy: 2000)
   end
 end

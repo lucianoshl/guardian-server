@@ -2,7 +2,6 @@
 
 class Task::StealResourcesTask < Task::Abstract
   runs_every 10.minutes
-  include Logging
 
   def run
     smith_screen = Screen::Smith.new
