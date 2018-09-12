@@ -27,21 +27,4 @@ describe Troop do
     puts "Upgrade carry: #{result.carry}"
     puts "Upgrade carry: #{result.carry}"
   end
-
-  # it 'error_01' do
-  #   troop = Troop.new(spear:22, axe:3)
-  #   disponible = Troop.new(spear:13, sword:10, axe: 1, spy:11)
-  #   result = troop.upgrade(disponible)
-
-  # end
-
-  # it 'test_upgrade_until_win_1' do
-  #   troop = Troop.from_a([8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-  #   disponible = Troop.from_a([8, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-  #   result = troop.upgrade_until_win(disponible)
-  #   puts "Troop     : #{troop.to_s}"
-  #   puts "disponible: #{disponible.to_s}"
-  #   puts "result    : #{result.to_s}"
-  #   disponible - result
-  # end
 end

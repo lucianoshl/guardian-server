@@ -36,7 +36,9 @@ class Unit
   field :desc_abilities, type: Array
 
   def self.get(id)
-    Unit.where(id: id).first
+    Cachy.cache("unit_#{id}") do
+      Unit.where(id: id).first
+    end
   end
 
   def self.ids
@@ -46,6 +48,10 @@ class Unit
   def equivalent(other, field)
     return 0 if other[field].zero?
     self[field].to_f / other[field]
+  end
+
+  def square_per_minutes
+    return (1.0/(60 * speed))
   end
 
   after_upsert do

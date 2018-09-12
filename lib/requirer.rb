@@ -29,11 +29,11 @@ module Requirer
     Requirer.with_sub_folder_as_namespace('models')
 
     Requirer.with_sub_folder_as_namespace('graphql_model')
+    configs
+  end
 
-    # Requirer.with_base_folder_as_namespace('graphql_model/types')
-    # require_rel './graphql_model/query.rb'
-    # require_rel './graphql_model/mutation.rb'
-    # require_rel './graphql_model/schema.rb'
+  def self.configs
+    Cachy.cache_store = Moneta.new(:File, dir: "/tmp/guardian/#{Account.main.world}")
   end
 end
 
