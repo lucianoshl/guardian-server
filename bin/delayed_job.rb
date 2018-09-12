@@ -6,8 +6,7 @@ Bundler.require(:default, ENV['ENV'])
 
 require_rel '../lib/requirer.rb'
 
-Delayed::Worker.logger = Logger.new(STDOUT)
-Delayed::Worker.logger.level = -1
+Delayed::Worker.logger = Logging.logger
 
 Delayed::Worker.backend = :mongoid
 
