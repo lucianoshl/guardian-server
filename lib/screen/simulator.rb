@@ -32,8 +32,17 @@ class Screen::Simulator < Screen::Base
     end
 
     form['moral'] = moral
-    form['luck'] = -25
+    form['luck'] = 0
     form['def_wall'] = wall
     parse(form.submit)
+  end
+
+  def to_simulation
+    result = Simulation.new
+    result.atk_troops = atk_troops
+    result.atk_looses = atk_looses
+    result.def_troops = def_troops
+    result.def_looses = def_looses
+    result
   end
 end

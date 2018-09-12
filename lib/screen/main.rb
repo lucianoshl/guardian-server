@@ -9,7 +9,7 @@ class Screen::Main < Screen::Base
     building = building.to_s
     building_meta = buildings_meta[building]
     return false if building_meta.nil? || full_builded?(building_meta) || queue.size > 1
-    building_meta.nil? ? false : building_meta['can_build']
+    building_meta.nil? ? false : (building_meta['can_build'] &&  building_meta['cheap_error'].blank?)
   end
 
   def full_builded?(building_meta)
