@@ -45,15 +45,18 @@ class Task::Abstract
   def schedule
     logger.debug("Scheduling #{self.class} run in #{next_execution}".white.on_red)
     relation_job = delay(run_at: next_execution, queue: queue).execute
-    if reload.job.nil?
+    # if reload.job.nil?
       self.class.where(id: id).update_all(job_id: relation_job.id)
-    end
+    # end
     reload
   end
 
   def run_now
-    self.next_execution = nil
-    self.last_execution = nil
+    if job.nil?
+      self.next_execution = nil
+    else
+      self.job.run_at = self.next_execution = Time.now + 1.second
+    end
     job&.delete
     save
   end
