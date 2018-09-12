@@ -9,9 +9,9 @@ class Screen::Main < Screen::Base
     building = building.to_s
     building_meta = buildings_meta[building]
     return false if building_meta.nil? || full_builded?(building_meta) || queue.size > 1
-    building_meta.nil? ? false : (building_meta['can_build'] &&  building_meta['cheap_error'].blank?)
+    building_meta.nil? ? false : building_meta['cheap']
   end
-
+  
   def full_builded?(building_meta)
     building_meta['level'].to_i == building_meta['max_level']
   end
