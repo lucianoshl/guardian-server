@@ -219,12 +219,12 @@ class Task::StealResourcesTask < Task::Abstract
   def next_returning_command
     result = place(@origin.id).commands.returning.first
     result ||=  place(@origin.id).commands.all.first
+    
     if result.nil?
       result ||=  Screen::Train.new.queue.to_h.values.flatten.map(&:finish).compact.min
     end
 
     result ||= Time.now + 10.minutes
-    binding.pry
     result
   end
 
