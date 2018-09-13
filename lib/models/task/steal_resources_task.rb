@@ -11,6 +11,7 @@ class Task::StealResourcesTask < Task::Abstract
     @@places = {}
     Service::Report.sync
     steal_candidates
+    # TODO: refactor this criteria in a function duplicated code bellow
     criteria = Village.targets.lte(next_event: Time.now)
 
     criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
