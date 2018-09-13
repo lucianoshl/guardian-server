@@ -217,7 +217,15 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def next_returning_command
-    place(@origin.id).commands.returning.first || place(@origin.id).commands.all.first
+    result = place(@origin.id).commands.returning.first
+    result ||=  place(@origin.id).commands.all.first
+    if result.nil?
+      result ||=  Screen::Train.new.queue.to_h.values.flatten.map(&:finish).compact.min
+    end
+
+    result ||= Time.now + 10.minutes
+    binding.pry
+    result
   end
 
   def strong
