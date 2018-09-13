@@ -40,7 +40,7 @@ class Task::StealResourcesTask < Task::Abstract
       rescue RemovedPlayerException => e
         send_to('removed_player', Time.now + 1.day)
       rescue NeedsMinimalPopulationException => e
-        # TODO: calculate resource production
+        @target.latest_valid_report&.mark_read
         send_to('waiting_resource_production', Time.now + 1.hour)
       end
 

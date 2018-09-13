@@ -77,4 +77,9 @@ class Report
   def has_troops
     !win? || (def_troops || Troop.new).total > 0
   end
+
+  def mark_read
+    self.read = true
+    save
+  end
 end
