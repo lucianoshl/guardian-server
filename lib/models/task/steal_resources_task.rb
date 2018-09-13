@@ -40,8 +40,10 @@ class Task::StealResourcesTask < Task::Abstract
       rescue RemovedPlayerException => e
         send_to('removed_player', Time.now + 1.day)
       rescue NeedsMinimalPopulationException => e
-        @target.latest_valid_report&.mark_read
-        send_to('waiting_resource_production', Time.now + 1.hour)
+        report = @target.latest_valid_report
+        next_attack = report.time_to_produce(e.population * 25)
+        report.mark_read
+        send_to('waiting_resource_production', next_attack)
       end
 
       logger.info("Finish for #{target} #{original_status} > #{target.status} ")
@@ -67,7 +69,7 @@ class Task::StealResourcesTask < Task::Abstract
       Village.where(status: 'far_away').update_all(next_event: next_execution)
       return send_to('far_away', next_execution)
     end
-
+    
     report = @target.latest_valid_report
 
     return send_to('has_spies') if !report.nil? && report.dot == 'red'
@@ -85,7 +87,7 @@ class Task::StealResourcesTask < Task::Abstract
     troops = place_screen.troops
     if troops.spy >= spy_qte
       troop = Troop.new(spy: spy_qte)
-      if place_screen.incomings.size > 0
+      if place_screen.incomings.size.positive?
         travel_time = troop.travel_time(@target,@origin)
         next_incoming = place_screen.incomings.first.arrival
         back_time = Time.now + travel_time*2
@@ -107,17 +109,18 @@ class Task::StealResourcesTask < Task::Abstract
       send_to('waiting_spies', next_returning_command.arrival)
     else
       last_report = @target.reports.last
-      wait_report_production = last_report.nil? ? false : last_report.full_pillage == false
-      if place.troops.carry >= 200 && !wait_report_production
-        troops, remaining = place.troops.distribute(200)
+      resource = 200
+      if place.troops.carry >= resource && last_report.produced_resource?(resource)
+        troops, _remaining = place.troops.distribute(200)
         result = troops.upgrade_until_win(place.troops)
         command = place.send_attack(@target, result)
         send_to('waiting_report', command.arrival)
-      elsif wait_report_production
-        send_to('waiting_resource_production', Time.now + 30.minutes)
-      else
+      elsif place.troops.carry < resource
         Village.in(status: %w[not_initialized waiting_troops]).update_all(next_event: next_returning_command.arrival, status: 'waiting_troops')
         send_to('waiting_troops', next_returning_command.arrival)
+      elsif last_report.produced_resource?(resource)
+        @target.latest_valid_report&.mark_read
+        send_to('waiting_resource_production', last_report.time_to_produce(resource))
       end
     end
   end

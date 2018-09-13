@@ -2,6 +2,7 @@
 
 class Report
   include Mongoid::Document
+  include Logging
 
   field :erase_uri, type: String
   field :moral, type: Integer
@@ -81,5 +82,15 @@ class Report
   def mark_read
     self.read = true
     save
+  end
+
+  def produced_resource? qte
+    logger.info('PLEASE IMPLEMENTS-ME'.white.on_red)
+    true
+  end
+
+  def time_to_produce resource_qte
+    logger.info('PLEASE IMPLEMENTS-ME'.white.on_red)
+    Time.now + 1.hour
   end
 end
