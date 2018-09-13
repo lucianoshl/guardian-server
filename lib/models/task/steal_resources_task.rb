@@ -167,10 +167,10 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def spy_qte
-    1
+    # 1
     # binding.pry
     # TODO: make this based in simulator
-    # @target.player.nil? ? 1 : 5
+    @target.player.nil? ? 1 : 5
   end
 
   def steal_candidates
