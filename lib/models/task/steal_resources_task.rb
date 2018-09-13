@@ -46,7 +46,11 @@ class Task::StealResourcesTask < Task::Abstract
       logger.info("Finish for #{target} #{original_status} > #{target.status} ")
     end
 
-    next_event = Village.targets.order(next_event: 'asc').first.next_event
+    criteria = Village.targets.order(next_event: 'asc')
+    criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
+
+    # next_event = criteria.first.next_event
+    criteria.first.next_event
     # possible_next_event = Time.now + 5.minutes
 
     # next_event > possible_next_event ? possible_next_event : next_event
@@ -109,7 +113,7 @@ class Task::StealResourcesTask < Task::Abstract
         command = place.send_attack(@target, result)
         send_to('waiting_report', command.arrival)
       elsif wait_report_production
-        send_to('waiting_resource_production', Time.now + 2.hour)
+        send_to('waiting_resource_production', Time.now + 30.minutes)
       else
         Village.in(status: %w[not_initialized waiting_troops]).update_all(next_event: next_returning_command.arrival, status: 'waiting_troops')
         send_to('waiting_troops', next_returning_command.arrival)
