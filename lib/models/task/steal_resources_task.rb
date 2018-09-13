@@ -226,6 +226,9 @@ class Task::StealResourcesTask < Task::Abstract
     end
 
     result ||= Time.now + 10.minutes
+    if result.class == Time
+      result = Command.new(arrival: result)
+    end
     result
   end
 
