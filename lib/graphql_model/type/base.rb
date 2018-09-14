@@ -77,12 +77,19 @@ module Type::Base
       end
 
       def base_criteria(_obj, args, _ctx)
-        @target.where(args.to_h)
+        criteria = @target.where(args.to_h)
+        criteria = @criteria_block&.call(criteria)
+        criteria
       end
 
       def config(&block)
         @config_block = block unless block.nil?
         @config_block
+      end
+
+      def criteria(&block)
+        @criteria_block = block unless block.nil?
+        @criteria_block
       end
 
       def class_base(clazz = nil)
