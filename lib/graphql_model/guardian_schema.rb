@@ -4,5 +4,5 @@ Type.constants.map { |a| Type.const_get(a) }.select { |a| a.included_modules.inc
 
 GuardianSchema = GraphQL::Schema.define do
   query Type::Query.definition
-  # mutation Mutation::Root
+  mutation Mutation::Root.definition
 end

@@ -38,10 +38,6 @@ class Village
     valid_report
   end
 
-  def to_s
-    "#{x}|#{y}"
-  end
-
   def self.reset_all
     Village.update_all(next_event: nil, status: nil)
   end

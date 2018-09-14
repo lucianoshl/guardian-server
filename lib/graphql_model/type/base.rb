@@ -50,6 +50,8 @@ module Type::Base
   def self.included(base)
     class << base
       include MongoInflector
+      @mutations = []
+
       def definition
         this = self
         @target = target = class_base
@@ -70,10 +72,6 @@ module Type::Base
           end
         end
         @definition
-      end
-
-      def enabled?
-        true
       end
 
       def base_criteria(_obj, args, _ctx)
@@ -97,6 +95,16 @@ module Type::Base
           @class_base = clazz.nil? ? to_s.demodulize.constantize : clazz
         end
         @class_base
+      end
+
+      def mutation(&block)
+        @mutations = [] if @mutations.nil?
+        @mutations << GraphQL::Relay::Mutation.define(&block)
+      end
+
+      def mutations
+        @mutations = [] if @mutations.nil?
+        @mutations
       end
     end
   end
