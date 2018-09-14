@@ -9,7 +9,7 @@ class Mutation::Root
       models.map do |model_name|
         model = Type.const_get(model_name)
         model.mutations.map do |mutation|
-          field mutation.name, field: mutation.field
+          field mutation.name, function: mutation.new
         end
       end
     end

@@ -99,7 +99,15 @@ module Type::Base
 
       def mutation(&block)
         @mutations = [] if @mutations.nil?
-        @mutations << GraphQL::Relay::Mutation.define(&block)
+        @mutations << Class.new(GraphQL::Function) do 
+
+          def self.name(value = nil)
+            @@name = value unless value.nil?
+            @@name
+          end
+
+          class_eval &block
+        end
       end
 
       def mutations

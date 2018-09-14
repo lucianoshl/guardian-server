@@ -9,18 +9,15 @@ module Type::Village
 
   mutation do
     name 'UpdateDisableRecruit'
+    argument :id, !types.Int
+    argument :disabled, !types.Boolean
+    type Type::Village.definition
 
-    input_field :id, !types.Int
-    input_field :disabled, !types.Boolean
-    return_field :village, Type::Village.definition
-
-    resolve lambda { |object, inputs, ctx|
+    def call(object, inputs, ctx)
       village = Village.find(id: inputs['id'])
       village.disable_recruit = inputs['disabled']
       village.save
-      {
-        village: village
-      }
-    }
+      village
+    end
   end
 end
