@@ -131,7 +131,7 @@ class Task::RecruitBuildTask < Task::Abstract
   end
 
   def run_for_village(village)
-    recruit(village)
+    #recruit(village)
     next_execution = nil
 
     @main = Screen::Main.new(id: village.id)
