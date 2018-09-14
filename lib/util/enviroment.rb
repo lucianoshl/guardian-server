@@ -10,7 +10,7 @@ module Enviroment
   def self.configs
     if @@configs.nil?
       config_location = "#{File.dirname(__FILE__)}/../../config/env.yml"
-      @@configs = YAML.safe_load(File.read(config_location))
+      @@configs = YAML.safe_load(File.read(config_location), [], [], true)
     end
     @@configs
   end
