@@ -33,7 +33,7 @@ class Task::PlayerMonitoringTask < Task::Abstract
     Parallel.map(to_save, in_threads: 8) do |v|
       raise Exception, "Error saving #{model.name} #{v.errors.to_a}" unless v.save
     end
-    
+
     logger.info("Merging #{model.name}")
     Parallel.map(saved, in_threads: 8) do |v|
       merged = v.merge_non_nil(index[v.id])

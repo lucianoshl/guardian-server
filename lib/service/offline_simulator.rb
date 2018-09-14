@@ -2,11 +2,11 @@
 
 class Service::OfflineSimulator
   include Logging
-  
-  def self.simulate(attack, defence, wall, moral)
+
+  def self.simulate(attack, defence, _wall, _moral)
     types = Unit.all.map(&:type).uniq - ['other']
     atk_power = {}
-    attack.each do |unit,qte| 
+    attack.each do |unit, qte|
       meta = Unit.get(unit)
       if types.include? meta.type
         atk_power[meta.type] ||= 0
@@ -20,15 +20,14 @@ class Service::OfflineSimulator
     mapping_fields['cavalry'] = 'defense_cavalry'
     mapping_fields['archer'] = 'defense_archer'
 
-    defence.each do |unit,qte| 
+    defence.each do |unit, qte|
       meta = Unit.get(unit)
       if types.include? meta.type
         def_power[meta.type] ||= 0
-        def_power[meta.type] += meta[mapping_fields[meta.type]] * qte 
+        def_power[meta.type] += meta[mapping_fields[meta.type]] * qte
       end
     end
 
     Simulation.new
   end
-
 end

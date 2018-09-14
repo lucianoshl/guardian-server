@@ -69,7 +69,7 @@ class Task::StealResourcesTask < Task::Abstract
       Village.where(status: 'far_away').update_all(next_event: next_execution)
       return send_to('far_away', next_execution)
     end
-    
+
     report = @target.latest_valid_report
 
     return send_to('has_spies') if !report.nil? && report.dot == 'red'
@@ -88,9 +88,9 @@ class Task::StealResourcesTask < Task::Abstract
     if troops.spy >= spy_qte
       troop = Troop.new(spy: spy_qte)
       if place_screen.incomings.size.positive?
-        travel_time = troop.travel_time(@target,@origin)
+        travel_time = troop.travel_time(@target, @origin)
         next_incoming = place_screen.incomings.first.arrival
-        back_time = Time.now + travel_time*2
+        back_time = Time.now + travel_time * 2
         if back_time.to_datetime > (next_incoming - 1.minute)
           return send_to('waiting_incoming', next_incoming)
         end
@@ -143,10 +143,10 @@ class Task::StealResourcesTask < Task::Abstract
 
     to_send.spy += 1 if place.troops.spy > 0
 
-    if place.incomings.size > 0
-      travel_time = to_send.travel_time(@target,@origin)
+    unless place.incomings.empty?
+      travel_time = to_send.travel_time(@target, @origin)
       next_incoming = place.incomings.first.arrival
-      back_time = Time.now + travel_time*2
+      back_time = Time.now + travel_time * 2
       if back_time.to_datetime > (next_incoming - 1.minute)
         return send_to('waiting_incoming', next_incoming)
       end
@@ -218,17 +218,15 @@ class Task::StealResourcesTask < Task::Abstract
 
   def next_returning_command
     result = place(@origin.id).commands.returning.first
-    result ||=  place(@origin.id).commands.all.first
-    
+    result ||= place(@origin.id).commands.all.first
+
     if result.nil?
       finish_recruit = Screen::Train.new.queue.to_h.values.flatten.map(&:next_finish).compact.min
       result ||= Time.now + finish_recruit unless finish_recruit.nil?
     end
 
     result ||= Time.now + 10.minutes
-    if result.class == Time
-      result = Command.new(arrival: result)
-    end
+    result = Command.new(arrival: result) if result.class == Time
     result
   end
 

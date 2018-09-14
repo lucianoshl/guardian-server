@@ -7,7 +7,7 @@ module Logging
     def logger
       @logger ||= Logger.new($stdout)
       @logger.level = Logger::DEBUG
-      @logger.formatter = proc do |severity, datetime, _progname, msg|
+      @logger.formatter = proc do |_severity, _datetime, _progname, _msg|
         eval('"' + Enviroment['logger_format'] + '"')
       end
       @logger

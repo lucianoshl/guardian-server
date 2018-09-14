@@ -23,16 +23,16 @@ describe do
             }
           }
         }},
-        variables: {},
-        context: { current_user: nil }
-        )
+      variables: {},
+      context: { current_user: nil }
+    )
     pp result.to_h
     expect(result.to_h['errors']).to be_nil
   end
 
   it 'test gql 2' do
     result = GuardianSchema.execute(
-      %{{
+      %({
       task_abstracts {
         name
         last_execution
@@ -44,10 +44,10 @@ describe do
           failed_at
         }
       }
-    }},
-        variables: {},
-        context: { current_user: nil }
-        )
+    }),
+      variables: {},
+      context: { current_user: nil }
+    )
     pp result.to_h
     expect(result.to_h['errors']).to be_nil
   end

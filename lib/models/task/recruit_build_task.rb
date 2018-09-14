@@ -4,14 +4,14 @@ module Recruiter
   def recruit(village)
     train_screen = Screen::Train.new(village: village.id)
 
-    model = generate_target_model(train_screen,village)
+    model = generate_target_model(train_screen, village)
 
     now = Time.now
     queue_seconds = (train_screen.queue.to_h.map do |building, queue|
       [building, ((queue&.finish || now) - now).floor]
     end).to_h
 
-    to_train = define_units_to_train(model,train_screen,queue_seconds)
+    to_train = define_units_to_train(model, train_screen, queue_seconds)
 
     if to_train.total > 0
       logger.info("Recruting: #{to_train}")
@@ -19,7 +19,7 @@ module Recruiter
     end
   end
 
-  def define_units_to_train(model,train_screen,queue_seconds)
+  def define_units_to_train(model, train_screen, queue_seconds)
     result = Troop.new
     queue_size = runs_every * 2
     resources = train_screen.resources
@@ -44,7 +44,7 @@ module Recruiter
     result
   end
 
-  def generate_target_model(train_screen,village)
+  def generate_target_model(train_screen, village)
     buildings_pop = 5000
     model = village.train_model
 
@@ -66,7 +66,6 @@ end
 
 module Builder
   def build(village, main)
-
     if main.storage.warning && !main.in_queue?(:storage)
       return main.possible_build?(:storage) ? main.build(:storage) : nil
     end
@@ -92,7 +91,7 @@ module Builder
     model.map do |building, _level|
       if main.possible_build?(building)
         logger.info("Building #{building} in village #{village.id}")
-        return main.build(building) 
+        return main.build(building)
       end
     end
 
@@ -131,12 +130,12 @@ class Task::RecruitBuildTask < Task::Abstract
   end
 
   def run_for_village(village)
-    recruit(village)
+    recruit(village) if village.disable_recruit != true
     next_execution = nil
 
     @main = Screen::Main.new(id: village.id)
 
-    next_execution = build(village,@main) unless select_model_item(village.building_model, @main).nil?
+    next_execution = build(village, @main) unless select_model_item(village.building_model, @main).nil?
 
     return nil if next_execution.nil?
     next_execution < possible_next_execution ? next_execution : possible_next_execution

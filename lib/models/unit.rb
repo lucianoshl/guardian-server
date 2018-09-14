@@ -50,7 +50,7 @@ class Unit
   end
 
   def square_per_minutes
-    return (1.0/(60 * speed))
+    (1.0 / (60 * speed))
   end
 
   after_upsert do

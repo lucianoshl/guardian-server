@@ -140,10 +140,10 @@ class Troop
   end
 
   def slow_unit
-    to_h.select{|unit,qte| qte > 0}.keys.map{|a| Unit.get(a) }.sort{|b,a| a.speed <=> b.speed }.last
+    to_h.select { |_unit, qte| qte > 0 }.keys.map { |a| Unit.get(a) }.max { |b, a| a.speed <=> b.speed }
   end
 
-  def travel_time origin,target
+  def travel_time(origin, target)
     (slow_unit.square_per_minutes * origin.distance(target)).minutes
   end
 

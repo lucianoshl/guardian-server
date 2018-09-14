@@ -37,7 +37,6 @@ class Report
   field :ram_damage, type: Array
   field :extra_info, type: Array
 
-
   def erase
     Client::Logged.mobile.get(erase_uri) if dot != 'red' && dot != 'yellow'
   end
@@ -84,12 +83,12 @@ class Report
     save
   end
 
-  def produced_resource? qte
+  def produced_resource?(_qte)
     logger.info('PLEASE IMPLEMENTS-ME'.white.on_red)
     true
   end
 
-  def time_to_produce resource_qte
+  def time_to_produce(_resource_qte)
     logger.info('PLEASE IMPLEMENTS-ME'.white.on_red)
     Time.now + 1.hour
   end

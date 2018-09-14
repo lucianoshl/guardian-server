@@ -8,12 +8,10 @@ class Service::WorldConfig
       Mechanize.new.get("https://#{Account.main.world}.tribalwars.com.br/page/settings").body
     end
     page = Nokogiri::HTML(world_config_html)
-    
-    parse_table(page,'.data-table').map do |tr|
-      if tr.text.include?('Milésimos de segundo')
-        return tr.text.include?('Ativo')
-      end
+
+    parse_table(page, '.data-table').map do |tr|
+      return tr.text.include?('Ativo') if tr.text.include?('Milésimos de segundo')
     end
-    raise Exception.new('needs implementation')
+    raise Exception, 'needs implementation'
   end
 end

@@ -21,34 +21,34 @@ class Screen::ReportView < Screen::Base
     report.id = report.erase_uri.scan(/id=(\d+)/).first.first.to_i
     report.ocurrence = report_table.search('tr > td')[1].text.strip.to_datetime
     report.moral = report_table.search('h4')[1].text.number_part
-    report.luck = page.search('#attack_luck').text.strip.gsub('%','')
+    report.luck = page.search('#attack_luck').text.strip.delete('%')
 
     bonus_title = report_table.search('h4')[2]
     report.night_bonus = bonus_title.nil? ? false : bonus_title.text.downcase.include?('bonus')
 
     report.origin_id, report.target_id = page.search('.village_anchor').map { |a| a.attr('data-id').to_i }
 
-    attack_units = parse_table(page,'#attack_info_att_units',remove_columns: [0])
-    defence_units = parse_table(page,'#attack_info_def_units',remove_columns: [0])
+    attack_units = parse_table(page, '#attack_info_att_units', remove_columns: [0])
+    defence_units = parse_table(page, '#attack_info_def_units', remove_columns: [0])
 
-    report.atk_troops = parse_units(attack_units,1)
-    report.atk_losses = parse_units(attack_units,2)
+    report.atk_troops = parse_units(attack_units, 1)
+    report.atk_losses = parse_units(attack_units, 2)
 
     unless defence_units.empty?
-      report.def_troops = parse_units(defence_units,1)
-      report.def_losses = parse_units(defence_units,2)
+      report.def_troops = parse_units(defence_units, 1)
+      report.def_losses = parse_units(defence_units, 2)
     end
 
-    attack_atk_table = parse_table(page,'#attack_info_att')
-    report.atk_bonus = attack_atk_table[2..-1].map{|a| a.search('td').map(&:text).map(&:strip) }
+    attack_atk_table = parse_table(page, '#attack_info_att')
+    report.atk_bonus = attack_atk_table[2..-1].map { |a| a.search('td').map(&:text).map(&:strip) }
     report.atk_bonus = fix_bonus_names(report.atk_bonus)
 
-    attack_def_table = parse_table(page,'#attack_info_def')
-    report.def_bonus = attack_def_table[2..-1].map{|a| a.search('td').map(&:text).map(&:strip) }
+    attack_def_table = parse_table(page, '#attack_info_def')
+    report.def_bonus = attack_def_table[2..-1].map { |a| a.search('td').map(&:text).map(&:strip) }
     report.def_bonus = fix_bonus_names(report.def_bonus)
 
-    away_units = parse_table(page,'#spy_away_table', include_header: true)
-    report.def_away = away_units.empty? ? Troop.new : parse_units(away_units,1)
+    away_units = parse_table(page, '#spy_away_table', include_header: true)
+    report.def_away = away_units.empty? ? Troop.new : parse_units(away_units, 1)
 
     ram_label = Unit.get(:ram).name.downcase
     catapult_label = Unit.get(:catapult).name.downcase
@@ -66,8 +66,8 @@ class Screen::ReportView < Screen::Base
       ram_damage_text = ram_damage_text.next.next.text
       report.ram_damage = ram_damage_text.scan(/\d+/)
     end
-    
-    report.extra_info = parse_table(page,'#attack_info').map(&:text).map(&:strip)
+
+    report.extra_info = parse_table(page, '#attack_info').map(&:text).map(&:strip)
 
     unless page.search('#attack_results').empty?
       report.pillage = Resource.parse(page.search('#attack_results').first)
@@ -86,28 +86,25 @@ class Screen::ReportView < Screen::Base
       end
       report.resources = Resource.parse(page.search('#attack_spy_resources').first)
     end
-
   end
 
   def fix_bonus_names(bonus)
-    bonus.map do |label,values|
+    bonus.map do |label, values|
       row = [label]
-      unless values.nil?
-        row << values.split("\n").map(&:strip)
-      end
+      row << values.split("\n").map(&:strip) unless values.nil?
       row
     end
   end
 
-  def parse_units(lines,line)
+  def parse_units(lines, line)
     result = Troop.new
     units_tds = lines[0].search('td,th')
     qte_tds = lines[line].search('td,th')
-    units_tds.each_with_index do |td,index|
+    units_tds.each_with_index do |td, index|
       unit = td.search('a').first.attr('data-unit')
       result[unit] = qte_tds[index].text.number_part
     end
 
-    return result
+    result
   end
 end

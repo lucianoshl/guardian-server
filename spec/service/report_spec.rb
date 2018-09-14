@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe Service::Report do
-
   before do
     Service::StartupTasks.new.fill_units_information
     Service::StartupTasks.new.fill_buildings_information
