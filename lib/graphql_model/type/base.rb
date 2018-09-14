@@ -78,7 +78,7 @@ module Type::Base
 
       def base_criteria(_obj, args, _ctx)
         criteria = @target.where(args.to_h)
-        criteria = @criteria_block&.call(criteria)
+        criteria = @criteria_block.call(criteria) unless @criteria_block.nil?
         criteria
       end
 
