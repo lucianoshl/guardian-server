@@ -44,6 +44,8 @@ class Task::StealResourcesTask < Task::Abstract
         next_attack = report.time_to_produce(e.population * 25)
         report.mark_read
         send_to('waiting_resource_production', next_attack)
+      rescue Exception => e
+        send_to('error', Time.now + 10.minutes)
       end
 
       logger.info("Finish for #{target} #{original_status} > #{target.status} ")
@@ -280,4 +282,9 @@ class Task::StealResourcesTask < Task::Abstract
   def waiting_incoming
     waiting_report
   end
+
+  def error
+    waiting_report
+  end
+  
 end
