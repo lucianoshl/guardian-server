@@ -186,9 +186,11 @@ class Task::StealResourcesTask < Task::Abstract
     strong_player = Player.gte(points: current_points * 0.6).pluck(:id) - [current_player.id]
 
     attacked_strong_player = Village.in(player_id: strong_player).pluck(:id)
-    strong_attacked = Report.in(target_id: attacked_strong_player).select(&:possible_attack?).map(&:target_id)
+    strong_villages_attacked = Report.in(target_id: attacked_strong_player).select(&:possible_attack?).to_a
 
-    strong_player -= strong_attacked
+    strong_villages_attacked.map{|a| a.target.player.id}.uniq
+
+    strong_player -= strong_villages_attacked.map{|a| a.target.player.id}
 
     Village.targets.in(player_id: strong_player).update_all(status: 'strong', next_event: Time.now + 1.day)
 
