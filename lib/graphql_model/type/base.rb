@@ -102,8 +102,8 @@ module Type::Base
         @mutations << Class.new(GraphQL::Function) do 
 
           def self.name(value = nil)
-            @@name = value unless value.nil?
-            @@name
+            @name = value unless value.nil?
+            @name
           end
 
           class_eval &block
