@@ -55,4 +55,8 @@ class Village
   def train_model
     TroopModel.new(spear: 1.0 / 2, sword: 1.0 / 2, spy: 2000)
   end
+
+  def to_s
+    "#{x}|#{y}"
+  end
 end
