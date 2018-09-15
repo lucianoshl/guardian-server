@@ -26,7 +26,7 @@ class Task::StealResourcesTask < Task::Abstract
       original_status = target.status
       @origin = Account.main.player.villages.first
       @target = target
-      # binding.pry if !target.next_event.nil? && target.next_event > Time.now
+      
       begin
         send(@target.status)
       rescue BannedPlayerException => e
