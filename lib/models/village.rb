@@ -44,7 +44,8 @@ class Village
 
   def building_model
     model = []
-    model << Buildings.new(wood: 15, stone: 15, iron: 15)
+    model << Buildings.new(wood: 10, stone: 10, iron: 10)
+    model << Buildings.new(wood: 20, stone: 20, iron: 10)
     model << Buildings.new(market: 10)
     model << Buildings.new(wall: 20)
     model << Buildings.new(barracks: 25, smith: 20, market: 15, snob: 1)
