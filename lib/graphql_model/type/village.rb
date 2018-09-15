@@ -20,4 +20,20 @@ module Type::Village
       village
     end
   end
+
+  mutation do
+    name 'ResetVillage'
+    argument :id, !types.Int
+    type Type::Village.definition
+
+    def call(object, inputs, ctx)
+      village = Village.find(id: inputs['id'])
+      village.next_event = nil
+      village.status = nil
+      village.save
+      Task::StealResourcesTask.first&.run_now
+      village
+    end
+  end
+  
 end
