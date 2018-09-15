@@ -18,6 +18,10 @@ class Service::HealthCheck
       Delayed::Backend::Mongoid::Job.lte(run_at: Time.now - 10.minutes).count > 0
     end
 
+    validations << validation('village_with_error') do
+      Village.where(status: 'error').count > 0
+    end
+
     system_error = validations.select(&:with_error)
   end
 
