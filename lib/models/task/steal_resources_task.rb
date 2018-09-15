@@ -211,7 +211,6 @@ class Task::StealResourcesTask < Task::Abstract
     end
 
     distances.compact.sort_by(&:first)
-    [[1,1,Village.find(37175)]]
   end
 
   def place(id = @origin.id)
