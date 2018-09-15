@@ -3,7 +3,7 @@
 class Service::Report
   include Logging
 
-  def self.sync(modes: ['attack'] )
+  def self.sync(modes: ['attack'])
     logger.info('Loading reports: start')
     report_ids = []
 
@@ -27,5 +27,4 @@ class Service::Report
     report.save if Report.where(id: report.id).count.zero?
     report.erase
   end
-  
 end

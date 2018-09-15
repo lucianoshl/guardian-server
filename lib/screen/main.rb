@@ -11,7 +11,7 @@ class Screen::Main < Screen::Base
     return false if building_meta.nil? || full_builded?(building_meta) || queue.size > 1
     building_meta.nil? ? false : building_meta['cheap']
   end
-  
+
   def full_builded?(building_meta)
     building_meta['level'].to_i == building_meta['max_level']
   end

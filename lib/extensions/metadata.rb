@@ -16,6 +16,6 @@ class Mongoid::Relations::Metadata
 
   def is_list?
     [Mongoid::Relations::Embedded::Many,
-        Mongoid::Relations::Referenced::Many].include?(relation)
+     Mongoid::Relations::Referenced::Many].include?(relation)
   end
 end

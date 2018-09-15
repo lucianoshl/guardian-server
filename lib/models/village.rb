@@ -10,6 +10,8 @@ class Village
   field :status, type: String
   field :next_event, type: DateTime
 
+  field :disable_recruit, type: Boolean
+
   belongs_to :player, optional: true
   embeds_many :evolution, class_name: 'PointsEvolution'
 
@@ -36,17 +38,13 @@ class Village
     valid_report
   end
 
-  def to_s
-    "#{x}|#{y}"
-  end
-
   def self.reset_all
     Village.update_all(next_event: nil, status: nil)
   end
 
   def building_model
     model = []
-    model << Buildings.new(wood: 10, stone: 10, iron: 10)
+    model << Buildings.new(wood: 15, stone: 15, iron: 15)
     model << Buildings.new(market: 10)
     model << Buildings.new(wall: 20)
     model << Buildings.new(barracks: 25, smith: 20, market: 15, snob: 1)

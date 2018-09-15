@@ -13,9 +13,9 @@ class Simulation
   end
 
   def ==(other)
-    self.atk_troops == other.atk_troops &&
-    self.atk_looses == other.atk_looses &&
-    self.def_troops == other.def_troops &&
-    self.def_looses == other.def_looses
+    atk_troops == other.atk_troops &&
+      atk_looses == other.atk_looses &&
+      def_troops == other.def_troops &&
+      def_looses == other.def_looses
   end
 end

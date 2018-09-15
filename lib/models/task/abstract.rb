@@ -46,7 +46,7 @@ class Task::Abstract
     logger.debug("Scheduling #{self.class} run in #{next_execution}".white.on_red)
     relation_job = delay(run_at: next_execution, queue: queue).execute
     # if reload.job.nil?
-      self.class.where(id: id).update_all(job_id: relation_job.id)
+    self.class.where(id: id).update_all(job_id: relation_job.id)
     # end
     reload
   end
@@ -55,7 +55,7 @@ class Task::Abstract
     if job.nil?
       self.next_execution = nil
     else
-      self.job.run_at = self.next_execution = Time.now + 1.second
+      job.run_at = self.next_execution = Time.now + 1.second
     end
     job&.delete
     save
@@ -73,6 +73,6 @@ class Task::Abstract
   end
 
   def self.remove_orphan_tasks
-    Delayed::Backend::Mongoid::Job.all.select{|a| a.task.nil?}.map(&:delete)
+    Delayed::Backend::Mongoid::Job.all.select { |a| a.task.nil? }.map(&:delete)
   end
 end

@@ -28,5 +28,4 @@ describe Task::StealResourcesTask do
 
   #   Task::StealResourcesTask.new.run
   # end
-
 end

@@ -35,7 +35,7 @@ module Requirer
   def self.configs
     # fix this env var
     world_key = Account.main.nil? ? (rand * 1000).ceil : Account.main.world
-    Cachy.cache_store = Moneta.new(:File, dir: "/tmp/guardian/#{world_key.to_s}")
+    Cachy.cache_store = Moneta.new(:File, dir: "/tmp/guardian/#{world_key}")
   end
 end
 

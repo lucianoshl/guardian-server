@@ -34,7 +34,6 @@ end
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 RSpec.configure do |config|
-
   unless Mongoid.default_client.options[:database].ends_with?('-specs')
     raise('In test env guardian needs a specific base for test (ends with -specs)')
   end

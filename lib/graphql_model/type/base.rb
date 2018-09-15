@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module MongoInflector
-  def field_name name
+  def field_name(name)
     name == '_id' ? 'id' : name
   end
 
-  def field_type name,meta,types
-    return types.ID if name == '_id' 
+  def field_type(name, meta, types)
+    return types.ID if name == '_id'
     return types.String if meta.type == String
     return types.Int if meta.type == Integer
     return nil if meta.class == Mongoid::Relations::Metadata && meta.relation == Mongoid::Relations::Embedded::In
@@ -16,9 +18,9 @@ module MongoInflector
       type = meta.relation_class
     end
 
-    return types.Boolean if [Boolean,Mongoid::Boolean].include? type
-    return Type::DateTime.definition if  [DateTime,Time].include? type
-    return nil if [Array,Account].include? type
+    return types.Boolean if [Boolean, Mongoid::Boolean].include? type
+    return Type::DateTime.definition if [DateTime, Time].include? type
+    return nil if [Array, Account].include? type
 
     graphql_type = Type::Base.get_graphql_type(type)
     if graphql_type.nil?
@@ -30,7 +32,6 @@ module MongoInflector
   end
 end
 
-
 module Type::Base
   @@mapping = {}
 
@@ -38,7 +39,7 @@ module Type::Base
     @@mapping
   end
 
-  def self.register_type(graphqlType,mongoType)
+  def self.register_type(graphqlType, mongoType)
     @@mapping[mongoType] = graphqlType
   end
 
@@ -47,51 +48,72 @@ module Type::Base
   end
 
   def self.included(base)
-
     class << base
       include MongoInflector
+      @mutations = []
+
       def definition
         this = self
         @target = target = class_base
 
-        Type::Base.register_type(self,target)
+        Type::Base.register_type(self, target)
 
-        @definition = GraphQL::ObjectType.define do
+        if @definition.nil?
+          @definition = GraphQL::ObjectType.define do
+            name this.to_s.gsub('Type::', '')
+            description "Generated model for class #{this.to_s.gsub('Type::', '')}"
 
-          name this.to_s.gsub('Type::','')
-          description "Generated model for class #{this.to_s.gsub('Type::','')}"
+            fields = target.fields.merge(target.relations)
 
-          fields = target.fields.merge(target.relations)
-
-          fields.map do |name,meta|
-            field_type = this.field_type(name,meta,types)
-            field(this.field_name(name),field_type) unless field_type.nil?
+            fields.map do |name, meta|
+              field_type = this.field_type(name, meta, types)
+              field(this.field_name(name), field_type) unless field_type.nil?
+            end
           end
-
-        end if @definition.nil?
+        end
         @definition
       end
 
-      def enabled?
-        true
-      end
-
-      def base_criteria(obj, args, ctx)
-        @target.where(args.to_h)
+      def base_criteria(_obj, args, _ctx)
+        criteria = @target.where(args.to_h)
+        criteria = @criteria_block.call(criteria) unless @criteria_block.nil?
+        criteria
       end
 
       def config(&block)
         @config_block = block unless block.nil?
-        @config_block 
+        @config_block
+      end
+
+      def criteria(&block)
+        @criteria_block = block unless block.nil?
+        @criteria_block
       end
 
       def class_base(clazz = nil)
         if @class_base.nil?
           @class_base = clazz.nil? ? to_s.demodulize.constantize : clazz
         end
-        @class_base 
+        @class_base
+      end
+
+      def mutation(&block)
+        @mutations = [] if @mutations.nil?
+        @mutations << Class.new(GraphQL::Function) do 
+
+          def self.name(value = nil)
+            @@name = value unless value.nil?
+            @@name
+          end
+
+          class_eval &block
+        end
+      end
+
+      def mutations
+        @mutations = [] if @mutations.nil?
+        @mutations
       end
     end
   end
-
 end

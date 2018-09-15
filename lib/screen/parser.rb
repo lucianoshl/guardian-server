@@ -6,7 +6,7 @@ module Screen::Parser
   end
 
   def parse_table(page, selector, remove_columns: [], include_header: false)
-    generate_table_selector(page,selector).map_compact do |tr|
+    generate_table_selector(page, selector).map_compact do |tr|
       if tr.search('th').empty? || include_header
         tr.search('td').select_index(remove_columns).map(&:remove) unless remove_columns.empty?
         tr
@@ -14,7 +14,7 @@ module Screen::Parser
     end
   end
 
-  def generate_table_selector(page,base_selector)
+  def generate_table_selector(page, base_selector)
     has_thead = !page.search("#{base_selector} > thead").empty?
     has_tbody = !page.search("#{base_selector} > tbody").empty?
     if has_thead || has_tbody

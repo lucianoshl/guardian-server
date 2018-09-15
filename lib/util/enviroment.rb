@@ -1,5 +1,6 @@
-module Enviroment
+# frozen_string_literal: true
 
+module Enviroment
   @@configs = nil
 
   def self.[](index)
@@ -9,7 +10,7 @@ module Enviroment
   def self.configs
     if @@configs.nil?
       config_location = "#{File.dirname(__FILE__)}/../../config/env.yml"
-      @@configs = YAML.load(File.read(config_location))
+      @@configs = YAML.safe_load(File.read(config_location), [], [], true)
     end
     @@configs
   end

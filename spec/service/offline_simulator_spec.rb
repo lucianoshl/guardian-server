@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 # # frozen_string_literal: true
 
 # describe Service::OfflineSimulator do
-  
+
 #   before do
 #     Service::StartupTasks.new.fill_units_information
 #   end
@@ -18,6 +20,5 @@
 #   it 'only_troops_pair' do
 #     compare_results(Troop.new(axe: 41),Troop.new(sword: 33))
 #   end
-
 
 # end
