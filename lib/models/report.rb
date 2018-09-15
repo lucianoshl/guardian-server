@@ -92,4 +92,8 @@ class Report
     logger.info('PLEASE IMPLEMENTS-ME'.white.on_red)
     Time.now + 1.hour
   end
+
+  def possible_attack?
+    dot != 'red'
+  end
 end

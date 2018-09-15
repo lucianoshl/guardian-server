@@ -74,7 +74,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     report = @target.latest_valid_report
 
-    return send_to('has_spies') if !report.nil? && report.dot == 'red'
+    return send_to('has_spies') if !report.nil? && !report.possible_attack?
 
     if report.nil? || report.resources.nil?
       command = place(@origin.id).commands.leaving.select { |a| a.target == @target }.first
@@ -182,7 +182,14 @@ class Task::StealResourcesTask < Task::Abstract
 
     Village.targets.in(status: ['strong', 'ally', nil]).update_all(status: 'not_initialized')
 
+
     strong_player = Player.gte(points: current_points * 0.6).pluck(:id) - [current_player.id]
+
+    attacked_strong_player = Village.in(player_id: strong_player).pluck(:id)
+    strong_attacked = Report.in(target_id: attacked_strong_player).select(&:possible_attack?).map(&:target_id)
+
+    strong_player -= strong_attacked
+
     Village.targets.in(player_id: strong_player).update_all(status: 'strong', next_event: Time.now + 1.day)
 
     unless current_ally.nil?
