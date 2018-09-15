@@ -26,7 +26,7 @@ class Task::StealResourcesTask < Task::Abstract
       original_status = target.status
       @origin = Account.main.player.villages.first
       @target = target
-      binding.pry if !target.next_event.nil? && target.next_event > Time.now
+      # binding.pry if !target.next_event.nil? && target.next_event > Time.now
       begin
         send(@target.status)
       rescue BannedPlayerException => e
@@ -211,6 +211,7 @@ class Task::StealResourcesTask < Task::Abstract
     end
 
     distances.compact.sort_by(&:first)
+    [[1,1,Village.find(37175)]]
   end
 
   def place(id = @origin.id)
@@ -233,7 +234,11 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def strong
-    send_to('strong', Time.now + 1.day)
+    unless @target.latest_valid_report.nil?
+      waiting_report
+      return
+    end
+    send_to('strong', Time.now + 1.hour)
   end
 
   # deprecated
