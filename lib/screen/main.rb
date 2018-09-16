@@ -3,7 +3,7 @@
 class Screen::Main < Screen::Base
   screen :main
 
-  attr_accessor :queue, :possible_build, :buildings_meta, :buildings
+  attr_accessor :queue, :possible_build, :buildings_meta, :buildings, :buildings_labels
 
   def possible_build?(building)
     building = building.to_s
@@ -34,6 +34,15 @@ class Screen::Main < Screen::Base
     self.possible_build = page.search('.btn-build').map { |a| a.attr('data-building') }
     self.buildings_meta = parse_buildings(page)
     self.buildings = convert_buildings_meta
+    self.buildings_labels = parse_buildings_labels(page)
+  end
+
+  def parse_buildings_labels(page)
+    (page.search('#building_wrapper > div').map do |line|
+      id = line.search('img').first.attr('src').split('/').last.scan(/\w+/).first.gsub(/\d+/,'')
+      label = line.search('a').first.text.gsub(/ +\(\d+\)/,'')
+      [id,label]
+    end).to_h
   end
 
   def parse_queue(page)

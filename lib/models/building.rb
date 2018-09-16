@@ -17,6 +17,7 @@ class Building
   field :stone, type: Integer
   field :iron, type: Integer
   field :pop, type: Integer
+  field :build_time, type: Integer
 
   after_upsert do
     troop_has_field = Buildings.fields.key?(id)
