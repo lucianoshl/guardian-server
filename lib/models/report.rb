@@ -37,6 +37,10 @@ class Report
   field :ram_damage, type: Array
   field :extra_info, type: Array
 
+  before_save do 
+    raise Exception.new('mongoid bug') unless self['_type'].nil?
+  end
+
   def erase
     Client::Logged.mobile.get(erase_uri) if dot != 'red' && dot != 'yellow'
   end

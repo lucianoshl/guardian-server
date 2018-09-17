@@ -3,6 +3,9 @@
 module Routes::HealthCheck
   def self.registered(app)
     app.get '/healthcheck' do
+
+      Report.where(:'_type' => 'Troop').delete
+      
       errors = Service::HealthCheck.check_system
       status errors.empty? ? 200 : 500
       body errors.to_json
