@@ -4,6 +4,7 @@ class Screen::Main < Screen::Base
   screen :main
 
   attr_accessor :queue, :possible_build, :buildings_meta, :buildings, :buildings_labels
+  attr_accessor :link_change_order
 
   def possible_build?(building)
     building = building.to_s
@@ -35,6 +36,13 @@ class Screen::Main < Screen::Base
     self.buildings_meta = parse_buildings(page)
     self.buildings = convert_buildings_meta
     self.buildings_labels = parse_buildings_labels(page)
+    self.link_change_order = parse_link_change_order(page)
+  end
+
+  def parse_link_change_order(page)
+    binding.pry
+    link = page.body.scan(/link_change_order = '(.+)'/).first
+    parse_link_change_order link.first unless link.nil?
   end
 
   def parse_buildings_labels(page)
@@ -51,6 +59,7 @@ class Screen::Main < Screen::Base
       divs = queueItem.search('div > div > div')
 
       item = OpenStruct.new
+      item.id = queueItem.attr('data-order').to_i
       item.building = src_attr.scan(/hd\/(.+).png/).first.first.gsub(/\d+/, '')
       item.level = divs[0].text.number_part
       item.finish_at = divs[1].text.split(' - ').last.strip.to_datetime
@@ -60,6 +69,20 @@ class Screen::Main < Screen::Base
 
   def parse_buildings(page)
     JSON.parse(page.body.scan(/BuildingMain.buildings = (.+);/).first.first)
+  end
+
+  def build_instant
+    return if link_change_order.nil?
+
+    params = {
+      id: queue.first.id,
+      detroy: 0,
+      client_time: client_time
+    }
+    uri = link_change_order + '&' + params.to_query
+    binding.pry
+
+    Client::Logged.mobile.get(uri)
   end
 
   def convert_buildings_meta

@@ -25,7 +25,7 @@ class Task::StealResourcesTask < Task::Abstract
       original_status = target.status
       @origin = Account.main.player.villages.first
       @target = target
-      
+
       begin
         send(@target.status)
       rescue BannedPlayerException => e
@@ -181,13 +181,12 @@ class Task::StealResourcesTask < Task::Abstract
 
     Village.targets.in(status: ['strong', 'ally', nil]).update_all(status: 'not_initialized')
 
-
     strong_player = Player.gte(points: current_points * 0.6).pluck(:id) - [current_player.id]
 
     attacked_strong_player = Village.in(player_id: strong_player).pluck(:id)
     strong_villages_attacked = Report.in(target_id: attacked_strong_player).select(&:possible_attack?).to_a
 
-    strong_player -= strong_villages_attacked.map{|a| a.target.player.id}
+    strong_player -= strong_villages_attacked.map { |a| a.target.player.id }
 
     Village.targets.in(player_id: strong_player).update_all(status: 'strong', next_event: Time.now + 1.day)
 
@@ -294,5 +293,4 @@ class Task::StealResourcesTask < Task::Abstract
   def error
     waiting_report
   end
-  
 end
