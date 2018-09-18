@@ -39,8 +39,8 @@ RSpec.configure do |config|
   end
 
   config.before :each do
-    Screen::Train.any_instance.stub(:train).and_return(nil)
-    Report.any_instance.stub(:erase).and_return(nil)
+    allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
+    allow_any_instance_of(Report).to receive(:erase).and_return(nil)
   end
 
   config.before :all do

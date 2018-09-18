@@ -1,20 +1,24 @@
 # frozen_string_literal: true
 
 describe Task::StealResourcesTask do
-  before(:all) do
-    Service::StartupTasks.new.first_login_event
-  end
+  # before(:all) do
+  #   Service::StartupTasks.new.fill_units_information
+  #   Service::StartupTasks.new.fill_user_information
+  # end
 
-  before(:each) do
-    Service::StartupTasks.new.first_login_event
-    Screen::Place.any_instance.stub(:send_attack).and_return(Command.new(arrival: Time.now + 1.hour))
-    Screen::Place.any_instance.stub(:troops).and_return(Troop.new(spy: 5, light: 5, sword: 10))
-    Task::StealResourcesTask.any_instance.stub(:next_returning_command).and_return(Command.new(arrival: Time.now + 1.day))
-  end
+  # before(:each) do
+  #   # Service::StartupTasks.new.first_login_event
+  #   allow_any_instance_of(Screen::Place).to receive(:send_attack).and_return(Command::My.new(arrival: Time.now + 1.hour))
+  #   allow_any_instance_of(Screen::Place).to receive(:troops).and_return(Troop.new(spy: 5, light: 5, sword: 10))
+  #   allow_any_instance_of(Task::StealResourcesTask).to receive(:next_returning_command).and_return(Command::My.new(arrival: Time.now + 1.day))
+  #   Service::Report.stub(:sync).and_return(nil)
+  # end
 
-  it 'StealResourcesTask' do
-    Task::StealResourcesTask.new.run
-  end
+  # it 'StealResourcesTask' do
+  #   binding.pry
+  #   allow_any_instance_of(Task::StealResourcesTask).to receive(:sort_by_priority).and_return([])
+  #   Task::StealResourcesTask.new.run
+  # end
 
   # it 'StealResourcesTask1' do
   #   v = Village.all.to_a[1..1]

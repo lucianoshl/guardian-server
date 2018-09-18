@@ -15,16 +15,11 @@ describe Troop do
     troop = Troop.new(spear: 20)
     result = troop.upgrade(Troop.new(light: 1))
     pp result
-    puts "Original carry: #{troop.carry}"
-    puts "Upgrade carry: #{result.carry}"
   end
 
   it 'test_upgrade_2' do
     troop = Troop.new(spear: 20)
     disponible = Troop.new(sword: 1)
     result = troop.upgrade(disponible)
-    puts "Original carry: #{troop.carry}"
-    puts "Upgrade carry: #{result.carry}"
-    puts "Upgrade carry: #{result.carry}"
   end
 end

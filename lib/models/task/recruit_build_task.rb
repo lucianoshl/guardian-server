@@ -19,7 +19,7 @@ class Task::RecruitBuildTask < Task::Abstract
 
     @main = Screen::Main.new(id: village.id)
 
-    next_execution = build(village, @main) unless select_model_item(village.building_model, @main).nil?
+    next_execution = build(village, @main)
 
     return nil if next_execution.nil?
     next_execution < possible_next_execution ? next_execution : possible_next_execution

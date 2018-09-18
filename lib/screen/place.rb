@@ -22,13 +22,12 @@ class Screen::Place < Screen::Base
     parse_table(page, '#commands_incomings table').map do |tr|
       link = tr.search('a')
       link_href = link.attr('href')
-      command = Command.new
+      command = Command::Incoming.new
       command.id = link_href.value.scan(/id=(\d+)/).first.first.to_i
       command.origin_id = link_href.value.scan(/village=(\d+)/).number_part
       command.target = link.text.to_coordinate
       command.returning = !tr.search('img[src*=return]').empty? || !tr.search('img[src*=cancel]').empty?
       command.arrival = tr.search('td')[1].text.to_datetime
-      command.type = 'incoming'
       command
     end
   end
@@ -37,13 +36,12 @@ class Screen::Place < Screen::Base
     parse_table(page, '#commands_outgoings > table').map do |tr|
       link = tr.search('a')
       link_href = link.attr('href')
-      command = Command.new
+      command = Command::My.new
       command.id = link_href.value.scan(/id=(\d+)/).first.first.to_i
       command.origin_id = link_href.value.scan(/village=(\d+)/).number_part
       command.target = link.text.to_coordinate
       command.returning = !tr.search('img[src*=return]').empty? || !tr.search('img[src*=cancel]').empty?
       command.arrival = tr.search('td')[1].text.to_datetime
-      command.type = 'outgoing'
       command
     end
   end

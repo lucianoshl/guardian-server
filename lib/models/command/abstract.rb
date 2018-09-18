@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-class Command
+class Command::Abstract
   include Mongoid::Document
 
   field :arrival, type: DateTime
-  field :returning, type: Boolean
-  field :type, type: String
+  field :create_at, type: DateTime
 
   belongs_to :origin, class_name: Village.to_s
   embeds_one :target, class_name: Coordinate.to_s
-  embeds_one :troop
 end
