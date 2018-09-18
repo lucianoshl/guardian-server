@@ -1,6 +1,14 @@
 module Service::Recruiter
+
+  include Logging
+
   def recruit(village)
     train_screen = Screen::Train.new(village: village.id)
+
+    if train_screen.farm.warning
+      logger.info("Stop recruiting because farm warning (#{train_screen.farm.percent})")
+      return
+    end
 
     model = generate_target_model(train_screen, village)
 
