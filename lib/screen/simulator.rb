@@ -32,7 +32,7 @@ class Screen::Simulator < Screen::Base
     end
 
     form['moral'] = moral
-    form['luck'] = 0
+    form['luck'] = -25
     form['def_wall'] = wall
     parse(form.submit)
   end
