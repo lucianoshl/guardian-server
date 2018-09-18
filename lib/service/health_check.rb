@@ -7,7 +7,7 @@ class Service::HealthCheck
     validations = []
 
     validations << validation('job_with_error') do
-      Delayed::Backend::Mongoid::Job.nin(last_error: [nil]).count > 0
+      Delayed::Backend::Mongoid::Job.nin(last_error: [nil]).pluck(:id)
     end
 
     validations << validation('inconsistent_job_size') do
@@ -19,10 +19,23 @@ class Service::HealthCheck
     end
 
     validations << validation('village_with_error') do
-      Village.where(status: 'error').count > 0
+      Village.where(status: 'error').pluck(:id)
     end
 
-    system_error = validations.select(&:with_error)
+    validations.select do |item|
+      item = item.with_error
+      if item.class == TrueClass
+        true
+      elsif item.class == Array && item.size.positive?
+        true
+      elsif item.class == Integer && item.positive?
+        true
+      elsif item.nil?
+        false
+      else
+        false
+      end
+    end
   end
 
   def self.validation(name)
