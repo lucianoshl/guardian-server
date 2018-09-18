@@ -55,4 +55,8 @@ class String
       .gsub(/__+/, '_')
       .downcase
   end
+
+  def extract_coordinate
+    scan(/\d{3}\|\d{3}/).first.to_coordinate
+  end
 end

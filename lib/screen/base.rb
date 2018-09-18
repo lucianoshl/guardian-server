@@ -16,6 +16,7 @@ class Screen::Base < Screen::Logged
     self.storage = parse_storage(page)
     self.farm = parse_farm(page)
     self.incomings = game_data['player']['incomings'].to_i
+    # Service::AttackDetector.run(village) if incomings.positive?
   end
 
   def parse_server_time(page)

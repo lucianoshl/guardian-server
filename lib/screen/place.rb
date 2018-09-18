@@ -24,10 +24,10 @@ class Screen::Place < Screen::Base
       link_href = link.attr('href')
       command = Command::Incoming.new
       command.id = link_href.value.scan(/id=(\d+)/).first.first.to_i
-      command.origin_id = link_href.value.scan(/village=(\d+)/).number_part
-      command.target = link.text.to_coordinate
-      command.returning = !tr.search('img[src*=return]').empty? || !tr.search('img[src*=cancel]').empty?
-      command.arrival = tr.search('td')[1].text.to_datetime
+      # command.origin_id = link_href.value.scan(/village=(\d+)/).number_part
+      # command.target = link.text.to_coordinate
+      # command.returning = !tr.search('img[src*=return]').empty? || !tr.search('img[src*=cancel]').empty?
+      # command.arrival = tr.search('td')[1].text.to_datetime
       command
     end
   end

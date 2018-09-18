@@ -34,6 +34,13 @@ class Unit
   field :desc, type: String
   field :desc_abilities, type: Array
 
+  scope :attackers, ->{ nin(id: [:militia]) }
+
+  after_upsert do
+    troop_has_field = Troop.fields.key?(id)
+    Troop.field id.to_sym, type: Integer, default: 0 unless troop_has_field
+  end
+
   def self.get(id)
     Cachy.cache("unit_#{id}") do
       Unit.where(id: id).first
@@ -52,9 +59,5 @@ class Unit
   def square_per_minutes
     (1.0 / (60 * speed))
   end
-
-  after_upsert do
-    troop_has_field = Troop.fields.key?(id)
-    Troop.field id.to_sym, type: Integer, default: 0 unless troop_has_field
-  end
+  
 end
