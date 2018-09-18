@@ -36,7 +36,7 @@ class Screen::Base < Screen::Logged
 
   def parse_farm(page)
     farm = OpenStruct.new
-    farm.current = page.search('#pop_current_label').number_part
+    farm.current = page.search('#pop_current_label').text.number_part
     farm.max = page.search('#pop_max_label').number_part
     farm.free = farm.max - farm.current
     farm.percent = farm.current.to_f / farm.max
