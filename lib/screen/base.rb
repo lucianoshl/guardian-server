@@ -19,7 +19,7 @@ class Screen::Base < Screen::Logged
     self.incomings = game_data['player']['incomings'].to_i
     self.load_time = Time.now
     self.initial_server_time = page.body.scan(/Timing.init\((.+)\)/).first.first.to_i
-    # Service::AttackDetector.run(village) if incomings.positive?
+    Service::AttackDetector.run(village) if incomings.positive?
   end
 
   def parse_server_time(page)

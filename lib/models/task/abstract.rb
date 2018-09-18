@@ -37,17 +37,19 @@ class Task::Abstract
 
   def execute
     self.next_execution = run
-    self.last_execution = Time.now
-    self.next_execution = calc_next_execution if self.next_execution.nil?
+    if runs_every.nil?
+      job&.delete
+    else
+      self.last_execution = Time.now
+      self.next_execution = calc_next_execution if self.next_execution.nil?
+    end
     save
   end
 
   def schedule
     logger.debug("Scheduling #{self.class} run in #{next_execution}".white.on_red)
     relation_job = delay(run_at: next_execution, queue: queue).execute
-    # if reload.job.nil?
     self.class.where(id: id).update_all(job_id: relation_job.id)
-    # end
     reload
   end
 

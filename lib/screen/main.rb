@@ -26,7 +26,9 @@ class Screen::Main < Screen::Base
   def build(building)
     building_meta = buildings_meta[building.to_s]
     parse(@client.get(building_meta['build_link']))
-    queue.last.finish_at
+    finish_at = queue.last.finish_at
+    Task::BuildInstantTask.new(village: village, next_execution: finish_at - 3.minutes).save
+    finish_at
   end
 
   def parse(page)
@@ -40,9 +42,10 @@ class Screen::Main < Screen::Base
   end
 
   def parse_link_change_order(page)
-    binding.pry
-    link = page.body.scan(/link_change_order = '(.+)'/).first
-    parse_link_change_order link.first unless link.nil?
+    button = page.search('.btn-instant-free').first
+    if !button.nil? && button['style'].nil?
+      page.body.scan(/link_change_order = '(.+)'/).first&.first
+    end
   end
 
   def parse_buildings_labels(page)
@@ -73,16 +76,12 @@ class Screen::Main < Screen::Base
 
   def build_instant
     return if link_change_order.nil?
-
     params = {
       id: queue.first.id,
       detroy: 0,
       client_time: client_time
     }
-    uri = link_change_order + '&' + params.to_query
-    binding.pry
-
-    Client::Logged.mobile.get(uri)
+    Client::Logged.mobile.get(link_change_order + '&' + params.to_query)
   end
 
   def convert_buildings_meta
