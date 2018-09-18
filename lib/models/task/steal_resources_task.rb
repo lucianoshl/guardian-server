@@ -4,8 +4,7 @@ class Task::StealResourcesTask < Task::Abstract
   runs_every 10.minutes
 
   def run
-    smith_screen = Screen::Smith.new
-    @spy_is_researched = smith_screen.spy_is_researched?
+    @spy_is_researched = !Screen::Train.new.build_info['spy'].nil?
 
     @distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
     @@places = {}
