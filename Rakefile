@@ -33,7 +33,7 @@ namespace 'guardian' do
     require 'delayed/command'
     Bundler.require(:default, ENV['ENV'])
     require_rel './lib/requirer.rb'
-    eval(ARGV.last)
+    eval("lambda{#{ARGV.last}}").call
     exit(0)
   end
 end
