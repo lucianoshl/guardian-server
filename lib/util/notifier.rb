@@ -13,7 +13,7 @@ module Notifier
     title += '-' + sufix unless title.nil?
 
     begin
-      @client.push_note(
+      @@client.push_note(
         receiver:   :device,
         params: {
           title: title,
