@@ -20,7 +20,8 @@ class Screen::Abstract
 
   def initialize(args = {})
     raise Exception, "client not created in #{self.class}" if @client.nil?
-    parse(request(merge_parameters(args)))
+    @args = args
+    reload
   end
 
   def merge_parameters(parameters)
@@ -37,5 +38,10 @@ class Screen::Abstract
 
   def base_url
     "http://#{Account.main.world}.tribalwars.com.br"
+  end
+
+  def reload
+    parse(request(merge_parameters(@args)))
+    self
   end
 end
