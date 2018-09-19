@@ -29,13 +29,7 @@ class Village
   end
 
   def latest_valid_report
-    valid_report = Report.where(target: self, read: false).gte(ocurrence: Time.now - 5.hours).nin(resources: [nil]).order(ocurrence: 'desc').first
-
-    if valid_report.nil?
-      last_report = reports.last
-      return last_report if valid_report.nil? && !last_report.nil? && last_report.dot == 'red'
-    end
-    valid_report
+    Report.where(target: self, read: false).gte(ocurrence: Time.now - 5.hours).order(ocurrence: 'desc').first
   end
 
   def self.reset_all
