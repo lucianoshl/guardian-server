@@ -31,9 +31,8 @@ gem 'parallel'
 gem 'rake'
 gem 'require_all'
 gem 'ruby-progressbar'
-gem 'wisper'
 gem 'washbullet'
-
+gem 'wisper'
 
 gem 'rack-graphiql'
 

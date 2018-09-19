@@ -13,7 +13,7 @@ module Type::Village
     argument :disabled, !types.Boolean
     type Type::Village.definition
 
-    def call(object, inputs, ctx)
+    def call(_object, inputs, _ctx)
       village = Village.find(id: inputs['id'])
       village.disable_recruit = inputs['disabled']
       village.save
@@ -26,7 +26,7 @@ module Type::Village
     argument :id, !types.Int
     type Type::Village.definition
 
-    def call(object, inputs, ctx)
+    def call(_object, inputs, _ctx)
       village = Village.find(id: inputs['id'])
       village.next_event = nil
       village.status = nil
@@ -35,5 +35,4 @@ module Type::Village
       village
     end
   end
-  
 end

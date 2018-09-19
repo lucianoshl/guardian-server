@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Service::AttackDetector
   include Notifier
 
@@ -18,12 +20,12 @@ module Service::AttackDetector
     if Command::Incoming.where(id: incoming.id).empty?
       command = Screen::InfoCommand.new(id: incoming.id).Command
       command.save
-      notify(%{
+      notify(%(
 Ataque detectado as #{command.create_at.format}
 Jogador: #{command.origin.player.name}
 Possiveis unidades:
-#{command.possible_troop.map{|id| Unit.get(id).name }.map{|a| "\t- #{a}" }.join("\n")}
-      })
+#{command.possible_troop.map { |id| Unit.get(id).name }.map { |a| "\t- #{a}" }.join("\n")}
+      ))
     end
   end
 end

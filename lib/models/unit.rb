@@ -34,7 +34,7 @@ class Unit
   field :desc, type: String
   field :desc_abilities, type: Array
 
-  scope :attackers, ->{ nin(id: [:militia]) }
+  scope :attackers, -> { nin(id: [:militia]) }
 
   after_upsert do
     troop_has_field = Troop.fields.key?(id)
@@ -59,5 +59,4 @@ class Unit
   def square_per_minutes
     (1.0 / (60 * speed))
   end
-  
 end

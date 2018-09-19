@@ -6,8 +6,8 @@ class Screen::InfoCommand < Screen::Base
   attr_accessor :command
 
   def parse(page)
-    table = parse_table(page,'#content_value > table')
-    origin, target = page.search('.village_anchor[data-id]').map do |a| 
+    table = parse_table(page, '#content_value > table')
+    origin, target = page.search('.village_anchor[data-id]').map do |a|
       r = OpenStruct.new
       r.id = a.attr('data-id').to_i
       r.coordinate = a.text.extract_coordinate
@@ -15,7 +15,7 @@ class Screen::InfoCommand < Screen::Base
     end
 
     incoming = Account.main.player.villages.map(&:id).include? target.id
-    
+
     if incoming
       self.command = Command::Incoming.new
       command.id = page.uri.to_s.scan(/id=(\d+)/).number_part
@@ -27,7 +27,6 @@ class Screen::InfoCommand < Screen::Base
     end
   end
 
-
   def define_possible_troop(command)
     seconds_to_arrival = command.arrival.to_i - command.create_at.to_i
     distance = command.origin.distance(command.target)
@@ -38,8 +37,8 @@ class Screen::InfoCommand < Screen::Base
       r.unit = a.id
       r
     end
-    possible_units = times.select{|a| a.seconds > seconds_to_arrival }
-    max = possible_units.max{|a| a.diference}.diference
-    possible_units.select{|a| a.diference == max}.map(&:unit)
+    possible_units = times.select { |a| a.seconds > seconds_to_arrival }
+    max = possible_units.max(&:diference).diference
+    possible_units.select { |a| a.diference == max }.map(&:unit)
   end
 end

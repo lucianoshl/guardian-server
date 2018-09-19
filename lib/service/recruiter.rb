@@ -1,5 +1,6 @@
-module Service::Recruiter
+# frozen_string_literal: true
 
+module Service::Recruiter
   include Logging
 
   def recruit(village)

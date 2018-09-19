@@ -72,7 +72,7 @@ describe do
           }
         }
       }
-    
+
       fragment FullType on __Type {
         kind
         name
@@ -105,14 +105,14 @@ describe do
           ...TypeRef
         }
       }
-    
+
       fragment InputValue on __InputValue {
         name
         description
         type { ...TypeRef }
         defaultValue
       }
-    
+
       fragment TypeRef on __Type {
         kind
         name

@@ -99,8 +99,7 @@ module Type::Base
 
       def mutation(&block)
         @mutations = [] if @mutations.nil?
-        @mutations << Class.new(GraphQL::Function) do 
-
+        @mutations << Class.new(GraphQL::Function) do
           def self.name(value = nil)
             @name = value unless value.nil?
             @name

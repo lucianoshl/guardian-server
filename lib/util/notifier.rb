@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Notifier
   include Logging
   @@client = Washbullet::Client.new(ENV['PUSH_BULLET_API'])
 
-  def notify(content,title: nil)
+  def notify(content, title: nil)
     return unless client_configured?
     content = content.strip
 
@@ -11,16 +13,16 @@ module Notifier
     title += '-' + sufix unless title.nil?
 
     begin
-    @client.push_note(
-      receiver:   :device,
-      params: {
-        title: title,
-        body:  content
-      }
-    )
+      @client.push_note(
+        receiver:   :device,
+        params: {
+          title: title,
+          body:  content
+        }
+      )
     rescue StandardError => e
       logger.error('Error sending notification')
-      logger.error ([e.message]+e.backtrace).join($/)
+      logger.error ([e.message] + e.backtrace).join($INPUT_RECORD_SEPARATOR)
     end
   end
 

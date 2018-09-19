@@ -50,9 +50,9 @@ class Screen::Main < Screen::Base
 
   def parse_buildings_labels(page)
     (page.search('#building_wrapper > div').map do |line|
-      id = line.search('img').first.attr('src').split('/').last.scan(/\w+/).first.gsub(/\d+/,'')
-      label = line.search('a').first.text.gsub(/ +\(\d+\)/,'')
-      [id,label]
+      id = line.search('img').first.attr('src').split('/').last.scan(/\w+/).first.gsub(/\d+/, '')
+      label = line.search('a').first.text.gsub(/ +\(\d+\)/, '')
+      [id, label]
     end).to_h
   end
 

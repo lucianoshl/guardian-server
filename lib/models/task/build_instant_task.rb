@@ -1,5 +1,6 @@
-class Task::BuildInstantTask < Task::Abstract
+# frozen_string_literal: true
 
+class Task::BuildInstantTask < Task::Abstract
   belongs_to :village
   include Service::Builder
 

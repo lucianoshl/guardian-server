@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Service::Builder
   def build(village, main)
-
     return unless main.queue.empty?
 
     if main.farm.warning && !main.in_queue?(:farm)
@@ -12,7 +13,7 @@ module Service::Builder
     end
 
     model = select_model_item(village.building_model, main).each.to_a
-    
+
     model = model.select do |building, level|
       !main.buildings_meta[building].nil? && level.positive?
     end

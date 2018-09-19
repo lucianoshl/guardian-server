@@ -5,7 +5,7 @@ module Routes::HealthCheck
     app.get '/healthcheck' do
       content_type :json
 
-      Report.where(:'_type' => 'Troop').delete
+      Report.where('_type': 'Troop').delete
       errors = Service::HealthCheck.check_system
       status errors.empty? ? 200 : 500
       body errors.to_json
