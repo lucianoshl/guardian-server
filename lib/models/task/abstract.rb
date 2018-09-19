@@ -39,11 +39,12 @@ class Task::Abstract
     self.next_execution = run
     if runs_every.nil?
       job&.delete
+      delete
     else
       self.last_execution = Time.now
       self.next_execution = calc_next_execution if self.next_execution.nil?
+      save
     end
-    save
   end
 
   def schedule
