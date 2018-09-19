@@ -13,9 +13,8 @@ module Service::AttackDetector
   end
 
   def self.run_for_incoming(incoming)
-    command = Screen::InfoCommand.new(id: incoming.id).command
-    if Command::Incoming.where(id: command.id).empty?
-      command.save
+    if Command::Incoming.where(id: incoming.id).empty?
+      Screen::InfoCommand.new(id: incoming.id).command.save
     end
   end
 end
