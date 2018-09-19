@@ -6,6 +6,6 @@ class Task::BuildInstantTask < Task::Abstract
   def run
     main = Screen::Main.new(village: village.id)
     main.build_instant
-    build(village.id, main.reload)
+    build(village, main.reload)
   end
 end
