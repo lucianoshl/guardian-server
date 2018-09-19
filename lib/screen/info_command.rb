@@ -17,8 +17,8 @@ class Screen::InfoCommand < Screen::Base
     incoming = Account.main.player.villages.map(&:id).include? target.id
     
     if incoming
-      target_village = Village.find(target.id)
       self.command = Command::Incoming.new
+      command.id = page.uri.to_s.scan(/id=(\d+)/).number_part
       command.arrival = table[4].search('td').last.text.to_datetime
       command.create_at = Time.now
       command.origin_id = origin.id

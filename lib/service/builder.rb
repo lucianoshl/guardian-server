@@ -10,7 +10,7 @@ module Service::Builder
     # end
 
     model = select_model_item(village.building_model, main).each.to_a
-
+    
     model = model.select do |building, level|
       !main.buildings_meta[building].nil? && level.positive?
     end
