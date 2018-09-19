@@ -1,4 +1,6 @@
 module Service::AttackDetector
+  include Notifier
+
   # TODO: this is not thread safe
   @running = false
 
@@ -14,7 +16,14 @@ module Service::AttackDetector
 
   def self.run_for_incoming(incoming)
     if Command::Incoming.where(id: incoming.id).empty?
-      Screen::InfoCommand.new(id: incoming.id).command.save
+      command = Screen::InfoCommand.new(id: incoming.id).Command
+      command.save
+      notify(%{
+Ataque detectado as #{command.create_at.format}
+Jogador: #{command.origin.player.name}
+Possiveis unidades:
+#{command.possible_troop.map{|id| Unit.get(id).name }.map{|a| "\t- #{a}" }.join("\n")}
+      })
     end
   end
 end
