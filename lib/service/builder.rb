@@ -1,13 +1,15 @@
 module Service::Builder
   def build(village, main)
 
-    # if main.farm.warning && !main.in_queue?(:farm)
-    #   return main.possible_build?(:farm) ? main.build(:farm) : nil
-    # end
+    return unless main.queue.empty?
 
-    # if main.storage.warning && !main.in_queue?(:storage)
-    #   return main.possible_build?(:storage) ? main.build(:storage) : nil
-    # end
+    if main.farm.warning && !main.in_queue?(:farm)
+      return main.possible_build?(:farm) ? main.build(:farm) : nil
+    end
+
+    if main.storage.warning && !main.in_queue?(:storage)
+      return main.possible_build?(:storage) ? main.build(:storage) : nil
+    end
 
     model = select_model_item(village.building_model, main).each.to_a
     
