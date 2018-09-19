@@ -7,5 +7,6 @@ class Task::BuildInstantTask < Task::Abstract
     main = Screen::Main.new(village: village.id)
     main.build_instant
     build(village, main.reload)
+    nil
   end
 end
