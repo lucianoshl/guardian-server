@@ -74,6 +74,23 @@ module Type::Base
         @definition
       end
 
+      def input_type
+        this = self
+        @target = target = class_base
+        if @input_type.nil?
+          @input_type = GraphQL::InputObjectType.define do
+            name("#{this.to_s.gsub('Type::', '')}Input")
+            fields = target.fields
+
+            fields.map do |name, meta|
+              field_type = this.field_type(name, meta, types)
+              argument(this.field_name(name), field_type) unless field_type.nil?
+            end
+          end
+        end
+        @input_type
+      end
+
       def base_criteria(_obj, args, _ctx)
         criteria = @target.where(args.to_h)
         criteria = @criteria_block.call(criteria) unless @criteria_block.nil?

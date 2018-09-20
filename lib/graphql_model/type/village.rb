@@ -35,4 +35,15 @@ module Type::Village
       village
     end
   end
+
+  mutation do
+    name 'UpdateBuildModel'
+    argument :id, !types.Int
+    argument :input, types[Type::Buildings.input_type]
+    type Type::Village.definition
+
+    def call(_object, inputs, _ctx)
+      binding.pry
+    end
+  end
 end
