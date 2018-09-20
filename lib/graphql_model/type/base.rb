@@ -9,6 +9,8 @@ module MongoInflector
     return types.ID if name == '_id'
     return types.String if meta.type == String
     return types.Int if meta.type == Integer
+    return types.Float if meta.type == Float
+    return nil if meta.type == Hash
     return nil if meta.class == Mongoid::Relations::Metadata && meta.relation == Mongoid::Relations::Embedded::In
 
     type = meta.type
@@ -60,7 +62,7 @@ module Type::Base
 
         if @definition.nil?
           @definition = GraphQL::ObjectType.define do
-            name this.to_s.gsub('Type::', '')
+            name this.definition_name
             description "Generated model for class #{this.to_s.gsub('Type::', '')}"
 
             fields = target.fields.merge(target.relations)
@@ -112,6 +114,13 @@ module Type::Base
           @class_base = clazz.nil? ? to_s.demodulize.constantize : clazz
         end
         @class_base
+      end
+
+      def definition_name(str = nil)
+        if @definition_name.nil?
+          @definition_name = str.blank? ? to_s.gsub('Type::', '') : str
+        end
+        @definition_name
       end
 
       def mutation(&block)

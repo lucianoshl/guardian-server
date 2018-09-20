@@ -10,7 +10,7 @@ module Type::Query
 
       models.map do |model_name|
         model = Type.const_get(model_name)
-        label = model_name.to_s.snakecase
+        label = model.definition_name.to_s.snakecase
 
         field label.to_s, model.definition do
           description "Representation of #{model_name} in guardian"
