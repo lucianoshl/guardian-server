@@ -41,7 +41,7 @@ class Village
     model << Buildings.new(main: 7, barracks: 1, smith: 1, place: 1)
     model << Buildings.new(wall: 10)
     model << Buildings.new(wood: 10, stone: 10, iron: 10)
-    model << Buildings.new(main: 10, barracks: 10)
+    model << Buildings.new(main: 20, barracks: 20, wall: 20)
     model << Buildings.new(wall: 15)
     model << Buildings.new(wood: 20, stone: 20, iron: 10)
     model << Buildings.new(market: 10)
