@@ -191,7 +191,8 @@ class Task::StealResourcesTask < Task::Abstract
     Village.targets.in(player_id: strong_player).update_all(status: 'strong', next_event: Time.now + 1.day)
 
     unless current_ally.nil?
-      ally_players = Player.where(ally_id: current_ally.id).pluck(:id)
+      current_allies = Screen::AllyContracts.new.allies_ids << current_ally.id
+      ally_players = Player.in(ally_id: current_allies).pluck(:id)
       Village.targets.in(player_id: ally_players).update_all(status: 'ally', next_event: Time.now + 1.day)
     end
     Village.targets.in(next_event: nil).update_all(next_event: Time.now)
