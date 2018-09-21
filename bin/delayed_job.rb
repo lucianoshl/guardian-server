@@ -6,8 +6,8 @@ Bundler.require(:default, ENV['ENV'])
 
 require_rel '../lib/requirer.rb'
 
+Delayed::Worker.max_run_time = 10.minutes
 Delayed::Worker.logger = Logging.logger
-
 Delayed::Worker.backend = :mongoid
 
 queue_name = ARGV.select { |a| a =~ /--queue=/ }.first.scan(/--queue=(.+)/).first.first
