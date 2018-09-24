@@ -27,6 +27,7 @@ class String
         raise Exception, 'result < Time.now' if result < Time.now
         result = result
       elsif !scan(/... \d{1,2}, \d{4}/).empty?
+        this[0] = this[0].upcase
         raw = this.gsub('Set', 'Sep').gsub('Out', 'Oct').gsub('Dez', 'Dec').gsub('Fev', 'Feb').gsub('Ago', 'Aug')
 
         has_milliseconds = split(':').size > 3
@@ -42,7 +43,7 @@ class String
         raise Exception, 'unsupported parse_datetime date'
       end
     rescue Exception => e
-      raise Exception, "Error parsing date #{this} #{e} #{e.message}"
+      raise Exception, "Error parsing date \"#{this}\" #{e} #{e.message}"
     end
     result
   end
