@@ -23,32 +23,33 @@ class String
     base_format = "%b %d, %Y %H:%M:%S#{miliseconds_format}"
 
     formated = nil
+    if this.include?('hoje')
+      formated = gsub(/hoje ../, Date.today.strftime('%b %d, %Y'))
+    elsif this.include?('amanhã')
+      tomorrow = Date.today + 1.day
+      formated = gsub(/amanhã ../, tomorrow.strftime('%b %d, %Y'))
+    elsif this.include?('em')
+      date = scan(/em (\d+)\.(\d+)\./).flatten.concat([Time.now.year]).join('/').to_date
+      hour = split(' ').last
+      formated = "#{date.strftime('%b %d, %Y')} #{hour}"
+    elsif !scan(/... \d{1,2}, \d{4}/).empty?
+      this[0] = this[0].upcase
+      original_locale_month = this.split(' ').first
+      english_locale_month = month_mapping(original_locale_month)
+      formated = this.gsub(original_locale_month, english_locale_month)
+    elsif !scan(/\d+\.\d+\. .. \d+\:\d+/).empty? # ["22.09. às 13:45"]
+      date = scan(/(\d+)\.(\d+)\./).flatten.concat([Time.now.year]).join('/').to_date
+      hour = split(' ').last
+      formated = "#{date.strftime('%b %d, %Y')} #{hour}"
+    else
+      raise Exception, 'unsupported parse_datetime date'
+    end
+
     begin
-      if this.include?('hoje')
-        formated = gsub(/hoje ../, Date.today.strftime('%b %d, %Y'))
-      elsif this.include?('amanhã')
-        tomorrow = Date.today + 1.day
-        formated = gsub(/amanhã ../, tomorrow.strftime('%b %d, %Y'))
-      elsif this.include?('em')
-        date = scan(/em (\d+)\.(\d+)\./).flatten.concat([Time.now.year]).join('/').to_date
-        hour = split(' ').last
-        formated = "#{date.strftime('%b %d, %Y')} #{hour}"
-      elsif !scan(/... \d{1,2}, \d{4}/).empty?
-        this[0] = this[0].upcase
-        original_locale_month = this.split(' ').first
-        english_locale_month = month_mapping(original_locale_month)
-        formated = this.gsub(original_locale_month, english_locale_month)
-      elsif !scan(/\d+\.\d+\. .. \d+\:\d+/).empty? # ["22.09. às 13:45"]
-        date = scan(/(\d+)\.(\d+)\./).flatten.concat([Time.now.year]).join('/').to_date
-        hour = split(' ').last
-        formated = "#{date.strftime('%b %d, %Y')} #{hour}"
-      else
-        raise Exception, 'unsupported parse_datetime date'
-      end
+      parsed = DateTime.strptime(formated.strip, base_format)
     rescue Exception => e
       raise Exception, "Error parsing date \"#{this}\" #{e} #{e.message}"
     end
-    parsed = DateTime.strptime(formated, base_format)
     parsed.change(offset: Time.now.strftime('%z'))
   end
 
