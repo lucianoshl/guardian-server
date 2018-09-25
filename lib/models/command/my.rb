@@ -3,4 +3,5 @@
 class Command::My < Command::Abstract
   field :returning, type: Boolean
   embeds_one :troop
+  belongs_to :report, optional: true
 end

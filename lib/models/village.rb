@@ -43,7 +43,7 @@ class Village
     model << Buildings.new(wood: 10, stone: 10, iron: 10)
     model << Buildings.new(main: 20)
     model << Buildings.new(barracks: 20, wall: 20)
-    model << Buildings.new(wall: 15)
+    model << Buildings.new(smith: 10, garage: 10)
     model << Buildings.new(wood: 20, stone: 20, iron: 10)
     model << Buildings.new(market: 10)
     model << Buildings.new(wall: 20)
@@ -58,5 +58,33 @@ class Village
 
   def to_s
     "#{x}|#{y}"
+  end
+
+  def self.steal_resources_targets
+    my_villages = Account.main.player.villages
+
+    map = %Q{
+      function() {
+        var self = this;
+        var my_villages = #{my_villages.to_json}
+        var distance = function(v1,v2){
+          var a = Math.abs(v1.x - v2.x);
+          var b = Math.abs(v1.y - v2.y);
+          return Math.sqrt( a*a + b*b );
+        };
+        var distances = my_villages.map(function(v1){ return distance(v1,self); })
+
+        emit(this._id, {x: this.x, y: this.y, distance: distances});
+      }  
+    }
+    
+    reduce = %Q{
+      function(key, coords) { 
+        return {test: key};
+      }
+    }
+    result = Village.map_reduce(map,reduce).out(inline: 1).each.to_a
+
+    binding.pry
   end
 end

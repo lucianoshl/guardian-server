@@ -60,7 +60,10 @@ class Screen::Place < Screen::Base
     parse(confirm_page.form.submit)
     target_commands = commands.leaving.select { |a| a.target.eql?(target) }
     binding.pry if target_commands.last.nil?
-    target_commands.last
+    result = target_commands.last
+    result.troop = troops
+    result.save_if_not_saved
+    result
   end
 
   def convert_error(message)

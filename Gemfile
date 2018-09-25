@@ -35,6 +35,7 @@ gem 'washbullet'
 gem 'wisper'
 
 gem 'rack-graphiql'
+gem 'ruby-prof'
 
 group :test do
   gem 'coveralls', require: false
