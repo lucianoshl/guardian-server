@@ -2,4 +2,5 @@
 
 module Type::Command
   include Type::Base
+  class_base Command::Abstract
 end
