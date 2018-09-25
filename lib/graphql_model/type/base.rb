@@ -94,8 +94,10 @@ module Type::Base
       end
 
       def base_criteria(_obj, args, _ctx)
-        criteria = @target.where(args.to_h)
-        criteria = @criteria_block.call(criteria) unless @criteria_block.nil?
+        base_fields = @target.fields.merge(@target.relations).keys
+        filters = args.to_h.select_keys(*base_fields)
+        criteria = @target.where(filters)
+        criteria = @criteria_block.call(criteria,args) unless @criteria_block.nil?
         criteria
       end
 
