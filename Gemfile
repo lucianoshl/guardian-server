@@ -36,6 +36,7 @@ gem 'wisper'
 
 gem 'rack-graphiql'
 gem 'ruby-prof'
+gem 'r18n-core'
 
 group :test do
   gem 'coveralls', require: false

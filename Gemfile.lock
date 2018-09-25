@@ -102,6 +102,7 @@ GEM
     pry-stack_explorer (0.4.9.2)
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
+    r18n-core (3.1.2)
     rack (2.0.5)
     rack-contrib (2.0.1)
       rack (~> 2.0)
@@ -193,6 +194,7 @@ DEPENDENCIES
   pry-nav
   pry-rescue
   pry-stack_explorer
+  r18n-core
   rack
   rack-contrib
   rack-graphiql
