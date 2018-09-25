@@ -155,7 +155,7 @@ class Task::StealResourcesTask < Task::Abstract
     end
 
     command = place.send_attack(@target, to_send)
-    command.report = command
+    command.origin_report = report
     command.store
 
     send_to('waiting_report', command.arrival)

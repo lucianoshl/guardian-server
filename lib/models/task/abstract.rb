@@ -78,4 +78,15 @@ class Task::Abstract
   def self.remove_orphan_tasks
     Delayed::Backend::Mongoid::Job.all.select { |a| a.task.nil? }.map(&:delete)
   end
+
+  def test_local
+    loop do 
+    result = run
+      begin
+        seconds = result.to_i - Time.now.to_i
+        puts "Waiting #{seconds}"
+        sleep(5)
+      end while seconds.positive?
+    end
+  end
 end
