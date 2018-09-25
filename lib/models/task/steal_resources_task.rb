@@ -9,7 +9,7 @@ class Task::StealResourcesTask < Task::Abstract
     @distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
     @@places = {}
     Service::Report.sync
-    steal_candidates
+    update_steal_candidates
     # TODO: refactor this criteria in a function duplicated code bellow
     criteria = Village.targets.lte(next_event: Time.now)
 
@@ -44,6 +44,7 @@ class Task::StealResourcesTask < Task::Abstract
         report.mark_read
         send_to('waiting_resource_production', next_attack)
       rescue Exception => e
+        binding.pry unless ENV['ENV'] == 'PRODUCTION'
         send_to('error', Time.now + 10.minutes)
       end
 
@@ -154,6 +155,9 @@ class Task::StealResourcesTask < Task::Abstract
     end
 
     command = place.send_attack(@target, to_send)
+    command.report = command
+    command.store
+
     send_to('waiting_report', command.arrival)
     report.read = true
     report.save
@@ -174,32 +178,42 @@ class Task::StealResourcesTask < Task::Abstract
     @target.player.nil? ? 1 : 5
   end
 
-  def steal_candidates
+  def update_steal_candidates
+    
+    logger.info('update_steal_candidates: start')
     current_player = Account.main.player
     current_ally = current_player.ally
     current_points = current_player.points
 
+    logger.info('update_steal_candidates: reseting players')
     Village.targets.in(status: ['strong', 'ally', nil]).update_all(status: 'not_initialized')
 
+
+    logger.info('update_steal_candidates: searching strong players')
     strong_player = Player.gte(points: current_points * 0.6).pluck(:id) - [current_player.id]
 
+    logger.info('update_steal_candidates: searching strong villages attacked 1')
     attacked_strong_player = Village.in(player_id: strong_player).pluck(:id)
-    strong_villages_attacked = Report.in(target_id: attacked_strong_player).select(&:possible_attack?).to_a
+    logger.info('update_steal_candidates: searching strong villages attacked 2')
+    strong_villages_attacked = Report.in(target_id: attacked_strong_player).nin(dot: 'red' ).pluck(:target_id)
 
-    strong_player -= strong_villages_attacked.map { |a| a.target.player.id }
+    logger.info('update_steal_candidates: removing strong villages attacked from strong players')
+    strong_player -= Village.in(id: strong_villages_attacked.uniq).map(&:player_id)
 
+    logger.info('update_steal_candidates: updating all players to strong')
     Village.targets.in(player_id: strong_player).update_all(status: 'strong', next_event: Time.now + 1.day)
 
     unless current_ally.nil?
+      logger.info('update_steal_candidates: searching allies')
       current_allies = Screen::AllyContracts.new.allies_ids << current_ally.id
       ally_players = Player.in(ally_id: current_allies).pluck(:id)
+      logger.info('update_steal_candidates: updating allies')
       Village.targets.in(player_id: ally_players).update_all(status: 'ally', next_event: Time.now + 1.day)
     end
+
+    logger.info('update_steal_candidates: updating all villages with next_element = nil')
     Village.targets.in(next_event: nil).update_all(next_event: Time.now)
-
-    result = Village.targets.lte(next_event: Time.now).to_a
-
-    sort_by_priority(result)
+    logger.info('update_steal_candidates: end')
   end
 
   def sort_by_priority(targets)
