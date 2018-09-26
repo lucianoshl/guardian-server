@@ -24,7 +24,12 @@ class Service::Report
 
   def self.process_report(report_id)
     report = Screen::ReportView.new(view: report_id).report
-    report.save if Report.where(id: report.id).count.zero?
+    if Report.where(id: report.id).count.zero?
+      from_command = Command::My.where('target.x' => report.target.x, 'target.y' => report.target.y, 'arrival' => report.ocurrence, 'origin_id' => report.origin_id).sort(arrival: 'desc').first
+      from_command.arrival_report = from_command
+      from_command.save
+      report.save
+    end
     report.erase
   end
 end
