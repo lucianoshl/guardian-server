@@ -13,7 +13,7 @@ module Service::Recruiter
 
     model = generate_target_model(train_screen, village)
 
-    now = Time.now
+    now = DateTime.now
     queue_seconds = (train_screen.queue.to_h.map do |building, queue|
       [building, ((queue&.finish || now) - now).floor]
     end).to_h
