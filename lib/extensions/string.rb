@@ -18,9 +18,19 @@ class String
   def to_datetime
     result = nil
     this = gsub(/ +/, ' ')
-    has_milliseconds = split(':').size > 3
+    time_parts = split(':').size
+    has_milliseconds =  time_parts > 3
     miliseconds_format = has_milliseconds ? ':%L' : ''
-    base_format = "%b %d, %Y %H:%M:%S#{miliseconds_format}"
+    base_format = "%b %d, %Y %H:%M"
+
+    if time_parts > 2
+      base_format += ':%S'
+    end
+
+    if time_parts > 3
+      base_format += ':%L'
+    end
+    
 
     formated = nil
     if this.include?('hoje')

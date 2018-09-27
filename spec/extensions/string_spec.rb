@@ -26,5 +26,12 @@ describe String do
     expect(value.class).to eq(DateTime)
   end
 
+  it 'string_bug_06' do
+    value = 'em 29.09. às 17:13'.to_datetime
+    expect(value.class).to eq(DateTime)
+  end
+
+  
+
   
 end
