@@ -6,7 +6,7 @@ module Type::Query
       name 'Query'
       description 'Guardian queries'
 
-      models = (Type.constants - %i[Query Base DateTime PointsEvolution Buildings])
+      models = (Type.constants - %i[Query Base Time PointsEvolution Buildings])
 
       models.map do |model_name|
         model = Type.const_get(model_name)

@@ -56,11 +56,11 @@ class String
     end
 
     begin
-      parsed = DateTime.strptime(formated.strip, base_format)
+      parsed = Time.strptime(formated.strip, base_format)
     rescue Exception => e
       raise Exception, "Error parsing date \"#{this}\" #{e} #{e.message}"
     end
-    parsed.change(offset: Time.now.strftime('%z'))
+    parsed
   end
 
   def snakecase

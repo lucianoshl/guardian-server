@@ -8,7 +8,7 @@ class Report
   field :moral, type: Integer
 
   field :dot, type: String
-  field :ocurrence, type: DateTime
+  field :ocurrence, type: Time
   field :luck, type: Float
 
   field :night_bonus, type: Boolean

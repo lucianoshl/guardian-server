@@ -21,7 +21,7 @@ module MongoInflector
     end
 
     return types.Boolean if [Boolean, Mongoid::Boolean].include? type
-    return Type::DateTime.definition if [DateTime, Time].include? type
+    return Type::Time.definition if [Time].include? type
     return nil if [Array, Account].include? type
 
     graphql_type = Type::Base.get_graphql_type(type)

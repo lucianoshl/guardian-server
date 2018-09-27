@@ -8,7 +8,7 @@ class Village
   field :points, type: Integer
 
   field :status, type: String
-  field :next_event, type: DateTime
+  field :next_event, type: Time
 
   field :disable_recruit, type: Boolean
 
