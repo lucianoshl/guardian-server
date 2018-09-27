@@ -9,7 +9,7 @@ class Report
 
   field :dot, type: String
   field :ocurrence, type: DateTime
-  field :luck, type: String
+  field :luck, type: Float
 
   field :night_bonus, type: Boolean
 

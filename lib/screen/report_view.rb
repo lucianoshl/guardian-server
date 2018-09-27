@@ -21,7 +21,7 @@ class Screen::ReportView < Screen::Base
     report.id = report.erase_uri.scan(/id=(\d+)/).first.first.to_i
     report.ocurrence = report_table.search('tr > td')[1].text.strip.to_datetime
     report.moral = report_table.search('h4')[1].text.number_part
-    report.luck = page.search('#attack_luck').text.strip.delete('%')
+    report.luck = page.search('#attack_luck').text.strip.delete('%').to_f
 
     bonus_title = report_table.search('h4')[2]
     report.night_bonus = bonus_title.nil? ? false : bonus_title.text.downcase.include?('bonus')
