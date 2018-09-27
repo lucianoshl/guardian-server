@@ -2,7 +2,7 @@
 
 module Mongoid::Document
   def store
-    raise Exception.new("Error saving #{self.class} : #{errors.to_a}") if !save
+    raise Exception, "Error saving #{self.class} : #{errors.to_a}" unless save
     self
   end
 
@@ -20,9 +20,6 @@ module Mongoid::Document
   end
 
   def save_if_not_saved
-    if self.class.where(id: id).count.zero?
-      store
-    end
+    store if self.class.where(id: id).count.zero?
   end
-
 end

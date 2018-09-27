@@ -36,8 +36,4 @@ describe String do
     expect(value.class).to eq(Time)
     value.zone.eql?('-03')
   end
-
-  
-
-  
 end

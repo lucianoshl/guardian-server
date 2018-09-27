@@ -97,7 +97,7 @@ module Type::Base
         base_fields = @target.fields.merge(@target.relations).keys << 'id'
         filters = args.to_h.select_keys(*base_fields)
         criteria = @target.where(filters)
-        criteria = @criteria_block.call(criteria,args) unless @criteria_block.nil?
+        criteria = @criteria_block.call(criteria, args) unless @criteria_block.nil?
         criteria
       end
 
