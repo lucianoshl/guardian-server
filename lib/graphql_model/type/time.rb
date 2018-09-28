@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Type::DateTime
+module Type::Time
   def self.definition
     if @definition.nil?
       @definition = GraphQL::ScalarType.define do

@@ -8,7 +8,7 @@ class Village
   field :points, type: Integer
 
   field :status, type: String
-  field :next_event, type: DateTime
+  field :next_event, type: Time
 
   field :disable_recruit, type: Boolean
 
@@ -63,7 +63,7 @@ class Village
   def self.steal_resources_targets
     my_villages = Account.main.player.villages
 
-    map = %Q{
+    map = %{
       function() {
         var self = this;
         var my_villages = #{my_villages.to_json}
@@ -75,15 +75,15 @@ class Village
         var distances = my_villages.map(function(v1){ return distance(v1,self); })
 
         emit(this._id, {x: this.x, y: this.y, distance: distances});
-      }  
+      }
     }
-    
-    reduce = %Q{
-      function(key, coords) { 
+
+    reduce = %{
+      function(key, coords) {
         return {test: key};
       }
     }
-    result = Village.map_reduce(map,reduce).out(inline: 1).each.to_a
+    result = Village.map_reduce(map, reduce).out(inline: 1).each.to_a
 
     binding.pry
   end

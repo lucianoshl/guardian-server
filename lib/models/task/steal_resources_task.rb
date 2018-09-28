@@ -179,7 +179,6 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def update_steal_candidates
-    
     logger.info('update_steal_candidates: start')
     current_player = Account.main.player
     current_ally = current_player.ally
@@ -188,14 +187,13 @@ class Task::StealResourcesTask < Task::Abstract
     logger.info('update_steal_candidates: reseting players')
     Village.targets.in(status: ['strong', 'ally', nil]).update_all(status: 'not_initialized')
 
-
     logger.info('update_steal_candidates: searching strong players')
     strong_player = Player.gte(points: current_points * 0.6).pluck(:id) - [current_player.id]
 
     logger.info('update_steal_candidates: searching strong villages attacked 1')
     attacked_strong_player = Village.in(player_id: strong_player).pluck(:id)
     logger.info('update_steal_candidates: searching strong villages attacked 2')
-    strong_villages_attacked = Report.in(target_id: attacked_strong_player).nin(dot: 'red' ).pluck(:target_id)
+    strong_villages_attacked = Report.in(target_id: attacked_strong_player).nin(dot: 'red').pluck(:target_id)
 
     logger.info('update_steal_candidates: removing strong villages attacked from strong players')
     strong_player -= Village.in(id: strong_villages_attacked.uniq).map(&:player_id)

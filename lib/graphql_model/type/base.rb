@@ -21,7 +21,7 @@ module MongoInflector
     end
 
     return types.Boolean if [Boolean, Mongoid::Boolean].include? type
-    return Type::DateTime.definition if [DateTime, Time].include? type
+    return Type::Time.definition if [Time].include? type
     return nil if [Array, Account].include? type
 
     graphql_type = Type::Base.get_graphql_type(type)
@@ -97,7 +97,7 @@ module Type::Base
         base_fields = @target.fields.merge(@target.relations).keys << 'id'
         filters = args.to_h.select_keys(*base_fields)
         criteria = @target.where(filters)
-        criteria = @criteria_block.call(criteria,args) unless @criteria_block.nil?
+        criteria = @criteria_block.call(criteria, args) unless @criteria_block.nil?
         criteria
       end
 

@@ -6,7 +6,6 @@ class String
   R18n.set('pt')
   @@hash_values = nil
 
-
   def underscore
     to_s.gsub(/::/, '/')
         .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
@@ -19,18 +18,13 @@ class String
     result = nil
     this = gsub(/ +/, ' ')
     time_parts = split(':').size
-    has_milliseconds =  time_parts > 3
+    has_milliseconds = time_parts > 3
     miliseconds_format = has_milliseconds ? ':%L' : ''
-    base_format = "%b %d, %Y %H:%M"
+    base_format = '%b %d, %Y %H:%M'
 
-    if time_parts > 2
-      base_format += ':%S'
-    end
+    base_format += ':%S' if time_parts > 2
 
-    if time_parts > 3
-      base_format += ':%L'
-    end
-    
+    base_format += ':%L' if time_parts > 3
 
     formated = nil
     if this.include?('hoje')
@@ -56,11 +50,11 @@ class String
     end
 
     begin
-      parsed = DateTime.strptime(formated.strip, base_format)
+      parsed = Time.strptime(formated.strip, base_format)
     rescue Exception => e
       raise Exception, "Error parsing date \"#{this}\" #{e} #{e.message}"
     end
-    parsed.change(offset: Time.now.strftime('%z'))
+    parsed
   end
 
   def snakecase

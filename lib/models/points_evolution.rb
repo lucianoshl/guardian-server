@@ -3,7 +3,7 @@
 class PointsEvolution
   include Mongoid::Document
 
-  field :ocurrence, type: DateTime, default: -> { Time.now }
+  field :ocurrence, type: Time, default: -> { Time.now }
   field :current, type: Integer
   field :diference, type: Integer
   field :causes, type: Array

@@ -34,9 +34,9 @@ gem 'ruby-progressbar'
 gem 'washbullet'
 gem 'wisper'
 
+gem 'r18n-core'
 gem 'rack-graphiql'
 gem 'ruby-prof'
-gem 'r18n-core'
 
 group :test do
   gem 'coveralls', require: false
