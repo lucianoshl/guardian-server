@@ -112,12 +112,14 @@ class Task::StealResourcesTask < Task::Abstract
     else
       last_report = @target.reports.last
       resource = 200
-      if place.troops.carry >= resource && last_report.produced_resource?(resource)
-        troops, _remaining = place.troops_available.distribute(200)
-        result = troops.upgrade_until_win(place.troops)
+      place_troops = place.troops_available
+
+      if place_troops.carry >= resource && last_report.produced_resource?(resource)
+        troops, _remaining = place_troops.distribute(200)
+        result = troops.upgrade_until_win(place_troops)
         command = place.send_attack(@target, result)
         send_to('waiting_report', command.arrival)
-      elsif place.troops.carry < resource
+      elsif place_troops.carry < resource
         Village.in(status: %w[not_initialized waiting_troops]).update_all(next_event: next_returning_command.arrival, status: 'waiting_troops')
         send_to('waiting_troops', next_returning_command.arrival)
       elsif last_report.produced_resource?(resource)
@@ -132,17 +134,18 @@ class Task::StealResourcesTask < Task::Abstract
     total = 100 if total < 100
     place = place(@origin.id)
 
-    distribute_type = report.buildings.wall > 0 ? :attack : :speed
+    distribute_type = report.buildings.wall.positive? ? :attack : :speed
 
-    to_send, remaining = place.troops_available.distribute(total, distribute_type)
+    place_troops = place.troops_available
+    to_send, _remaining = place_troops.distribute(total, distribute_type)
 
     return send_to('waiting_troops', next_returning_command.arrival) if to_send.total.zero?
 
-    to_send.ram += report.rams_to_destroy_wall if place.troops.ram >= report.rams_to_destroy_wall
+    to_send.ram += report.rams_to_destroy_wall if place_troops.ram >= report.rams_to_destroy_wall
 
-    to_send = to_send.upgrade_until_win(place.troops, report.buildings.wall, report.moral)
+    to_send = to_send.upgrade_until_win(place_troops, report.buildings.wall, report.moral)
 
-    to_send.spy += 1 if place.troops.spy > 0
+    to_send.spy += 1 if place_troops.spy.positive?
 
     unless place.incomings.empty?
       travel_time = to_send.travel_time(@target, @origin)
