@@ -178,4 +178,46 @@ class Troop
       end
     end
   end
+
+  def increment_until_win(disponible, wall = 0, moral = 100)
+    begin
+      disponible - self
+    rescue StandardError
+      raise Exception, 'self must be included in disponible'
+    end
+    result = clone
+    loop do
+      simulator = Screen::Simulator.new
+      logger.info("Running increment simulator for #{result}")
+      simulator.simulate(result, Troop.new, wall, moral)
+      win = simulator.atk_looses.ram.zero? && simulator.atk_looses.population <= 10
+
+      return result if win
+      new_troop = result.increment(disponible - result)
+      raise Exception, 'Invalid state' if new_troop.has_negative?
+      if new_troop == result
+        raise UpgradeIsImpossibleException
+      else
+        result = new_troop
+      end
+    end
+  end
+
+  def increment(disponible)
+    result = self.clone
+    possible = Unit.nin(id: [:spy,:ram,:catapult,:snob,:militia]).sort(attack: 'desc').to_a
+    increment_number = 5
+    possible.each do |unit|
+      next unless disponible[unit.id] >= increment_number
+      disponible[unit.id] -= increment_number
+      result[unit.id] += increment_number
+      break
+    end
+    result
+  end
+
+  def population
+    each{|unit,qte| Unit.get(unit)['pop'] * qte  }.sum
+  end
+
 end

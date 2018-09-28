@@ -143,7 +143,16 @@ class Task::StealResourcesTask < Task::Abstract
 
     to_send.ram += report.rams_to_destroy_wall if place_troops.ram >= report.rams_to_destroy_wall
 
-    to_send = to_send.upgrade_until_win(place_troops, report.buildings.wall, report.moral)
+    begin
+      to_send = to_send.upgrade_until_win(place_troops, report.buildings.wall, report.moral)
+    rescue UpgradeIsImpossibleException => e
+      if report.buildings.wall.positive? && place_troops.ram >= report.rams_to_destroy_wall
+        strong_troop = Troop.new(ram: report.rams_to_destroy_wall)
+        to_send = strong_troop.increment_until_win(place_troops, report.buildings.wall, report.moral)
+      else
+        raise e
+      end
+    end
 
     to_send.spy += 1 if place_troops.spy.positive?
 
@@ -181,39 +190,28 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def update_steal_candidates
-    logger.info('update_steal_candidates: start')
     current_player = Account.main.player
     current_ally = current_player.ally
     current_points = current_player.points
 
-    logger.info('update_steal_candidates: reseting players')
     Village.targets.in(status: ['strong', 'ally', nil]).update_all(status: 'not_initialized')
 
-    logger.info('update_steal_candidates: searching strong players')
     strong_player = Player.gte(points: current_points * 0.6).pluck(:id) - [current_player.id]
 
-    logger.info('update_steal_candidates: searching strong villages attacked 1')
     attacked_strong_player = Village.in(player_id: strong_player).pluck(:id)
-    logger.info('update_steal_candidates: searching strong villages attacked 2')
     strong_villages_attacked = Report.in(target_id: attacked_strong_player).nin(dot: 'red').pluck(:target_id)
 
-    logger.info('update_steal_candidates: removing strong villages attacked from strong players')
     strong_player -= Village.in(id: strong_villages_attacked.uniq).map(&:player_id)
 
-    logger.info('update_steal_candidates: updating all players to strong')
     Village.targets.in(player_id: strong_player).update_all(status: 'strong', next_event: Time.now + 1.day)
 
     unless current_ally.nil?
-      logger.info('update_steal_candidates: searching allies')
       current_allies = Screen::AllyContracts.new.allies_ids << current_ally.id
       ally_players = Player.in(ally_id: current_allies).pluck(:id)
-      logger.info('update_steal_candidates: updating allies')
       Village.targets.in(player_id: ally_players).update_all(status: 'ally', next_event: Time.now + 1.day)
     end
 
-    logger.info('update_steal_candidates: updating all villages with next_element = nil')
     Village.targets.in(next_event: nil).update_all(next_event: Time.now)
-    logger.info('update_steal_candidates: end')
   end
 
   def sort_by_priority(targets)
