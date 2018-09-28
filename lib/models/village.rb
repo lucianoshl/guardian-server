@@ -89,6 +89,6 @@ class Village
   end
 
   def reserved_troops
-    Troop.new(axe: 1000, light: 1000)
+    Troop.new(axe: 1000, light: 1000, knight: 1)
   end
 end

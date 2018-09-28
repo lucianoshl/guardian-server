@@ -131,7 +131,6 @@ class Task::StealResourcesTask < Task::Abstract
     total = report.resources.total
     total = 100 if total < 100
     place = place(@origin.id)
-    place.troops.knight = 0
 
     distribute_type = report.buildings.wall > 0 ? :attack : :speed
 
