@@ -87,4 +87,8 @@ class Village
 
     binding.pry
   end
+
+  def reserved_troops
+    Troop.new(axe: 1000, light: 1000)
+  end
 end

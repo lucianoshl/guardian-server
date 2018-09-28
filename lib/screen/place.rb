@@ -81,4 +81,14 @@ class Screen::Place < Screen::Base
       Exception.new(message)
     end
   end
+
+  def troops_available
+    result = troops.clone
+    reserved_troops = village.reload.reserved_troops
+    result.each do |unit,qte|
+      result[unit] -= reserved_troops[unit]
+      result[unit] = 0 if result[unit].negative?
+    end
+    result
+  end
 end

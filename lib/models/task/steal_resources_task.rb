@@ -113,7 +113,7 @@ class Task::StealResourcesTask < Task::Abstract
       last_report = @target.reports.last
       resource = 200
       if place.troops.carry >= resource && last_report.produced_resource?(resource)
-        troops, _remaining = place.troops.distribute(200)
+        troops, _remaining = place.troops_available.distribute(200)
         result = troops.upgrade_until_win(place.troops)
         command = place.send_attack(@target, result)
         send_to('waiting_report', command.arrival)
@@ -135,7 +135,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     distribute_type = report.buildings.wall > 0 ? :attack : :speed
 
-    to_send, remaining = place.troops.distribute(total, distribute_type)
+    to_send, remaining = place.troops_available.distribute(total, distribute_type)
 
     return send_to('waiting_troops', next_returning_command.arrival) if to_send.total.zero?
 

@@ -82,11 +82,10 @@ class Task::Abstract
   def test_local
     loop do 
     result = run
-    binding.pry
       begin
         seconds = result.to_i - Time.now.to_i
         puts "Waiting #{seconds}"
-        sleep(5)
+        sleep(1)
       end while seconds.positive?
     end
   end
