@@ -6,6 +6,10 @@ class Task::PlayerMonitoringTask < Task::Abstract
   def run
     nearby = Service::Map.find_nearby(Account.main.player.villages, 20)
 
+
+    moved_villages = Village.all.pluck(:id) - nearby.keys
+    Village.in(id: moved_villages).delete_all
+
     all_villages = nearby
     all_players = nearby.values.map(&:player).compact.uniq.to_index(&:id)
     all_allies = all_players.values.map(&:ally).compact.uniq.to_index(&:id)
