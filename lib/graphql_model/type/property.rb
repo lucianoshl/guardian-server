@@ -4,6 +4,6 @@ module Type::Property
   include Type::Base
 
   config do
-    argument :id, types.Int
+    argument :key, types.String
   end
 end

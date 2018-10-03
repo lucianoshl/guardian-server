@@ -4,6 +4,6 @@ module Type::Player
   include Type::Base
 
   config do
-    argument :key, types.String
+    argument :id, types.Int
   end
 end
