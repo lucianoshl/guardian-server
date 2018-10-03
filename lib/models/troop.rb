@@ -204,8 +204,8 @@ class Troop
   end
 
   def increment(disponible)
-    result = self.clone
-    possible = Unit.nin(id: [:spy,:ram,:catapult,:snob,:militia]).sort(attack: 'desc').to_a
+    result = clone
+    possible = Unit.nin(id: %i[spy ram catapult snob militia]).sort(attack: 'desc').to_a
     increment_number = 5
     possible.each do |unit|
       next unless disponible[unit.id] >= increment_number
@@ -217,7 +217,6 @@ class Troop
   end
 
   def population
-    each{|unit,qte| Unit.get(unit)['pop'] * qte  }.sum
+    each { |unit, qte| Unit.get(unit)['pop'] * qte }.sum
   end
-
 end

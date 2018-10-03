@@ -80,8 +80,8 @@ class Task::Abstract
   end
 
   def test_local
-    loop do 
-    result = run
+    loop do
+      result = run
       begin
         seconds = result.to_i - Time.now.to_i
         puts "Waiting #{seconds}"
