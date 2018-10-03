@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module Type::Player
+module Type::Property
   include Type::Base
 
   config do
-    argument :key, types.String
+    argument :id, types.Int
   end
 end

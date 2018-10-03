@@ -18,7 +18,7 @@ module Type::Query
           resolve ->(*args) { model.base_criteria(*args).first }
         end
 
-        field "#{label}s", types[model.definition] do
+        field label.to_s.pluralize, types[model.definition] do
           description "Representation of #{model_name} in guardian"
           instance_eval &model.config unless model.config.nil?
           resolve ->(*args) { model.base_criteria(*args).to_a }
