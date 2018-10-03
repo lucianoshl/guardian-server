@@ -53,7 +53,7 @@ module Service::Recruiter
 
   def generate_target_model(train_screen, village)
     buildings_pop = 5000
-    model = village.train_model
+    model = village.model.train
 
     troops_population = 24_000 - buildings_pop
 

@@ -8,7 +8,7 @@ class Task::RecruitBuildTask < Task::Abstract
 
   def run
     results = Account.main.player.villages.map do |village|
-      run_for_village(village)
+      run_for_village(village) unless village.model.nil?
     end
     results.compact.min || nil
   end

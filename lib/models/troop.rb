@@ -4,10 +4,6 @@ class Troop
   include Mongoid::Document
   include Logging
 
-  before_save do
-    raise Exception, 'mongoid bug' unless self['_type'].nil?
-  end
-
   Unit.ids.map do |id|
     field id.to_sym, type: Integer, default: 0
   end

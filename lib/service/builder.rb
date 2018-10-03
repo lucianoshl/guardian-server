@@ -11,8 +11,8 @@ module Service::Builder
     if main.storage.warning && !main.in_queue?(:storage)
       return main.possible_build?(:storage) ? main.build(:storage) : nil
     end
-
-    model = select_model_item(village.building_model, main).each.to_a
+    
+    model = select_model_item(village.model.buildings, main).each.to_a
 
     model = model.select do |building, level|
       !main.buildings_meta[building].nil? && level.positive?

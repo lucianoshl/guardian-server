@@ -14,10 +14,11 @@ class Village
 
   belongs_to :player, optional: true
   embeds_many :evolution, class_name: 'PointsEvolution'
+  has_many :reports, inverse_of: :target
+
+  belongs_to :model, class_name: VillageModel.to_s, optional: true
 
   scope :targets, -> { not_in(player_id: [Account.main.player.id]) }
-
-  has_many :reports, inverse_of: :target
 
   before_save do |_news|
     if evolution.empty?
@@ -41,26 +42,6 @@ class Village
     self.status = nil
     save
     Task::StealResourcesTask.first&.run_now
-  end
-
-  def building_model
-    model = []
-    model << Buildings.new(main: 7, barracks: 1, smith: 1, place: 1)
-    model << Buildings.new(wall: 10)
-    model << Buildings.new(wood: 10, stone: 10, iron: 10)
-    model << Buildings.new(main: 20)
-    model << Buildings.new(barracks: 20, wall: 20)
-    model << Buildings.new(smith: 10, garage: 10)
-    model << Buildings.new(wood: 20, stone: 20, iron: 10)
-    model << Buildings.new(market: 10)
-    model << Buildings.new(wall: 20)
-    model << Buildings.new(smith: 20, market: 10, snob: 1)
-    model << Buildings.new(wood: 30, stone: 30, iron: 30, barracks: 25, market: 15, stable: 10)
-    model
-  end
-
-  def train_model
-    TroopModel.new(spear: 1.0 / 2, sword: 1.0 / 2, ram: 100, spy: 1000)
   end
 
   def to_s
