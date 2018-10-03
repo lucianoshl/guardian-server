@@ -36,6 +36,13 @@ class Village
     Village.update_all(next_event: nil, status: nil)
   end
 
+  def reset
+    self.next_event = nil
+    self.status = nil
+    save
+    Task::StealResourcesTask.first&.run_now
+  end
+
   def building_model
     model = []
     model << Buildings.new(main: 7, barracks: 1, smith: 1, place: 1)

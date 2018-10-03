@@ -27,12 +27,7 @@ module Type::Village
     type Type::Village.definition
 
     def call(_object, inputs, _ctx)
-      village = Village.find(id: inputs['id'])
-      village.next_event = nil
-      village.status = nil
-      village.save
-      Task::StealResourcesTask.first&.run_now
-      village
+      Village.find(id: inputs['id']).reset
     end
   end
 
