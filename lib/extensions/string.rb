@@ -28,12 +28,12 @@ class String
 
     formated = nil
     if this.include?('hoje')
-      formated = gsub(/hoje ../, Date.today.strftime('%b %d, %Y'))
+      formated = gsub(/hoje ../, Time.now.strftime('%b %d, %Y'))
     elsif this.include?('amanhã')
-      tomorrow = Date.today + 1.day
+      tomorrow = Time.now + 1.day
       formated = gsub(/amanhã ../, tomorrow.strftime('%b %d, %Y'))
-    elsif this.include?('em')
-      date = scan(/em (\d+)\.(\d+)\./).flatten.concat([Time.now.year]).join('/').to_date
+    elsif this.include?('em') || !scan(/\d+\.\d+\. .. \d+\:\d+/).empty?
+      date = scan(/(:?em )?(\d+)\.(\d+)\./).flatten.concat([Time.now.year]).join('/').to_date
       hour = split(' ').last
       formated = "#{date.strftime('%b %d, %Y')} #{hour}"
     elsif !scan(/... \d{1,2}, \d{4}/).empty?
@@ -41,10 +41,6 @@ class String
       original_locale_month = this.split(' ').first
       english_locale_month = month_mapping(original_locale_month)
       formated = this.gsub(original_locale_month, english_locale_month)
-    elsif !scan(/\d+\.\d+\. .. \d+\:\d+/).empty? # ["22.09. às 13:45"]
-      date = scan(/(\d+)\.(\d+)\./).flatten.concat([Time.now.year]).join('/').to_date
-      hour = split(' ').last
-      formated = "#{date.strftime('%b %d, %Y')} #{hour}"
     else
       raise Exception, 'unsupported parse_datetime date'
     end
