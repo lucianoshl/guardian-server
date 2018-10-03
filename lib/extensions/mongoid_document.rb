@@ -6,15 +6,22 @@ module Mongoid::Document
     self
   end
 
+  def field_keys
+    (self.class.fields.keys - ['_id'] + ['id']).map(&:to_sym)
+  end
+
   def merge_non_nil(other)
-    current_attrs = (self.class.fields.keys - ['_id'] + ['id']).map(&:to_sym)
+    hash_values = other.to_h.select_keys(field_keys).reject { |_k, v| v.nil? }
+    merge_properties(hash_values)
+  end
+
+  def merge_properties(other)
     hash_values = other.to_h
-
-    hash_values = hash_values.select_keys(*current_attrs).reject { |_k, v| v.nil? }
-
+    intersection_fields = (hash_values.keys & field_keys) & hash_values.keys
+    hash_values = other.to_h
     hash_values.delete(:id)
-    hash_values.map do |k, v|
-      self[k] = v
+    intersection_fields.map do |k|
+      self[k] = hash_values[k]
     end
     self
   end

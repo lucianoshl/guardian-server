@@ -217,7 +217,7 @@ class Task::StealResourcesTask < Task::Abstract
   def sort_by_priority(targets)
     villages = Account.main.player.villages
     distances = targets.map do |target|
-      villages = villages.select { |a| target.distance(a) <= 20 }
+      villages = villages.select { |a| target.distance(a) <= @distance }
       villages = villages.sort { |a, b| target.distance(a) <=> target.distance(b) }
 
       next if villages.empty?
