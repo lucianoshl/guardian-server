@@ -17,7 +17,7 @@ class Task::StealResourcesTask < Task::Abstract
     criteria = criteria.sort(next_event: 'asc')
 
     logger.info("Running for #{criteria.count} targets")
-
+    
     while target = sort_by_priority(criteria).shift
       logger.info('-' * 50)
       target = target.last
@@ -215,9 +215,9 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def sort_by_priority(targets)
-    villages = Account.main.player.villages
+    my_villages = Account.main.player.villages
     distances = targets.map do |target|
-      villages = villages.select { |a| target.distance(a) <= @distance }
+      villages = my_villages.select { |a| target.distance(a) <= @distance }
       villages = villages.sort { |a, b| target.distance(a) <=> target.distance(b) }
 
       next if villages.empty?
@@ -227,7 +227,7 @@ class Task::StealResourcesTask < Task::Abstract
         target
       ]
     end
-
+    
     distances.compact.sort_by(&:first)
   end
 

@@ -4,7 +4,8 @@ class Task::PlayerMonitoringTask < Task::Abstract
   runs_every 10.minutes
 
   def run
-    nearby = Service::Map.find_nearby(Account.main.player.villages, 20)
+    distance = Property.get('STEAL_RESOURCES_DISTANCE', 10) * 2
+    nearby = Service::Map.find_nearby(Account.main.player.villages, distance)
 
     moved_villages = Village.all.pluck(:id) - nearby.keys
     Village.in(id: moved_villages).delete_all
