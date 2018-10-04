@@ -10,7 +10,8 @@ class Village
   field :status, type: String
   field :next_event, type: Time
 
-  field :disable_recruit, type: Boolean
+  field :disable_recruit, type: Boolean, default: false
+  field :disable_build, type: Boolean, default: false
 
   belongs_to :player, optional: true
   embeds_many :evolution, class_name: 'PointsEvolution'

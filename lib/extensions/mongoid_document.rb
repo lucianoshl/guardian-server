@@ -16,9 +16,8 @@ module Mongoid::Document
   end
 
   def merge_properties(other)
-    hash_values = other.to_h
+    hash_values = other.to_h.deep_symbolize_keys
     intersection_fields = (hash_values.keys & field_keys) & hash_values.keys
-    hash_values = other.to_h
     hash_values.delete(:id)
     intersection_fields.delete(:id)
     intersection_fields.map do |k|

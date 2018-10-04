@@ -8,16 +8,15 @@ module Type::Village
   end
 
   mutation do
-    name 'UpdateDisableRecruit'
+    name 'UpdateVillageFlags'
     argument :id, !types.Int
-    argument :disabled, !types.Boolean
+    argument :disable_recruit, types.Boolean
+    argument :disable_build, types.Boolean
     type Type::Village.definition
 
     def call(_object, inputs, _ctx)
       village = Village.find(id: inputs['id'])
-      village.disable_recruit = inputs['disabled']
-      village.save
-      village
+      village.merge_properties(inputs.to_h).store
     end
   end
 
