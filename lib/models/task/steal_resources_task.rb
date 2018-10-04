@@ -54,8 +54,7 @@ class Task::StealResourcesTask < Task::Abstract
     criteria = Village.targets.order(next_event: 'asc')
     criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
 
-    # next_event = criteria.first.next_event
-    criteria.first.next_event
+    sort_by_priority(criteria).first.last.next_event
     # possible_next_event = Time.now + 5.minutes
 
     # next_event > possible_next_event ? possible_next_event : next_event
