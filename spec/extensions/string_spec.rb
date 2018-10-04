@@ -44,4 +44,11 @@ describe String do
     value.zone.eql?('-03')
     expect(value.strftime('%b %d, %Y %H:%M:%S:%L')).to eq('Sep 29, 2018 17:13:00:000')
   end
+
+  it 'string_bug_06' do
+    value = 'em 29.11. às 17:13'.to_datetime
+    expect(value.class).to eq(Time)
+    value.zone.eql?('-03')
+    expect(value.strftime('%b %d, %Y %H:%M:%S:%L')).to eq('Nov 29, 2018 17:13:00:000')
+  end
 end

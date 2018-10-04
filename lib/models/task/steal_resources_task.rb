@@ -3,6 +3,8 @@
 class Task::StealResourcesTask < Task::Abstract
   runs_every 10.minutes
 
+  include Service::Targets
+
   def run
     @spy_is_researched = !Screen::Train.new.build_info['spy'].nil?
 
@@ -11,19 +13,25 @@ class Task::StealResourcesTask < Task::Abstract
     Service::Report.sync
     update_steal_candidates
     # TODO: refactor this criteria in a function duplicated code bellow
-    criteria = Village.targets.lte(next_event: Time.now)
+    criteria = targets_criteria.lte(next_event: Time.now)
 
     criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
-    criteria = criteria.sort(next_event: 'asc')
 
-    logger.info("Running for #{criteria.count} targets")
+    logger.info("Running for #{sort_by_priority(criteria).size} targets")
     
-    while target = sort_by_priority(criteria).shift
+    loop do
+      list = sort_by_priority(criteria)
+      element = list.first
+
+      break if element.nil?
+      distance, @origins, target = element
+
       logger.info('-' * 50)
-      target = target.last
-      logger.info("#{criteria.count} targets now running for #{target} current_status=#{target.status} ")
+      logger.info("#{list.size} targets for #{target} current_status=#{target.status} ")
+
       original_status = target.status
-      @origin = Account.main.player.villages.first
+
+      @origin = @origins.shift
       @target = target
 
       begin
@@ -51,13 +59,10 @@ class Task::StealResourcesTask < Task::Abstract
       logger.info("Finish for #{target} #{original_status} > #{target.status} ")
     end
 
-    criteria = Village.targets.order(next_event: 'asc')
+    criteria = targets_criteria
     criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
-
-    sort_by_priority(criteria).first.last.next_event
-    # possible_next_event = Time.now + 5.minutes
-
-    # next_event > possible_next_event ? possible_next_event : next_event
+    
+    sort_by_priority(criteria).map(&:last).min{|a,b| a.next_event <=> b.next_event }.next_event
   end
 
   def not_initialized
@@ -186,48 +191,6 @@ class Task::StealResourcesTask < Task::Abstract
     # binding.pry
     # TODO: make this based in simulator
     @target.player.nil? ? 1 : 5
-  end
-
-  def update_steal_candidates
-    current_player = Account.main.player
-    current_ally = current_player.ally
-    current_points = current_player.points
-
-    Village.targets.in(status: ['strong', 'ally', nil]).update_all(status: 'not_initialized')
-
-    strong_player = Player.gte(points: current_points * 0.6).pluck(:id) - [current_player.id]
-
-    attacked_strong_player = Village.in(player_id: strong_player).pluck(:id)
-    strong_villages_attacked = Report.in(target_id: attacked_strong_player).nin(dot: 'red').pluck(:target_id)
-
-    strong_player -= Village.in(id: strong_villages_attacked.uniq).map(&:player_id)
-
-    Village.targets.in(player_id: strong_player).update_all(status: 'strong', next_event: Time.now + 1.day)
-
-    unless current_ally.nil?
-      current_allies = Screen::AllyContracts.new.allies_ids << current_ally.id
-      ally_players = Player.in(ally_id: current_allies).pluck(:id)
-      Village.targets.in(player_id: ally_players).update_all(status: 'ally', next_event: Time.now + 1.day)
-    end
-
-    Village.targets.in(next_event: nil).update_all(next_event: Time.now)
-  end
-
-  def sort_by_priority(targets)
-    my_villages = Account.main.player.villages
-    distances = targets.map do |target|
-      villages = my_villages.select { |a| target.distance(a) <= @distance }
-      villages = villages.sort { |a, b| target.distance(a) <=> target.distance(b) }
-
-      next if villages.empty?
-      [
-        villages.first.distance(target),
-        villages,
-        target
-      ]
-    end
-    
-    distances.compact.sort_by(&:first)
   end
 
   def place(id = @origin.id)
