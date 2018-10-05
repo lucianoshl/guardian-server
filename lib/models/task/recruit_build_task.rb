@@ -18,7 +18,7 @@ class Task::RecruitBuildTask < Task::Abstract
 
     @main = Screen::Main.new(id: village.id)
 
-    next_execution = build(village, @main) if village.disable_build != true
+    next_execution = build(village, @main)
 
     return nil if next_execution.nil?
     next_execution < possible_next_execution ? next_execution : possible_next_execution

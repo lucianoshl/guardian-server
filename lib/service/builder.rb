@@ -11,6 +11,8 @@ module Service::Builder
     if main.storage.warning && !main.in_queue?(:storage)
       return main.possible_build?(:storage) ? main.build(:storage) : nil
     end
+
+    return nil if village.disable_build != true
     
     model = select_model_item(village.model.buildings, main).each.to_a
 
