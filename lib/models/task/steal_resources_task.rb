@@ -51,6 +51,8 @@ class Task::StealResourcesTask < Task::Abstract
         next_attack = report.time_to_produce(e.population * 25)
         report.mark_read
         send_to('waiting_resource_production', next_attack)
+      rescue NotPossibleAttackBeforeIncomingException => e
+        send_to('waiting_incoming', e.incoming_time)
       rescue Exception => e
         binding.pry unless ENV['ENV'] == 'PRODUCTION'
         send_to('error', Time.now + 10.minutes)
@@ -93,14 +95,7 @@ class Task::StealResourcesTask < Task::Abstract
     troops = place_screen.troops
     if troops.spy >= spy_qte
       troop = Troop.new(spy: spy_qte)
-      if place_screen.incomings.size.positive?
-        travel_time = troop.travel_time(@target, @origin)
-        next_incoming = place_screen.incomings.first.arrival
-        back_time = Time.now + travel_time * 2
-        if back_time.to_datetime > (next_incoming - 1.minute)
-          return send_to('waiting_incoming', next_incoming)
-        end
-      end
+      check_is_possible_attack_before_incoming(place_screen, troop)
       command = place_screen.send_attack(@target, troop)
       send_to('waiting_report', command.arrival)
     else
@@ -160,14 +155,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     to_send.spy += 1 if place_troops.spy.positive?
 
-    unless place.incomings.empty?
-      travel_time = to_send.travel_time(@target, @origin)
-      next_incoming = place.incomings.first.arrival
-      back_time = Time.now + travel_time * 2
-      if back_time.to_datetime > (next_incoming - 1.minute)
-        return send_to('waiting_incoming', next_incoming)
-      end
-    end
+    check_is_possible_attack_before_incoming(place, to_send)
 
     command = place.send_attack(@target, to_send)
     command.origin_report = report
@@ -176,6 +164,16 @@ class Task::StealResourcesTask < Task::Abstract
     send_to('waiting_report', command.arrival)
     report.read = true
     report.save
+  end
+
+  def check_is_possible_attack_before_incoming(place, troops)
+    return if place.incomings.empty?
+    travel_time = troops.travel_time(@target, @origin)
+    next_incoming = place.incomings.first.arrival
+    back_time = Time.now + travel_time * 2
+    if back_time.to_datetime > (next_incoming - 1.minute)
+      raise NotPossibleAttackBeforeIncomingException.new(next_incoming)
+    end
   end
 
   def send_to(status, time = Time.now)
