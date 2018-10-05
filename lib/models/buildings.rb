@@ -31,4 +31,8 @@ class Buildings
     end
     false
   end
+
+  def inspect
+    "#{self.class.name} #{each.to_h.select{|l,qte| qte>0}}".gsub('"','')
+  end
 end

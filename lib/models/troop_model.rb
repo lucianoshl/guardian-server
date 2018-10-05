@@ -7,4 +7,8 @@ class TroopModel < Troop
     fields.delete(id)
     field id.to_sym, type: Float, default: 0
   end
+
+  def inspect
+    "#{self.class.name} #{to_h.select{|unit,qte| qte>0}}".gsub('"','')
+  end
 end

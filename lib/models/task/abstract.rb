@@ -89,4 +89,8 @@ class Task::Abstract
       end while seconds.positive?
     end
   end
+
+  def self.remove_inconsistent_job
+    (Delayed::Backend::Mongoid::Job.all - Task::Abstract.all.map(&:job)).map(&:delete)
+  end
 end

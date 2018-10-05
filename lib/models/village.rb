@@ -20,6 +20,7 @@ class Village
   belongs_to :model, class_name: VillageModel.to_s, optional: true
 
   scope :targets, -> { not_in(player_id: [Account.main.player.id]) }
+  scope :my, -> { self.class.in(player_id: [Account.main.player.id]) }
 
   before_save do |_news|
     if evolution.empty?
