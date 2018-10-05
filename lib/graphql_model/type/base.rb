@@ -62,47 +62,41 @@ module Type::Base
 
       def definition
         this = self
-        @target = target = class_base
+        Type::Base.register_type(self, class_base)
+        
+        return @definition unless @definition.nil?
+        @definition = GraphQL::ObjectType.define do
+          class_base = this.class_base
+          name this.definition_name
+          description "Generated model for class #{this.to_s.gsub('Type::', '')}"
 
-        Type::Base.register_type(self, target)
+          fields = class_base.fields.merge(class_base.relations)
 
-        if @definition.nil?
-          @definition = GraphQL::ObjectType.define do
-            name this.definition_name
-            description "Generated model for class #{this.to_s.gsub('Type::', '')}"
-
-            fields = target.fields.merge(target.relations)
-
-            fields.map do |name, meta|
-              field_type = this.field_type(name, meta, types)
-              field(this.field_name(name), field_type) unless field_type.nil?
-            end
+          fields.map do |name, meta|
+            field_type = this.field_type(name, meta, types)
+            field(this.field_name(name), field_type) unless field_type.nil?
           end
         end
-        @definition
       end
 
       def input_type
         this = self
-        @target = target = class_base
-        if @input_type.nil?
-          @input_type = GraphQL::InputObjectType.define do
-            name("#{this.to_s.gsub('Type::', '')}Input")
-            fields = target.fields
+        return @input_type unless @input_type.nil?
+        @input_type = GraphQL::InputObjectType.define do
+          name("#{this.to_s.gsub('Type::', '')}Input")
+          fields = this.class_base.fields
 
-            fields.map do |name, meta|
-              field_type = this.field_type(name, meta, types)
-              argument(this.field_name(name), field_type) unless field_type.nil?
-            end
+          fields.map do |name, meta|
+            field_type = this.field_type(name, meta, types)
+            argument(this.field_name(name), field_type) unless field_type.nil?
           end
         end
-        @input_type
       end
 
       def base_criteria(_obj, args, _ctx)
-        base_fields = @target.fields.merge(@target.relations).keys << 'id'
+        base_fields = class_base.fields.merge(class_base.relations).keys << 'id'
         filters = args.to_h.select_keys(*base_fields)
-        criteria = @target.where(filters)
+        criteria = class_base.where(filters)
         criteria = @criteria_block.call(criteria, args) unless @criteria_block.nil?
         criteria
       end
