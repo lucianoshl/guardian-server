@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module Service::Targets
+  include Logging
+
   def update_steal_candidates
+    logger.info('update_steal_candidates: start')
     current_player = Account.main.player
     current_ally = current_player.ally
     current_points = current_player.points
@@ -23,12 +26,19 @@ module Service::Targets
       Village.targets.in(player_id: ally_players).update_all(status: 'ally', next_event: Time.now + 1.day)
     end
 
-    Village.targets.in(next_event: nil).update_all(next_event: Time.now)
+    result = Village.targets.in(next_event: nil).update_all(next_event: Time.now)
+    logger.info('update_steal_candidates: end')
+    result
   end
 
   def sort_by_priority(targets)
-    my_villages = Account.main.player.villages
-    distances = targets.map do |target|
+    logger.info('sort_by_priority: start')
+    my_villages = Village.my.clone
+    logger.info("sort_by_priority: targets #{targets.count}")
+    targets = targets.to_a
+    
+    distances = targets.each_with_index.to_a.pmap do |target, index|
+      logger.info("#{targets.size}/#{index}")
       villages = my_villages.select { |a| target.distance(a) <= @distance }
       villages = villages.sort { |a, b| target.distance(a) <=> target.distance(b) }
 
@@ -39,7 +49,7 @@ module Service::Targets
         target
       ]
     end
-
+    logger.info('sort_by_priority: end')
     distances.compact.sort_by(&:first)
   end
 

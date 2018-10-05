@@ -12,16 +12,16 @@ class Task::StealResourcesTask < Task::Abstract
     @@places = {}
     Service::Report.sync
     update_steal_candidates
-    # TODO: refactor this criteria in a function duplicated code bellow
+    
     criteria = targets_criteria.lte(next_event: Time.now)
 
     criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
 
     logger.info("Running for #{sort_by_priority(criteria).size} targets")
+    list = sort_by_priority(criteria)
 
     loop do
-      list = sort_by_priority(criteria)
-      element = list.first
+      element = list.shift
 
       break if element.nil?
       distance, @origins, target = element
@@ -29,7 +29,7 @@ class Task::StealResourcesTask < Task::Abstract
       logger.info('-' * 50)
       logger.info("#{list.size} targets for #{target} current_status=#{target.status} ")
 
-      original_status = target.status
+      @original_status = target.status
 
       @origin = @origins.shift
       @target = target
@@ -58,7 +58,7 @@ class Task::StealResourcesTask < Task::Abstract
         send_to('error', Time.now + 10.minutes)
       end
 
-      logger.info("Finish for #{target} #{original_status} > #{target.status} ")
+      logger.info("Finish for #{target} #{@original_status} > #{target.status} ")
     end
 
     criteria = targets_criteria
@@ -177,6 +177,14 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def send_to(status, time = Time.now)
+    switch_village_stages = ['waiting_incoming','waiting_strong_troops','waiting_troops','waiting_resource_production','waiting_spies']
+    if switch_village_stages.include? status && @origins.size.positive?
+      @origin = @origins.shift
+      puts "Change village to #{@origin}".black.on_red
+      send(@original_status)
+      return
+    end
+
     logger.info("Moving to #{status} until #{time}")
     time += 1.second
     @target.status = status
@@ -185,9 +193,6 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def spy_qte
-    # 1
-    # binding.pry
-    # TODO: make this based in simulator
     @target.player.nil? ? 1 : 5
   end
 
@@ -197,8 +202,11 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def next_returning_command
-    result = place(@origin.id).commands.returning.first
-    result ||= place(@origin.id).commands.all.first
+    all_commands = @origins.map{|v| place(v.id)}.map(&:commands)
+    
+    result = all_commands.map(&:returning).flatten.min_by(&:arrival)
+    result ||= all_commands.map(&:all).flatten.min_by(&:arrival)
+    
 
     if result.nil?
       finish_recruit = Screen::Train.new.queue.to_h.values.flatten.map(&:next_finish).compact.min
