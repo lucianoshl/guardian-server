@@ -1,16 +1,21 @@
 # frozen_string_literal: true
 
 module MongoInflector
+  @@type_mapping = {}
+  @@type_mapping[String] = types.String
+  @@type_mapping[Integer] = types.Int
+  @@type_mapping[Float] = types.Float
+  @@type_mapping[Hash] = nil
+
   def field_name(name)
     name == '_id' ? 'id' : name
   end
 
   def field_type(name, meta, types)
     return types.ID if name == '_id'
-    return types.String if meta.type == String
-    return types.Int if meta.type == Integer
-    return types.Float if meta.type == Float
-    return nil if meta.type == Hash
+    result = @@type_mapping[meta.type]
+    return result if @@type_mapping.key?(meta.type)
+    
     return nil if meta.class == Mongoid::Relations::Metadata && meta.relation == Mongoid::Relations::Embedded::In
 
     type = meta.type
