@@ -42,7 +42,11 @@ class Report
   end
 
   def erase
-    Client::Logged.mobile.get(erase_uri) if dot != 'red' && dot != 'yellow'
+    Client::Logged.mobile.get(erase_uri) if erase?
+  end
+
+  def erase?
+    dot != 'red' && dot != 'yellow' && atk_troops&.snob&.zero? && def_troops&.snob&.zero?
   end
 
   def win?
