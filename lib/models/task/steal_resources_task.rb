@@ -18,7 +18,7 @@ class Task::StealResourcesTask < Task::Abstract
     criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
 
     logger.info("Running for #{sort_by_priority(criteria).size} targets")
-    
+
     loop do
       list = sort_by_priority(criteria)
       element = list.first
@@ -61,8 +61,8 @@ class Task::StealResourcesTask < Task::Abstract
 
     criteria = targets_criteria
     criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
-    
-    sort_by_priority(criteria).map(&:last).min{|a,b| a.next_event <=> b.next_event }.next_event
+
+    sort_by_priority(criteria).map(&:last).min_by(&:next_event).next_event
   end
 
   def not_initialized

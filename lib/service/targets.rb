@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Service::Targets
   def update_steal_candidates
     current_player = Account.main.player
@@ -37,12 +39,11 @@ module Service::Targets
         target
       ]
     end
-    
+
     distances.compact.sort_by(&:first)
   end
 
   def targets_criteria
     Village.targets.order(next_event: 'asc')
   end
-
 end

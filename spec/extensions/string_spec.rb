@@ -5,7 +5,7 @@ describe String do
     value = 'Set 10, 2018  10:30:32'.to_datetime
     expect(value.class).to eq(Time)
     expect(value.zone).to eq('-03')
-    expect(value.strftime('%b %d, %Y %H:%M:%S:%L')).to eq('Sep 10, 2018 10:30:32:000') 
+    expect(value.strftime('%b %d, %Y %H:%M:%S:%L')).to eq('Sep 10, 2018 10:30:32:000')
   end
 
   it 'string_bug_02' do
