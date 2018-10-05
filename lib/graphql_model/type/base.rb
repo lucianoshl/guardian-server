@@ -2,9 +2,9 @@
 
 module MongoInflector
   @@type_mapping = {}
-  @@type_mapping[String] = types.String
-  @@type_mapping[Integer] = types.Int
-  @@type_mapping[Float] = types.Float
+  @@type_mapping[String] = GraphQL::STRING_TYPE
+  @@type_mapping[Integer] = GraphQL::INT_TYPE
+  @@type_mapping[Float] = GraphQL::FLOAT_TYPE
   @@type_mapping[Hash] = nil
 
   def field_name(name)
