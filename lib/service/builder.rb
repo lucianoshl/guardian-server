@@ -12,7 +12,7 @@ module Service::Builder
       return main.possible_build?(:storage) ? main.build(:storage) : nil
     end
 
-    return nil if village.disable_build != true
+    return nil if village.disable_build == true
     
     model = select_model_item(village.model.buildings, main).each.to_a
 
