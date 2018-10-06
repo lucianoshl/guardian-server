@@ -31,6 +31,7 @@ class Task::StealResourcesTask < Task::Abstract
 
       @original_status = target.status
 
+      @range_villages = @origins.clone
       @origin = @origins.shift
       @target = target
 
@@ -203,7 +204,7 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def next_returning_command
-    all_commands = @origins.map{|v| place(v.id)}.map(&:commands)
+    all_commands = @range_villages.map{|v| place(v.id)}.map(&:commands)
     
     result = all_commands.map(&:returning).flatten.min_by(&:arrival)
     result ||= all_commands.map(&:all).flatten.min_by(&:arrival)
