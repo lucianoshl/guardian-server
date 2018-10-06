@@ -38,7 +38,7 @@ module Service::Targets
     targets = targets.to_a
     
     distances = targets.each_with_index.to_a.pmap do |target, index|
-      logger.info("#{targets.size}/#{index}")
+      logger.debug("#{targets.size}/#{index}")
       villages = my_villages.select { |a| target.distance(a) <= @distance }
       villages = villages.sort { |a, b| target.distance(a) <=> target.distance(b) }
 
