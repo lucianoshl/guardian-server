@@ -178,7 +178,8 @@ class Task::StealResourcesTask < Task::Abstract
 
   def send_to(status, time = Time.now)
     switch_village_stages = ['waiting_incoming','waiting_strong_troops','waiting_troops','waiting_resource_production','waiting_spies']
-    if switch_village_stages.include? status && @origins.size.positive?
+    
+    if switch_village_stages.include?(status) && @origins.size.positive?
       @origin = @origins.shift
       puts "Change village to #{@origin}".black.on_red
       send(@original_status)
