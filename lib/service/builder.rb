@@ -13,7 +13,6 @@ module Service::Builder
     end
 
     return nil if village.disable_build == true
-
     model = select_model_item(village.model.buildings, main).each.to_a
 
     model = model.select do |building, level|
