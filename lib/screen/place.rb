@@ -91,4 +91,10 @@ class Screen::Place < Screen::Base
     end
     result
   end
+
+  def self.all_places
+    Village.my.map do |village|
+      Screen::Place.new(village: village.id)
+    end
+  end
 end

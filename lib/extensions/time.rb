@@ -11,4 +11,8 @@ class Time
     offset = Rational(utc_offset, 60 * 60 * 24)
     DateTime.new(year, month, day, hour, min, seconds, offset)
   end
+  
+  def format_date
+    strftime('%Y-%m-%d %H:%M:%S')
+  end
 end

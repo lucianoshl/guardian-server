@@ -168,7 +168,7 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def check_is_possible_attack_before_incoming(place, troops)
-    return if place.incomings.empty?
+    return if all_places.map(&:incomings).empty?
     travel_time = troops.travel_time(@target, @origin)
     next_incoming = place.incomings.first.arrival
     back_time = Time.now + travel_time * 2
@@ -203,8 +203,12 @@ class Task::StealResourcesTask < Task::Abstract
     @@places[id]
   end
 
+  def all_places
+    @range_villages.map{|v| place(v.id)}
+  end
+
   def next_returning_command
-    all_commands = @range_villages.map{|v| place(v.id)}.map(&:commands)
+    all_commands = all_places.map(&:commands)
     
     result = all_commands.map(&:returning).flatten.min_by(&:arrival)
     result ||= all_commands.map(&:all).flatten.min_by(&:arrival)
