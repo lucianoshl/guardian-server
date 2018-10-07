@@ -168,9 +168,10 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def check_is_possible_attack_before_incoming(place, troops)
-    return if all_places.map(&:incomings).empty?
+    incomings = all_places.map(&:incomings).flatten
+    return if incomings.empty?
     travel_time = troops.travel_time(@target, @origin)
-    next_incoming = place.incomings.first.arrival
+    next_incoming = incomings.first.arrival
     back_time = Time.now + travel_time * 2
     if back_time.to_datetime > (next_incoming - 1.minute)
       raise NotPossibleAttackBeforeIncomingException.new(next_incoming)
