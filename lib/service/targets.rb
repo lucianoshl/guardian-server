@@ -22,6 +22,12 @@ module Service::Targets
 
     unless current_ally.nil?
       current_allies = Screen::AllyContracts.new.allies_ids << current_ally.id
+      
+      current_allies << 1990
+      current_allies << 2423
+      current_allies << 2241
+      current_allies << 2625
+      
       ally_players = Player.in(ally_id: current_allies).pluck(:id)
       Village.targets.in(player_id: ally_players).update_all(status: 'ally', next_event: Time.now + 1.day)
     end
