@@ -47,7 +47,7 @@ class Screen::ReportView < Screen::Base
     report.def_bonus = attack_def_table[2..-1].map { |a| a.search('td').map(&:text).map(&:strip) }
     report.def_bonus = fix_bonus_names(report.def_bonus)
 
-    away_units = parse_table(page, '#spy_away_table', include_header: true)
+    away_units = parse_table(page, '#attack_spy_away', include_header: true)
     report.def_away = away_units.empty? ? Troop.new : parse_units(away_units, 1)
 
     ram_label = Unit.get(:ram).name.downcase
