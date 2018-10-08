@@ -34,6 +34,9 @@ class Task::StealResourcesTask < Task::Abstract
       @range_villages = @origins.clone
       @origin = @origins.shift
       @target = target
+      if @origin.nil?
+        @target.status = 'far_away'
+      end
 
       begin
         send(@target.status)
