@@ -47,7 +47,7 @@ class Screen::ReportView < Screen::Base
     report.def_bonus = attack_def_table[2..-1].map { |a| a.search('td').map(&:text).map(&:strip) }
     report.def_bonus = fix_bonus_names(report.def_bonus)
 
-    away_units = parse_table(page, '#attack_spy_away', include_header: true)
+    away_units = parse_table(page, '#attack_spy_away table', include_header: true)
     report.def_away = away_units.empty? ? Troop.new : parse_units(away_units, 1)
 
     ram_label = Unit.get(:ram).name.downcase
@@ -101,6 +101,7 @@ class Screen::ReportView < Screen::Base
     units_tds = lines[0].search('td,th')
     qte_tds = lines[line].search('td,th')
     units_tds.each_with_index do |td, index|
+      binding.pry if td.search('a').first.nil?
       unit = td.search('a').first.attr('data-unit')
       result[unit] = qte_tds[index].text.number_part
     end
