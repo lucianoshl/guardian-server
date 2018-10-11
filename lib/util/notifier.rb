@@ -28,7 +28,7 @@ module Notifier
 
 
   def notify(content, title: nil)
-    Notifier.notify(content. title: title)
+    Notifier.notify(content, title: title)
   end
 
   def self.client_configured?
