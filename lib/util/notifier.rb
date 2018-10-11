@@ -4,7 +4,7 @@ module Notifier
   include Logging
   @@client = Washbullet::Client.new(ENV['PUSH_BULLET_API'])
 
-  def notify(content, title: nil)
+  def self.notify(content, title: nil)
     return unless client_configured?
     content = content.strip
 
@@ -26,7 +26,12 @@ module Notifier
     end
   end
 
-  def client_configured?
+
+  def notify(content, title: nil)
+    Notifier.notify(content. title: title)
+  end
+
+  def self.client_configured?
     !ENV['PUSH_BULLET_API'].blank?
   end
 end
