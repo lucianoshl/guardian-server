@@ -12,6 +12,9 @@ class Screen::ReportList < Screen::Base
   def parse(page)
     super
     self.pages = page.search('.paged-nav-item').size + 1
-    self.report_id_list = page.search('#report_list').to_html.scan(/view=(\d+)/).flatten.map(&:to_i)
+    self.report_id_list = (page.search('#report_list').search('a[href*=view]').map do |link|
+      next if link.text.include? 'visitou'
+      link.attr('href').scan(/view=(\d+)/).first.first.to_i
+    end).compact
   end
 end
