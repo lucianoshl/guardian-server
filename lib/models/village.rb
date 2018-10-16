@@ -52,30 +52,51 @@ class Village
 
   def self.steal_resources_targets
     my_villages = Account.main.player.villages
+    distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
 
     map = %{
       function() {
         var self = this;
-        var my_villages = #{my_villages.to_json}
+        var max_distance = #{distance};
+        var my_villages = #{my_villages.to_json};
         var distance = function(v1,v2){
           var a = Math.abs(v1.x - v2.x);
           var b = Math.abs(v1.y - v2.y);
           return Math.sqrt( a*a + b*b );
         };
-        var distances = my_villages.map(function(v1){ return distance(v1,self); })
+        var distances = my_villages.map(function(v1){
+           return {
+             distance: distance(v1,self),
+             village: v1._id
+           };
+        });
 
-        emit(this._id, {x: this.x, y: this.y, distance: distances});
+        distances = distances.filter(function(a){ return a.distance < max_distance});
+        distances = distances.sort(function(a,b){ return Math.sign(a.distance - b.distance) })
+
+        var nearby = distances.length > 0 ? 1 : 0
+
+        emit(this._id, {
+          id: this._id,
+          distances: distances,
+          nearby: nearby});
       }
     }
 
     reduce = %{
-      function(key, coords) {
-        return {test: key};
+      function(key, values) {
+        return {key: key, villages: values.length};
       }
     }
-    result = Village.map_reduce(map, reduce).out(inline: 1).each.to_a
 
-    binding.pry
+    finalize = %{
+      function(key, element) {
+        return element.nearby ? element : null
+      }
+    }
+
+    result = Village.map_reduce(map, reduce).out(inline: 1).finalize(finalize).each.to_a
+    result.select{|a| a['value'] }
   end
 
   def reserved_troops
