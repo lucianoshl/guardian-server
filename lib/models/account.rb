@@ -21,5 +21,7 @@ class Account
       world: ENV['STUB_WORLD'],
       main: true
     ).save
+    Service::StartupTasks.new.fill_user_information
+    Service::StartupTasks.new.fill_units_information
   end
 end

@@ -2,7 +2,7 @@
 
 class Screen::Base < Screen::Logged
   attr_accessor :quests, :server_time, :player, :village, :resources, :farm, :storage, :incomings
-  attr_accessor :load_time, :initial_server_time
+  attr_accessor :load_time, :initial_server_time, :csrf_token
 
   def initialize(args = {})
     super
@@ -19,6 +19,7 @@ class Screen::Base < Screen::Logged
     self.incomings = game_data['player']['incomings'].to_i
     self.load_time = Time.now
     self.initial_server_time = page.body.scan(/Timing.init\((.+)\)/).first.first.to_i
+    self.csrf_token = game_data['csrf']
     Service::AttackDetector.run(village) if incomings.positive?
   end
 
