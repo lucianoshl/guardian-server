@@ -29,6 +29,7 @@ class Task::TrainKnight < Task::Abstract
   end
 
   def home info
+    village = Village.find(info['home_village']['id'])
     regimen = info['usable_regimens'].first
     train_cost = regimen['res_cost'].to_resource
     statue = Screen::Statue::Main.new(village: village.id)
