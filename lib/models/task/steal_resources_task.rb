@@ -117,7 +117,7 @@ class Task::StealResourcesTask < Task::Abstract
       resource = 200
       place_troops = place.troops_available
 
-      if place_troops.carry >= resource && last_report.produced_resource?(resource)
+      if place_troops.carry >= resource && ( last_report.nil? || last_report.produced_resource?(resource) )
         troops, _remaining = place_troops.distribute(200)
         result = troops.upgrade_until_win(place_troops)
         command = place.send_attack(@target, result)
