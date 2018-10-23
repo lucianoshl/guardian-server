@@ -13,10 +13,11 @@ module Service::Targets
 
     strong_player = Player.gte(points: current_points * 0.6).pluck(:id) - [current_player.id]
 
-    attacked_strong_player = Village.in(player_id: strong_player).pluck(:id)
-    strong_villages_attacked = Report.in(target_id: attacked_strong_player).nin(dot: 'red').pluck(:target_id)
+    # check if village is conquered
+    # attacked_strong_player = Village.in(player_id: strong_player).pluck(:id)
+    # strong_villages_attacked = Report.in(target_id: attacked_strong_player).nin(dot: 'red').pluck(:target_id)
 
-    strong_player -= Village.in(id: strong_villages_attacked.uniq).map(&:player_id)
+    # strong_player -= Village.in(id: strong_villages_attacked.uniq).map(&:player_id)
 
     Village.targets.in(player_id: strong_player).update_all(status: 'strong', next_event: Time.now + 1.day)
 
