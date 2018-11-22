@@ -19,6 +19,10 @@ class Task::TrainKnight < Task::Abstract
     send(current,info)
   end
 
+  def reviving info
+    Time.at(info['activity']['finish_time'])
+  end
+
   def dead info
     notify("Knigth #{info['name']} is dead")
     Time.now + 1.hour
