@@ -21,6 +21,7 @@ class Task::TrainKnight < Task::Abstract
 
   def dead info
     notify("Knigth #{info['name']} is dead")
+    Time.now + 1.hour
   end
 
   def training info
