@@ -8,6 +8,15 @@ git clone https://github.com/lucianoshl/guardian-server
 
 cd guardian-server
 
-heroku apps:create <app_name>
+heroku apps:create [app_name]
 
-heroku config:set ENV=production MONGO_URL=<mongo_server_uri>
+heroku config:set ENV=production MONGO_URL=[mongo_server_uri]
+
+## Development
+
+Mongo container for specs:
+> docker run --restart=always --name mongodb -d mongo:latest
+
+### Running tests
+
+> STUB_USER=[username] STUB_PASS=[password] STUB_WORLD=[world] MONGO_URL=mongodb://localhost:27017/guardian-specs bundle exec rspec
