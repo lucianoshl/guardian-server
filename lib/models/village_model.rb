@@ -24,7 +24,12 @@ class VillageModel
       { statue: 1 },
       { farm: 2, iron: 3 },
       { main: 5, smith: 1 },
-      { wood: 4, stone: 4 }
+      { wood: 4, stone: 4 },
+      { storage: 2 },
+      { iron: 2, storage: 3 },
+      { statue: 1 },
+      { iron: 3, farm: 2 },
+      { storage: 20 }
     ].map { |a| Buildings.new(a) }
 
     model.train = TroopModel.new(spear: 40)
