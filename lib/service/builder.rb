@@ -13,7 +13,7 @@ module Service::Builder
     end
 
     return nil if village.disable_build == true
-    model = select_model_item(village.model.buildings, main).each.to_a
+    model = select_model_item(village.defined_model.buildings, main).each.to_a
 
     model = model.select do |building, level|
       !main.buildings_meta[building].nil? && level.positive?

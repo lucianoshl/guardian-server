@@ -8,7 +8,6 @@ class Task::RecruitBuildTask < Task::Abstract
 
   def run
     results = Account.main.player.villages.map do |village|
-      define_basic_model(village) if village.model.nil?
       run_for_village(village)
     end
     results.compact.min || nil
@@ -24,7 +23,4 @@ class Task::RecruitBuildTask < Task::Abstract
     next_execution < possible_next_execution ? next_execution : possible_next_execution
   end
 
-  def define_basic_model village
-    village.model = VillageModel.basic_model
-  end
 end

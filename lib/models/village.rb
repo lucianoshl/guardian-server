@@ -102,4 +102,9 @@ class Village
   def reserved_troops
     Troop.new(knight: 1)
   end
+
+  def defined_model
+    model || VillageModel.basic_model
+  end
+
 end
