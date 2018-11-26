@@ -57,6 +57,8 @@ class Screen::Train < Screen::Base
         iron: main_info[0].search('span[id*=cost_iron]').text
       )
 
+      item.active = block_item.search('.inactive').size < 2
+
       hour, minute, seconds = main_info[0].search('span[id*=cost_time]').text.split(':').map(&:to_i)
 
       item.cost_time = hour * 60 * 60 + minute * 60 + seconds

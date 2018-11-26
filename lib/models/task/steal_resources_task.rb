@@ -6,7 +6,7 @@ class Task::StealResourcesTask < Task::Abstract
   include Service::Targets
 
   def run
-    @spy_is_researched = !Screen::Train.new.build_info['spy'].nil?
+    @spy_is_researched = !!Screen::Train.new.build_info['spy']&.active
 
     @distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
     @@places = {}
