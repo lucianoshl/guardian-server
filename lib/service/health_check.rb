@@ -2,20 +2,21 @@
 
 class Service::HealthCheck
   include Logging
+  include Delayed::Backend::Mongoid
 
   def self.check_system
     validations = []
 
     validations << validation('job_with_error') do
-      Delayed::Backend::Mongoid::Job.nin(last_error: [nil]).pluck(:id)
+      Job.nin(last_error: [nil]).pluck(:id)
     end
 
     validations << validation('inconsistent_job_size') do
-      Delayed::Backend::Mongoid::Job.count != Task::Abstract.count
+        Job.all - Task::Abstract.all.map(&:job) if Job.count != Task::Abstract.count
     end
 
     validations << validation('invalid_jobs') do
-      Delayed::Backend::Mongoid::Job.lte(run_at: Time.now - 10.minutes).count > 0
+      Job.lte(run_at: Time.now - 10.minutes).count > 0
     end
 
     validations << validation('village_with_error') do
