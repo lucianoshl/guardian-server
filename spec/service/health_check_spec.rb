@@ -12,6 +12,7 @@ describe Service::HealthCheck do
     Delayed::Backend::Mongoid::Job.all.delete
   end
 
+  # TODO: add case with invalid DelayedJob state
   it 'check_inconsistent_job_size' do
     basic_task = Task::StealResourcesTask.new
     basic_task.save
