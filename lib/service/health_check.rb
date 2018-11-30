@@ -12,7 +12,7 @@ class Service::HealthCheck
     end
 
     validations << validation('inconsistent_job_size') do
-      (Job.all - Task::Abstract.all.map(&:job)) + Task::Abstract.in(job_in: nil)
+      (Job.all - Task::Abstract.all.map(&:job)) + Task::Abstract.in(job_id: nil)
     end
 
     validations << validation('invalid_jobs') do
