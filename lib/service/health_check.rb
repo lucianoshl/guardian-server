@@ -12,7 +12,12 @@ class Service::HealthCheck
     end
 
     validations << validation('inconsistent_job_size') do
-      (Job.all - Task::Abstract.all.map(&:job)) + Task::Abstract.in(job_id: nil)
+      linked_jobs = Task::Abstract.pluck(:job_id)
+      unlinked_jobs = Job.nin(id: linked_jobs)
+
+      task_without_job = Task::Abstract.all.select{|t| t.job.nil? }
+
+      unlinked_jobs + task_without_job
     end
 
     validations << validation('invalid_jobs') do
