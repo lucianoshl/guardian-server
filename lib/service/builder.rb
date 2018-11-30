@@ -13,6 +13,7 @@ module Service::Builder
     end
 
     return nil if village.disable_build == true
+
     model = select_model_item(village.defined_model.buildings, main).each.to_a
 
     return if model.nil?
@@ -53,6 +54,6 @@ module Service::Builder
       end
       return item if finded
     end
-    nil
+    {}
   end
 end
