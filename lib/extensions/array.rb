@@ -7,8 +7,8 @@ class Array
     end).to_h
   end
 
-  def pmap
-    parameter = 8
+  def pmap(parameter = nil)
+    parameter |= 8
     Parallel.map(self, in_threads: parameter || 1) { |i| yield(i) }
   end
 

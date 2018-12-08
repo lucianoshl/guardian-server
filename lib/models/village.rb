@@ -107,4 +107,12 @@ class Village
     model || VillageModel.basic_model
   end
 
+  def self.load_if_not_exists village_id
+    return false unless where(id: village_id).empty?
+
+    screen = Screen::GuestInfoVillage.new(id: village_id)
+    screen.village.save
+    true
+  end
+
 end
