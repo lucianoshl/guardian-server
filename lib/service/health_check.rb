@@ -21,7 +21,7 @@ class Service::HealthCheck
     end
 
     validations << validation('invalid_jobs') do
-      Job.lte(run_at: Time.now - 10.minutes).all
+      Job.lte(run_at: Time.now - 10.minutes).all.to_a
     end
 
     validations << validation('village_with_error') do

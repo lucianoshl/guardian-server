@@ -25,7 +25,6 @@ class Screen::ReportView < Screen::Base
 
     bonus_title = report_table.search('h4')[2]
     report.night_bonus = bonus_title.nil? ? false : bonus_title.text.downcase.include?('bonus')
-
     report.origin_id, report.target_id = page.search('.village_anchor').map { |a| a.attr('data-id').to_i }
 
     attack_units = parse_table(page, '#attack_info_att_units', remove_columns: [0])

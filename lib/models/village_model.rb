@@ -44,9 +44,11 @@ class VillageModel
       { main: 15, smith: 10 },
       { garage: 1, market: 10 },
       { barracks: 15, wood: 16, stone: 16, iron: 16 },
+      { main: 20, smith: 20 },
+      { wood: 20, stone: 20 }
     ].map { |a| Buildings.new(a) }
 
-    model.train = TroopModel.new(spear: 4000, sword: 4000, spy: 1000, ram: 200)
+    model.train = TroopModel.new(spear: 4000, sword: 4000, spy: 1000, light: 20, ram: 200)
 
     model
   end

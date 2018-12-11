@@ -15,7 +15,7 @@ heroku config:set ENV=production MONGO_URL=[mongo_server_uri]
 ## Development
 
 Mongo container for specs:
-> docker run --restart=always --name mongodb -d mongo:latest
+> docker run --restart=always -p 27017:27017 --name mongodb -d mongo:latest
 
 ### Running tests
 

@@ -25,6 +25,7 @@ class Service::Report
   def self.process_report(report_id)
     report = Screen::ReportView.new(view: report_id).report
     if Report.where(id: report.id).count.zero?
+      Village.load_if_not_exists(report.target_id)
       from_command = Command::My.where('target.x' => report.target.x, 'target.y' => report.target.y, 'arrival' => report.ocurrence, 'origin_id' => report.origin_id).min(arrival: 'desc')
 
       unless from_command.nil?
