@@ -13,6 +13,8 @@ class Village
   field :disable_recruit, type: Boolean, default: false
   field :disable_build, type: Boolean, default: false
 
+  embeds_one :reserved_troops, as: :troopable, class_name: Troop.to_s
+
   belongs_to :player, optional: true
   embeds_many :evolution, class_name: 'PointsEvolution'
   has_many :reports, inverse_of: :target
@@ -97,10 +99,6 @@ class Village
 
     result = Village.map_reduce(map, reduce).out(inline: 1).finalize(finalize).each.to_a
     result.select{|a| a['value'] }
-  end
-
-  def reserved_troops
-    Troop.new(knight: 1)
   end
 
   def defined_model

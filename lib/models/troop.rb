@@ -4,6 +4,8 @@ class Troop
   include Mongoid::Document
   include Logging
 
+  embedded_in :troopable, polymorphic: true
+
   Unit.ids.map do |id|
     field id.to_sym, type: Integer, default: 0
   end
