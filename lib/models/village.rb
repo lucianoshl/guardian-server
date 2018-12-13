@@ -46,6 +46,7 @@ class Village
     self.status = nil
     save
     Task::StealResourcesTask.first&.run_now
+    self
   end
 
   def to_s
