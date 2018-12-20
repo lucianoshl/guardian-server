@@ -83,7 +83,7 @@ class Screen::Place < Screen::Base
 
   def troops_available
     result = troops.clone
-    reserved_troops = village.reload.reserved_troops
+    reserved_troops = village.reload.reserved_troops || Troop.new
     result.each do |unit, _qte|
       result[unit] -= reserved_troops[unit]
       result[unit] = 0 if result[unit].negative?
