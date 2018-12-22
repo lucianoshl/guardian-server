@@ -8,6 +8,12 @@ class Task::TrainKnight < Task::Abstract
 
   def run
     overview = Screen::Statue::Overview.new
+    raise Exception.new('implementation error') if overview.builded && Village.my.count > 1
+
+    unless overview.builded
+      return Time.now + 5.minutes
+    end
+
     times = overview.knights_data.map do |_id,info|
       run_for_knight(info)
     end
