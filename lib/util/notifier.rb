@@ -9,8 +9,8 @@ module Notifier
     content = content.strip
 
     account = Account.main
-    sufix = "Guardian - #{account.username}(#{account.world})"
-    title += '-' + sufix unless title.nil?
+    sufix = "#{account.username}(#{account.world})"
+    title += '-' + sufix
 
     begin
       @@client.push_note(
