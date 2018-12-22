@@ -4,6 +4,8 @@ module Service::Recruiter
   include Logging
 
   def recruit(village)
+    return if village.points < 200
+
     train_screen = Screen::Train.new(village: village.id)
 
     if train_screen.farm.warning
