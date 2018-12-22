@@ -46,6 +46,10 @@ class Service::StartupTasks
     monitor_task = Task::PlayerMonitoringTask.new
     monitor_task.run
     monitor_task.save
+    Village.my.map do |village|
+      village.reserved_troops = Troop.new(knight: 1)
+      village.save
+    end
     Task::RecruitBuildTask.new.save
     Task::StealResourcesTask.new.save
     Task::TrainKnight.new.save
