@@ -43,13 +43,15 @@ class Task::StealResourcesTask < Task::Abstract
       rescue BannedPlayerException => e
         send_to('banned', Time.now + 1.day)
       rescue NewbieProtectionException => e
-        send_to('not_initialized', e.expiration)
+        send_to('newbie_protection', e.expiration)
       rescue UpgradeIsImpossibleException => e
         send_to('waiting_strong_troops', next_returning_command.arrival)
       rescue VeryWeakPlayerException => e
         send_to('weak_player', Time.now + 1.day)
       rescue RemovedPlayerException => e
         send_to('removed_player', Time.now + 1.day)
+      rescue InvitedPlayerException => e
+        send_to('invited_player', e.expiration)
       rescue NeedsMinimalPopulationException => e
         report = @target.latest_valid_report
         next_attack = report.time_to_produce(e.population * 25)
@@ -277,6 +279,10 @@ class Task::StealResourcesTask < Task::Abstract
     waiting_report
   end
 
+  def invited_player
+    waiting_report
+  end  
+
   def waiting_incoming
     waiting_report
   end
@@ -284,4 +290,9 @@ class Task::StealResourcesTask < Task::Abstract
   def error
     waiting_report
   end
+
+  def newbie_protection
+    waiting_report
+  end
+
 end

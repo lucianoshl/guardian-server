@@ -76,6 +76,8 @@ class Screen::Place < Screen::Base
       NeedsMinimalPopulationException.new(message)
     elsif message.include?('Alvo não existe')
       RemovedPlayerException.new(message)
+    elsif message.include?(' convidou o propriet')
+      InvitedPlayerException.new(message)
     else
       Exception.new(message)
     end
