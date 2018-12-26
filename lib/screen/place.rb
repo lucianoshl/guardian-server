@@ -61,6 +61,8 @@ class Screen::Place < Screen::Base
     binding.pry if target_commands.last.nil?
     result = target_commands.last
     result.troop = troops
+    travel_time = result.troop.travel_time(result.origin,result.target)
+    result.returning_arrival = result.arrival + travel_time
     result.save_if_not_saved
     result
   end
