@@ -51,4 +51,13 @@ describe String do
     value.zone.eql?('-03')
     expect(value.strftime('%b %d, %Y %H:%M:%S:%L')).to eq('Nov 29, 2018 17:13:00:000')
   end
+
+  it 'string_bug_07' do
+    now = Time.now
+    Time.stub(:now).and_return(now.change(day: 1, month: 12, year: 2018))
+    value = 'em 01.01. às 03:36'.to_datetime
+    expect(value.class).to eq(Time)
+    expect(value.zone).to eq('-02')
+    expect(value.strftime('%b %d, %Y %H:%M:%S:%L')).to eq('Jan 01, 2019 03:36:00:000')
+  end
 end
