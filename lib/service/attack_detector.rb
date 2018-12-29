@@ -19,7 +19,7 @@ module Service::AttackDetector
     if Command::Incoming.where(id: incoming.id).empty?
       command = Screen::InfoCommand.new(id: incoming.id).command
       notify(%(
-Ataque detectado as #{command.create_at.format_date}
+Ataque detectado as #{command.create_at.format_date} na aldeia #{command.target.to_s}
 Jogador: #{command.origin.player.name}
 Possiveis unidades:
 #{command.possible_troop.map { |id| Unit.get(id).name }.map { |a| "\t- #{a}" }.join("\n")}

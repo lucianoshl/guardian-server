@@ -10,7 +10,7 @@ module Notifier
 
     account = Account.main
     sufix = "#{account.username}(#{account.world})"
-    title += '-' + sufix
+    title = title.nil? ? sufix : "#{sufix} - #{title}"
 
     begin
       @@client.push_note(
