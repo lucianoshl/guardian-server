@@ -51,10 +51,6 @@ class String
       raise Exception, "Error parsing date \"#{this}\" #{e} #{e.message}"
     end
 
-    if (DateTime.now.month - parsed.month).abs >= 9
-      parsed = parsed.change(year: parsed.year+1)
-    end
-
     parsed
   end
 
