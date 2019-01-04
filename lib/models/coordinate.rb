@@ -13,4 +13,10 @@ class Coordinate
   def to_s
     "#{x}|#{y}"
   end
+
+  def to_h
+    result = attributes.clone
+    result.delete '_id'
+    result
+  end
 end

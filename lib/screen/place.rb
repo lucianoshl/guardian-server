@@ -41,6 +41,7 @@ class Screen::Place < Screen::Base
       command.target = link.text.to_coordinate
       command.returning = !tr.search('img[src*=return]').empty? || !tr.search('img[src*=cancel]').empty?
       command.arrival = tr.search('td')[1].text.to_datetime
+      command.target_village = Village.where(command.target.to_h).first
       command
     end
   end

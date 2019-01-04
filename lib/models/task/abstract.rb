@@ -36,16 +36,21 @@ class Task::Abstract
   end
 
   def execute
-    self.next_execution = nil
-    execution_result = run
-    self.next_execution = execution_result if [Time,DateTime].include? execution_result.class
-    if runs_every.nil?
-      job&.delete
-      delete
-    else
-      self.last_execution = Time.now
-      self.next_execution = calc_next_execution if self.next_execution.nil?
+    if enabled == false
+      self.next_execution = Time.now + 1.minute
       save
+    else
+      self.next_execution = nil
+      execution_result = run
+      self.next_execution = execution_result if [Time,DateTime].include? execution_result.class
+      if runs_every.nil?
+        job&.delete
+        delete
+      else
+        self.last_execution = Time.now
+        self.next_execution = calc_next_execution if self.next_execution.nil?
+        save
+      end
     end
   end
 
