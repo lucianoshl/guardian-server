@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby "2.5.#{RUBY_VERSION.scan(/(\d+)\.(\d+)\.(\d+)/).flatten.last}"
+ruby "2.5.3"
 
 source 'https://rubygems.org'
 
