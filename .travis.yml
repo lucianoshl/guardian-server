@@ -3,7 +3,7 @@ env:
     - CC_TEST_REPORTER_ID=e7f5d9a518ee5fa811fa38642f11119a495545796b1b3d929eadc0ae40229037
 language: ruby
 rvm:
- - 2.5.1
+ - 2.5.3
 bundler_args: --jobs=2
 jobs:
   include:
