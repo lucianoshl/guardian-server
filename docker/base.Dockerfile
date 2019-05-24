@@ -8,5 +8,5 @@ WORKDIR /usr/app
 
 COPY Gemfile /usr/app/ 
 COPY Gemfile.lock /usr/app/ 
-RUN bundle install
+RUN bundle install --with development test
 COPY . /usr/app
