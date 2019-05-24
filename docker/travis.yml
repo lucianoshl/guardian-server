@@ -8,10 +8,7 @@ services:
              bundle exec rake coveralls:push &&
              ./cc-test-reporter after-build"
     environment:
-      CI: 'true'
-      TRAVIS: 'true'
       CC_TEST_REPORTER_ID: e7f5d9a518ee5fa811fa38642f11119a495545796b1b3d929eadc0ae40229037
-      ENV: test
       MONGO_URL: mongodb://mongo:27017/guardian-specs
       STUB_PASS: ${STUB_PASS}
       STUB_USER: lucianoshl
