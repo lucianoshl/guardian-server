@@ -10,3 +10,5 @@ services:
       context: ..
       dockerfile: ./docker/test.Dockerfile
     image: lucianoshl/guardian-tests
+    depends_on:
+      - base
