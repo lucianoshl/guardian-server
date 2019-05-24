@@ -10,11 +10,11 @@ jobs:
   include:
     - stage: test
       before_script:
-        - docker-compose run test /bin/bash -c './cc-test-reporter before-build'
+        - docker-compose run test /bin/sh -c './cc-test-reporter before-build'
       script: docker-compose run test
       after_script:
-        - docker-compose run test /bin/bash -c 'bundle exec rake coveralls:push'
-        - docker-compose run test /bin/bash -c './cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT'
+        - docker-compose run test /bin/sh -c 'bundle exec rake coveralls:push'
+        - docker-compose run test /bin/sh -c './cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT'
 stages:
   - test
 cache: bundler
