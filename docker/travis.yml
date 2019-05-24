@@ -6,10 +6,9 @@ services:
       sh -c "./cc-test-reporter before-build &&
              bundle exec rspec spec &&
              bundle exec rake coveralls:push &&
-             ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
+             ./cc-test-reporter after-build"
     environment:
       CI: 'true'
-      TRAVIS_TEST_RESULT: ${TRAVIS_TEST_RESULT}
       TRAVIS: 'true'
       CC_TEST_REPORTER_ID: e7f5d9a518ee5fa811fa38642f11119a495545796b1b3d929eadc0ae40229037
       ENV: test
