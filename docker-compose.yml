@@ -1,0 +1,20 @@
+version: '3.4'
+services:
+  test: 
+    build:
+      context: .
+      dockerfile: ./docker/tests.Dockerfile
+    image: lucianoshl/guardian-tests
+    command: bundle exec rspec spec
+    environment:
+      MONGO_URL: mongodb://mongo:27017/guardian-specs
+      STUB_PASS: ${STUB_PASS}
+      STUB_USER: lucianoshl
+      STUB_WORLD: br95
+      TZ: America/Sao_Paulo
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:latest
+
+ 

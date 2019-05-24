@@ -1,21 +1,7 @@
-env:
-  global:
-    - CC_TEST_REPORTER_ID=e7f5d9a518ee5fa811fa38642f11119a495545796b1b3d929eadc0ae40229037
 language: ruby
-rvm:
- - 2.5.3
-bundler_args: --jobs=2
-jobs:
-  include:
-    - stage: test
-      before_script:
-        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-        - chmod +x ./cc-test-reporter
-        - ./cc-test-reporter before-build
-      script: bundle exec rspec spec
-      after_script:
-        - bundle exec rake coveralls:push
-        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
-stages:
-  - test
-cache: bundler
+services:
+  - docker
+before_install:
+  - docker-compose build
+script:
+  - docker-compose up test
