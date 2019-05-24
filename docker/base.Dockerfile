@@ -9,3 +9,4 @@ WORKDIR /usr/app
 COPY Gemfile /usr/app/ 
 COPY Gemfile.lock /usr/app/ 
 RUN bundle install
+COPY . /usr/app

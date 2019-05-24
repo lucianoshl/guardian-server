@@ -9,5 +9,3 @@ RUN chmod +x ./cc-test-reporter
 RUN adduser -D -u 1000 travis
 RUN chown -R travis:travis /usr/app
 USER travis
-
-COPY . /usr/app
