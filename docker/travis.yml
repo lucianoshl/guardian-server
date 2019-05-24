@@ -1,0 +1,26 @@
+version: '3.4'
+services:
+  tests-ci:
+    image: lucianoshl/guardian-tests
+    command: >
+      sh -c "./cc-test-reporter before-build &&
+             bundle exec rspec spec &&
+             bundle exec rake coveralls:push &&
+             ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
+    environment:
+      CI: 'true'
+      TRAVIS_TEST_RESULT: ${TRAVIS_TEST_RESULT}
+      TRAVIS: 'true'
+      CC_TEST_REPORTER_ID: e7f5d9a518ee5fa811fa38642f11119a495545796b1b3d929eadc0ae40229037
+      ENV: test
+      MONGO_URL: mongodb://mongo:27017/guardian-specs
+      STUB_PASS: ${STUB_PASS}
+      STUB_USER: lucianoshl
+      STUB_WORLD: br95
+      TZ: America/Sao_Paulo
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:latest
+
+ 
