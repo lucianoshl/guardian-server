@@ -1,8 +1,6 @@
 env:
   global:
     - CC_TEST_REPORTER_ID=e7f5d9a518ee5fa811fa38642f11119a495545796b1b3d929eadc0ae40229037
-    - CI=true 
-    - TRAVIS=true
 language: generic
 services:
   - docker  
@@ -11,12 +9,7 @@ before_install:
 jobs:
   include:
     - stage: test
-      before_script:
-        - docker-compose run test /bin/sh -c './cc-test-reporter before-build'
-      script: docker-compose run test
-      after_script:
-        - docker-compose run -e CI=true -e TRAVIS=true test /bin/sh -c 'bundle exec rake coveralls:push'
-        - docker-compose run test /bin/sh -c './cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT'
+      script: docker-compose run -e TRAVIS_TEST_RESULT=$TRAVIS_TEST_RESULT -e CI=true -e CC_TEST_REPORTER_ID=$CC_TEST_REPORTER_ID -e TRAVIS=true test /bin/sh -c './cc-test-reporter before-build && bundle exec rspec spec  && bundle exec rake coveralls:push && ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT'
 stages:
   - test
 cache: bundler
