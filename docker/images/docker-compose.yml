@@ -3,12 +3,12 @@ services:
   base: 
     build:
       context: ../..
-      dockerfile: base.Dockerfile
+      dockerfile: ./docker/images/base.Dockerfile
     image: lucianoshl/guardian-base
   test: 
     build:
       context: ../..
-      dockerfile: test.Dockerfile
+      dockerfile: ./docker/images/test.Dockerfile
     image: lucianoshl/guardian-tests
     depends_on:
       - base
