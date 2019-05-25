@@ -12,6 +12,7 @@ jobs:
       script: docker-compose run travis bundle exec rspec spec
       after_script:
         - docker-compose run travis bundle exec rake coveralls:push
+        - echo $TRAVIS_TEST_RESULT
         - docker-compose run -e TRAVIS_TEST_RESULT=$TRAVIS_TEST_RESULT travis ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 stages:
   - test
