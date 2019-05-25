@@ -6,7 +6,13 @@ before_install:
 jobs:
   include:
     - stage: test
-      script: docker-compose -f docker/travis.yml run tests-ci
+      before_script:
+        - cd docker/travis
+        - docker-compose run travis ./cc-test-reporter before-build
+      script: docker-compose run travis bundle exec rspec spec
+      after_script:
+        - docker-compose run travis bundle exec rake coveralls:push
+        - docker-compose run -e TRAVIS_TEST_RESULT=$TRAVIS_TEST_RESULT travis ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 stages:
   - test
 cache: bundler
