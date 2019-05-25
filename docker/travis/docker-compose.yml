@@ -3,7 +3,7 @@ services:
   travis:
     image: lucianoshl/guardian-tests
     volumes:
-      - /tmp/coverage:/usr/app/coverage
+      - ../..:/usr/app
     environment:
       CI: 'true'
       TRAVIS: 'true'
