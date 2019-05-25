@@ -2,13 +2,13 @@ version: '3.4'
 services:
   base: 
     build:
-      context: ..
-      dockerfile: ./docker/base.Dockerfile
+      context: ../..
+      dockerfile: base.Dockerfile
     image: lucianoshl/guardian-base
   test: 
     build:
-      context: ..
-      dockerfile: ./docker/test.Dockerfile
+      context: ../..
+      dockerfile: test.Dockerfile
     image: lucianoshl/guardian-tests
     depends_on:
       - base
