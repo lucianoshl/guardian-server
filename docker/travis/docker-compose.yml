@@ -3,8 +3,8 @@ services:
   travis:
     image: lucianoshl/guardian-tests
     environment:
-      CI: true
-      TRAVIS: true
+      CI: 'true'
+      TRAVIS: 'true'
       RACK_ENV: test
       ENV: test
       MONGO_URL: mongodb://mongo:27017/guardian-specs
