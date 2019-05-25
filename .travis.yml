@@ -6,7 +6,7 @@ before_install:
 jobs:
   include:
     - stage: test
-      script: docker-compose -f docker/travis.yml run $(env | cut -f1 -d= | sed 's/^/-e /') tests-ci
+      script: docker-compose -f docker/travis.yml run tests-ci
 stages:
   - test
 cache: bundler
