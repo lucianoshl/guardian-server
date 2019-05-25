@@ -2,6 +2,8 @@ version: '3.4'
 services:
   travis:
     image: lucianoshl/guardian-tests
+    volumes:
+      - ../..:/usr/app
     environment:
       CI: 'true'
       TRAVIS: 'true'

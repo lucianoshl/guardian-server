@@ -1,3 +1,6 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=e7f5d9a518ee5fa811fa38642f11119a495545796b1b3d929eadc0ae40229037
 language: generic
 services:
   - docker  
@@ -7,15 +10,15 @@ jobs:
   include:
     - stage: test
       before_script:
-        - cd docker/travis
-        - docker-compose run travis ./cc-test-reporter before-build
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
+        - cd docker/travis/
       script: docker-compose run travis bundle exec rspec spec
       after_script:
         - docker-compose run travis bundle exec rake coveralls:push
-        - echo $TRAVIS_TEST_RESULT
-        - export TRAVIS_TEST_RESULT=$TRAVIS_TEST_RESULT
-        - docker-compose run -e TRAVIS_TEST_RESULT travis echo $TRAVIS_TEST_RESULT
-        - docker-compose run -e TRAVIS_TEST_RESULT travis ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+        - cd ../..
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 stages:
   - test
 cache: bundler
