@@ -9,7 +9,7 @@ jobs:
       before_script:
         - cd docker/travis/
         - docker-compose run travis /./cc-test-reporter before-build
-      script: docker-compose run travis bundle exec rspec spec
+      script: docker-compose run
       after_script:
         - docker-compose run travis bundle exec rake coveralls:push
         - docker-compose run travis /./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

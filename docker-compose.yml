@@ -1,14 +1,16 @@
 version: '3.4'
 services:
-  test:
+  tests:
     image: lucianoshl/guardian-tests
     command: bundle exec rspec spec
+    volumes:
+      - .:/usr/app
     environment:
       ENV: test
-      MONGO_URL: mongodb://mongo:27017/guardian-specs
+      MONGO_URL: ${MONGO_URL:-mongodb://mongo:27017/guardian-specs}
+      STUB_USER: ${STUB_USER}
       STUB_PASS: ${STUB_PASS}
-      STUB_USER: lucianoshl
-      STUB_WORLD: br95
+      STUB_WORLD: ${STUB_WORLD}
       TZ: America/Sao_Paulo
     depends_on:
       - mongo
