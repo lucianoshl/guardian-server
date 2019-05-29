@@ -46,9 +46,9 @@ RSpec.configure do |config|
     allow_any_instance_of(Report).to receive(:erase).and_return(nil)
 
     stub_account = Account.new
-    stub_account.username = ENV['STUB_USER'],
-    stub_account.password = ENV['STUB_PASS'],
-    stub_account.world = ENV['STUB_WORLD'],
+    stub_account.username = ENV['STUB_USER']
+    stub_account.password = ENV['STUB_PASS']
+    stub_account.world = ENV['STUB_WORLD']
     stub_account.main = true
     stub_account.player = Player.new
     stub_account.player.points = 1000

@@ -38,7 +38,6 @@ class Client::Mobile < Mechanize
   end
 
   def inject_base(uri)
-    binding.pry
     "https://#{Account.main.world}.tribalwars.com.br#{uri}"
   end
 
