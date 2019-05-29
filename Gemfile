@@ -54,6 +54,7 @@ group :test, :development do
   gem 'pry-rescue'
   gem 'pry-stack_explorer'
   gem 'rspec'
+  gem 'webmock'
 end
 
 group :production do

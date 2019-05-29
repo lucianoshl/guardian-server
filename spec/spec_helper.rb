@@ -10,6 +10,7 @@ require_rel '../lib/requirer.rb'
 require 'coveralls'
 require 'simplecov'
 require 'simplecov-console'
+require 'webmock/rspec'
 
 Coveralls.wear!
 SimpleCov.formatter = SimpleCov::Formatter::Console
@@ -63,6 +64,15 @@ RSpec.configure do |config|
     allow(Village).to receive(:my).and_return([
       Village.new(x: 10, y: 10)
     ])
+
+    Dir["#{File.dirname(__FILE__)}/stub/requests/**/*.rb"].map do |extension|
+      eval(File.read(extension))
+    end
+
+    WebMock.allow_net_connect!
+
+    Service::StartupTasks.new.fill_units_information
+
   end
 
   config.before :all do

@@ -5,19 +5,19 @@ class Screen::Train < Screen::Base
 
   attr_accessor :queue, :build_info, :form, :troops
 
-  def train(troop)
-    troop.each do |unit, qte|
-      form[unit] = qte if qte > 0
-    end
-    parse(form.submit)
-  end
-
   def parse(page)
     super
     self.queue = parse_queue(page)
     self.build_info = parse_build_info(page)
     self.form = page.form
     self.troops = Troop.new build_info.map { |k, v| [k, v.total] }.to_h
+  end
+
+  def train(troop)
+    troop.each do |unit, qte|
+      form[unit] = qte if qte > 0
+    end
+    parse(form.submit)
   end
 
   def parse_queue(page)
