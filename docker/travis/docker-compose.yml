@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   travis:
-    image: lucianoshl/guardian-tests
+    image: lucianoshl/guardian-tests:latest
     volumes:
       - ../..:/usr/app
     environment:
@@ -14,6 +14,8 @@ services:
       STUB_USER: lucianoshl
       STUB_WORLD: br95
       TZ: America/Sao_Paulo
+      CC_TEST_REPORTER_ID: eb32be7afe8adcd1513d01d47bcb0ade2fd870bd9ee735b6f5077fa88a09b88b
+      TRAVIS_TEST_RESULT: ${TRAVIS_TEST_RESULT}
     depends_on:
       - mongo
   mongo:

@@ -3,10 +3,12 @@ FROM ruby:2.5-alpine
 RUN apk update && apk upgrade && apk add --update build-base tzdata curl
 RUN rm -rf /var/cache/apk/*
 
-RUN mkdir /usr/app 
-WORKDIR /usr/app
+ENV APP /usr/app
 
-COPY Gemfile /usr/app/ 
-COPY Gemfile.lock /usr/app/ 
+RUN mkdir $APP
+WORKDIR $APP
+
+COPY Gemfile $APP
+COPY Gemfile.lock $APP
 RUN bundle install --with development test
-COPY . /usr/app
+COPY . $APP
