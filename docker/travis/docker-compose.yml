@@ -16,7 +16,7 @@ services:
       STUB_WORLD: ${STUB_WORLD:-br93}
       TZ: America/Sao_Paulo
       CC_TEST_REPORTER_ID: eb32be7afe8adcd1513d01d47bcb0ade2fd870bd9ee735b6f5077fa88a09b88b
-      TRAVIS_TEST_RESULT: ${TRAVIS_TEST_RESULT}
+      TRAVIS_TEST_RESULT: ${TRAVIS_TEST_RESULT:-1}
     depends_on:
       - mongo
   mongo:
