@@ -1,3 +1,6 @@
+env:
+  global:
+  - RUNNER=docker-compose run travis
 language: generic
 services:
   - docker  
@@ -8,9 +11,9 @@ jobs:
     - stage: test
       before_script:
         - cd docker/travis/
-      script: docker-compose run travis bundle exec rspec spec
+      script: $RUNNER bundle exec rspec spec
       after_script:
-        - docker-compose run travis bundle exec rake coveralls:push
+        - if [[ "$TRAVIS_TEST_RESULT" == "0" ]] then $RUNNER bundle exec rake coveralls:push fi
 stages:
   - test
 cache: bundler
