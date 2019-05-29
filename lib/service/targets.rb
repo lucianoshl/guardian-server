@@ -13,21 +13,10 @@ module Service::Targets
 
     strong_player = Player.gte(points: current_points * 0.6).pluck(:id) - [current_player.id]
 
-    # check if village is conquered
-    # attacked_strong_player = Village.in(player_id: strong_player).pluck(:id)
-    # strong_villages_attacked = Report.in(target_id: attacked_strong_player).nin(dot: 'red').pluck(:target_id)
-
-    # strong_player -= Village.in(id: strong_villages_attacked.uniq).map(&:player_id)
-
     Village.targets.in(player_id: strong_player).update_all(status: 'strong', next_event: Time.now + 1.day)
 
     unless current_ally.nil?
       current_allies = Screen::AllyContracts.new.allies_ids << current_ally.id
-      
-      current_allies << 1990
-      current_allies << 2423
-      current_allies << 2241
-      current_allies << 2625
       
       ally_players = Player.in(ally_id: current_allies).pluck(:id)
       Village.targets.in(player_id: ally_players).update_all(status: 'ally', next_event: Time.now + 1.day)
