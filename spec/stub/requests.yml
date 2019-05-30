@@ -1,0 +1,7 @@
+get:
+  unit_info:
+    body: unit_info.json
+    uri: .*ajax=data.*screen=unit_info.*
+  # place_with_commands_incomings:
+  #   body: place_with_commands_incomings.html
+  #   uri: .*screen=place.*

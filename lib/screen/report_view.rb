@@ -20,6 +20,7 @@ class Screen::ReportView < Screen::Base
     report.erase_uri = page.search('a[href*=del_one]').attr('href').value
     report.id = report.erase_uri.scan(/id=(\d+)/).first.first.to_i
     report.ocurrence = report_table.search('tr > td')[1].text.strip.to_datetime
+    binding.pry
     report.moral = report_table.search('h4')[1].text.number_part
     report.luck = page.search('#attack_luck').text.strip.delete('%').to_f
 

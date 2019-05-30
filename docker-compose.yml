@@ -5,6 +5,7 @@ services:
     command: bundle exec rspec spec
     volumes:
       - .:/usr/app
+      - /tmp:/tmp
     environment:
       ENV: test
       MONGO_URL: ${MONGO_URL:-mongodb://mongo:27017/guardian-specs}

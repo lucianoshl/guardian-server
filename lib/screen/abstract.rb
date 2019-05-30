@@ -41,7 +41,9 @@ class Screen::Abstract
   end
 
   def reload
-    parse(request(merge_parameters(@args)))
+    page = request(merge_parameters(@args)) 
+    File.write('/tmp/page.html',page.body) if ENV['ENV'] == 'test'
+    parse(page)
     self
   end
 end
