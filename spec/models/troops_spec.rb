@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 describe Troop do
-  before(:each) do
-    Service::StartupTasks.new.fill_units_information
-  end
 
   it 'test_distribute_1' do
     troop = Troop.new(spear: 76, sword: 36, spy: 83)

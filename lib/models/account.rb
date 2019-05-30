@@ -13,15 +13,4 @@ class Account
   def self.main
     where(main: true).first
   end
-
-  def self.stub_account
-    Account.new(
-      username: ENV['STUB_USER'],
-      password: ENV['STUB_PASS'],
-      world: ENV['STUB_WORLD'],
-      main: true
-    ).save
-    Service::StartupTasks.new.fill_user_information
-    Service::StartupTasks.new.fill_units_information
-  end
 end

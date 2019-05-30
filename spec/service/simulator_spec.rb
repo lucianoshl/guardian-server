@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 describe Service::Simulator do
-  before do
-    Service::StartupTasks.new.fill_units_information
-  end
 
   it 'simulate_1' do
     Service::Simulator.win?(spear: 5)
