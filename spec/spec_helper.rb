@@ -26,6 +26,8 @@ RSpec.configure do |config|
     raise('In test env guardian needs a specific base for test (ends with -specs)')
   end
 
+  config.include(RequestStub)
+
   config.before :each do
     allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
     allow_any_instance_of(Report).to receive(:erase).and_return(nil)
@@ -54,14 +56,12 @@ RSpec.configure do |config|
       Village.new(x: 10, y: 10)
     ])
 
-    RequestStub.defaults(self)
+    request_mock_defaults
 
     Service::StartupTasks.new.fill_units_information
   end
 
   config.before :all do
-    # binding.pry
-    # Account.stub_account
   end
 
   config.after :all do

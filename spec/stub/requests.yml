@@ -3,6 +3,6 @@ get:
     body: unit_info.json
     default: true
     uri: .*ajax=data.*screen=unit_info.*
-  # place_with_commands_incomings:
-  #   body: place_with_commands_incomings.html
-  #   uri: .*screen=place.*
+  place_with_commands_incomings:
+    body: place_with_commands_incomings.html
+    uri: .*screen=place.*

@@ -33,7 +33,7 @@ module Requirer
   end
 
   def self.configs
-    Cachy.cache_store = Moneta.new(:File, dir: "/tmp/guardian")
+    Cachy.cache_store = Moneta.new(:File, dir: '/tmp/guardian')
   end
 end
 
