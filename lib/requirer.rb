@@ -33,9 +33,7 @@ module Requirer
   end
 
   def self.configs
-    # fix this env var
-    world_key = ENV['ENV'] == 'test' ? (rand * 1000).ceil : Account.main.world
-    Cachy.cache_store = Moneta.new(:File, dir: "/tmp/guardian/#{world_key}")
+    Cachy.cache_store = Moneta.new(:File, dir: "/tmp/guardian")
   end
 end
 
