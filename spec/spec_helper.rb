@@ -21,10 +21,34 @@ SimpleCov.start do
 end
 
 module RequestStub
+
+  def self.defaults(rspec)
+    each do |method, info|
+      handler = lambda { |request|
+        logger.debug("Stub request: #{request.uri}")
+        stub_body_file = "#{File.dirname(__FILE__)}/stub/requests/#{info['body']}"
+        raise Exception, "Stub not found #{stub_body_file}" unless File.exist? stub_body_file
+
+        File.read(stub_body_file)
+      }
+
+      stub = rspec.stub_request(method.to_sym, Regexp.new(info['uri']))
+      stub.to_return(status: 200, body: handler, headers: build_headers(info['body']))
+    end
+
+    WebMock.allow_net_connect!
+  end
+
+  def self.build_headers(body_file)
+    result = {}
+    result['content-type'] = content_types(File.extname(body_file))
+    result
+  end
+
   def self.content_types(extension)
-    {
-      '.html' => 'text/html; charset=utf-8'
-    }[extension]
+    result = {}
+    result['.html'] = 'text/html; charset=utf-8'
+    result[extension]
   end
 
   def self.each(&block)
@@ -70,24 +94,7 @@ RSpec.configure do |config|
       Village.new(x: 10, y: 10)
     ])
 
-    # binding.pry
-    # stub_default_requests
-    RequestStub.each do |method, info|
-      extension = File.extname(info['body'])
-
-      stub_request(method.to_sym, Regexp.new(info['uri']))
-        .to_return(status: 200, body: lambda { |request|
-                                        logger.debug("Stub request: #{request.uri}")
-                                        stub_body_file = "#{File.dirname(__FILE__)}/stub/requests/#{info['body']}"
-                                        raise Exception, "Stub not found #{stub_body_file}" unless File.exist? stub_body_file
-
-                                        File.read(stub_body_file)
-                                      }, headers: {
-                                        'content-type' => RequestStub.content_types(extension)
-                                      })
-    end
-
-    WebMock.allow_net_connect!
+    RequestStub.defaults(self)
 
     Service::StartupTasks.new.fill_units_information
   end
