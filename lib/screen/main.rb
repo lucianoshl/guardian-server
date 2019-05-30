@@ -10,6 +10,7 @@ class Screen::Main < Screen::Base
     building = building.to_s
     building_meta = buildings_meta[building]
     return false if building_meta.nil? || full_builded?(building_meta) || queue.size > 1
+
     building_meta['error'].nil?
   end
 
@@ -20,6 +21,7 @@ class Screen::Main < Screen::Base
   def in_queue?(building)
     building_meta = buildings_meta[building.to_s]
     return false if building_meta.nil?
+
     building_meta['level_next'] - building_meta['level'].to_i > 1
   end
 
@@ -63,7 +65,7 @@ class Screen::Main < Screen::Base
 
       item = OpenStruct.new
       item.id = queueItem.attr('data-order').to_i
-      item.building = src_attr.scan(/hd\/(.+).png/).first.first.gsub(/\d+/, '')
+      item.building = src_attr.scan(%r{hd/(.+).png}).first.first.gsub(/\d+/, '')
       item.level = divs[0].text.number_part
       item.finish_at = divs[1].text.split(' - ').last.strip.to_datetime
       item
@@ -76,6 +78,7 @@ class Screen::Main < Screen::Base
 
   def build_instant
     return if link_change_order.nil?
+
     params = {
       id: queue.first.id,
       detroy: 0,

@@ -20,6 +20,7 @@ class Screen::Abstract
 
   def initialize(args = {})
     raise Exception, "client not created in #{self.class}" if @client.nil?
+
     @args = args
     reload
   end
@@ -41,8 +42,8 @@ class Screen::Abstract
   end
 
   def reload
-    page = request(merge_parameters(@args)) 
-    File.write('/tmp/page.html',page.body) if ENV['ENV'] == 'test'
+    page = request(merge_parameters(@args))
+    File.write('/tmp/page.html', page.body) if ENV['ENV'] == 'test'
     parse(page)
     self
   end

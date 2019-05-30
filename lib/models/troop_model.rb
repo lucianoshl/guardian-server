@@ -9,6 +9,6 @@ class TroopModel < Troop
   end
 
   def inspect
-    "#{self.class.name} #{to_h.select{|unit,qte| qte>0}}".gsub('"','')
+    "#{self.class.name} #{to_h.select { |_unit, qte| qte > 0 }}".gsub('"', '')
   end
 end

@@ -13,6 +13,7 @@ class Property
   def self.get(key, default_value = nil)
     prop = find_or_create(key)
     return put(key, default_value).deserialize unless prop.persisted?
+
     prop.deserialize
   end
 

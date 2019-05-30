@@ -6,6 +6,7 @@ module Notifier
 
   def self.notify(content, title: nil)
     return unless client_configured?
+
     content = content.strip
 
     account = Account.main
@@ -14,10 +15,10 @@ module Notifier
 
     begin
       @@client.push_note(
-        receiver:   :device,
+        receiver: :device,
         params: {
           title: title,
-          body:  content
+          body: content
         }
       )
     rescue StandardError => e
@@ -25,7 +26,6 @@ module Notifier
       logger.error ([e.message] + e.backtrace).join($INPUT_RECORD_SEPARATOR)
     end
   end
-
 
   def notify(content, title: nil)
     Notifier.notify(content, title: title)

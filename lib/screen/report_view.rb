@@ -16,7 +16,7 @@ class Screen::ReportView < Screen::Base
     report_table = page.search('.quickedit-label').parent_until { |a| a.name == 'table' }
     report = self.report = Report.new
 
-    report.dot = page.search('img[src*=dots]').attr('src').value.scan(/dots\/(.+)\.png/).first.first
+    report.dot = page.search('img[src*=dots]').attr('src').value.scan(%r{dots/(.+)\.png}).first.first
     report.erase_uri = page.search('a[href*=del_one]').attr('href').value
     report.id = report.erase_uri.scan(/id=(\d+)/).first.first.to_i
     report.ocurrence = report_table.search('tr > td')[1].text.strip.to_datetime
@@ -71,7 +71,7 @@ class Screen::ReportView < Screen::Base
 
     unless page.search('#attack_results').empty?
       report.pillage = Resource.parse(page.search('#attack_results').first)
-      pillage, capacity = page.search('#attack_results').first.text.strip.scan(/(\d+)\/(\d+)/).flatten.map(&:to_i)
+      pillage, capacity = page.search('#attack_results').first.text.strip.scan(%r{(\d+)/(\d+)}).flatten.map(&:to_i)
       report.full_pillage = capacity == pillage
     end
 
@@ -81,7 +81,8 @@ class Screen::ReportView < Screen::Base
       (parse_table(page, '#attack_spy_buildings_left') + parse_table(page, '#attack_spy_buildings_right')).map do |tr|
         img = tr.search('img')
         next if img.empty?
-        building = tr.search('img').attr('src').text.scan(/buildings\/(.+)\./).first.first
+
+        building = tr.search('img').attr('src').text.scan(%r{buildings/(.+)\.}).first.first
         report.buildings[building] = tr.search('td').last.text.to_i
       end
       report.resources = Resource.parse(page.search('#attack_spy_resources').first)

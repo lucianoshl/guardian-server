@@ -15,7 +15,7 @@ class Service::HealthCheck
       linked_jobs = Task::Abstract.pluck(:job_id)
       unlinked_jobs = Job.nin(id: linked_jobs)
 
-      task_without_job = Task::Abstract.all.select{|t| t.job.nil? }
+      task_without_job = Task::Abstract.all.select { |t| t.job.nil? }
 
       unlinked_jobs + task_without_job
     end

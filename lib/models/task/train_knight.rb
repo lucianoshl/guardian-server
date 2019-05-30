@@ -8,13 +8,11 @@ class Task::TrainKnight < Task::Abstract
 
   def run
     overview = Screen::Statue::Overview.new
-    raise Exception.new('implementation error') if overview.builded && Village.my.count > 1
+    raise Exception, 'implementation error' if overview.builded && Village.my.count > 1
 
-    unless overview.builded
-      return Time.now + 5.minutes
-    end
+    return Time.now + 5.minutes unless overview.builded
 
-    times = overview.knights_data.map do |_id,info|
+    times = overview.knights_data.map do |_id, info|
       run_for_knight(info)
     end
     times.compact.min
@@ -22,24 +20,24 @@ class Task::TrainKnight < Task::Abstract
 
   def run_for_knight(info)
     current = info['activity']['type']
-    send(current,info)
+    send(current, info)
   end
 
-  def reviving info
+  def reviving(info)
     Time.at(info['activity']['finish_time'])
   end
 
-  def dead info
+  def dead(info)
     Notifier.notify("Knigth #{info['name']} is dead")
     Time.now + 1.hour
   end
 
-  def training info
+  def training(info)
     finish_time = info['activity']['finish_time']
     finish_time.nil? ? nil : Time.at(finish_time)
   end
 
-  def home info
+  def home(info)
     village = Village.find(info['home_village']['id'])
     regimen = info['usable_regimens'].first
     train_cost = regimen['res_cost'].to_resource
@@ -47,5 +45,4 @@ class Task::TrainKnight < Task::Abstract
     possible_train = statue.resources.include?(train_cost * 10)
     possible_train ? statue.train(info['id'], regimen['id']) : training(info)
   end
-
 end

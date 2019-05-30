@@ -20,7 +20,7 @@ class Task::RecruitBuildTask < Task::Abstract
     next_execution = build(village, @main)
 
     return nil if next_execution.nil?
+
     next_execution < possible_next_execution ? next_execution : possible_next_execution
   end
-
 end

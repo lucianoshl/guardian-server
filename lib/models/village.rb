@@ -99,19 +99,18 @@ class Village
     }
 
     result = Village.map_reduce(map, reduce).out(inline: 1).finalize(finalize).each.to_a
-    result.select{|a| a['value'] }
+    result.select { |a| a['value'] }
   end
 
   def defined_model
     model || VillageModel.basic_model
   end
 
-  def self.load_if_not_exists village_id
+  def self.load_if_not_exists(village_id)
     return false unless where(id: village_id).empty?
 
     screen = Screen::GuestInfoVillage.new(id: village_id)
     screen.village.save
     true
   end
-
 end

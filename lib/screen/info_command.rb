@@ -38,7 +38,7 @@ class Screen::InfoCommand < Screen::Base
       r
     end
     possible_units = times.select { |a| a.seconds > seconds_to_arrival }
-    
+
     max = possible_units.map(&:diference).max
     possible_units.select { |a| a.diference == max }.map(&:unit)
   end

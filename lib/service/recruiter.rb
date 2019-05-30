@@ -37,11 +37,14 @@ module Service::Recruiter
       model.each do |unit, qte|
         qte = qte.floor
         next if qte.zero?
+
         current_queue = Unit.get(unit).prod_building.to_sym
         next unless queue_seconds[current_queue] < queue_size
+
         build_info = train_screen.build_info[unit]
         next if build_info.nil?
         next unless resources.include?(build_info.cost)
+
         result[unit] += 1
         model[unit] -= 1
         queue_seconds[current_queue] += build_info.cost_time

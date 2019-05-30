@@ -34,6 +34,7 @@ class Client::Logged
     tries = 0
     until check_is_logged(result)
       raise Exception, 'Invalid login' if tries > 0
+
       @client.login
       reload_cookies
       result = @client.send(:post, *args)
@@ -48,6 +49,7 @@ class Client::Logged
     tries = 0
     until check_is_logged(result)
       raise Exception, 'Invalid login' if tries > 0
+
       @client.login
       reload_cookies
       result = @client.send(*args)

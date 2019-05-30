@@ -56,12 +56,13 @@ class Screen::Place < Screen::Base
     confirm_page = @client.submit(form, form.buttons.first)
     error = confirm_page.search('.error_box').text.strip
     raise convert_error(error) unless error.blank?
+
     parse(confirm_page.form.submit)
     target_commands = commands.leaving.select { |a| a.target.eql?(target) }
     binding.pry if target_commands.last.nil?
     result = target_commands.last
     result.troop = troops
-    travel_time = result.troop.travel_time(result.origin,result.target)
+    travel_time = result.troop.travel_time(result.origin, result.target)
     result.returning_arrival = result.arrival + travel_time
     result.save_if_not_saved
     result

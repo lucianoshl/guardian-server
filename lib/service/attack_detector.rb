@@ -6,8 +6,9 @@ module Service::AttackDetector
   # TODO: this is not thread safe
   @running = false
 
-  def self.run(village)
+  def self.run(_village)
     return if @running
+
     @running = true
     Screen::Place.all_places.map(&:incomings).flatten.map do |incoming|
       run_for_incoming(incoming)
@@ -19,7 +20,7 @@ module Service::AttackDetector
     if Command::Incoming.where(id: incoming.id).empty?
       command = Screen::InfoCommand.new(id: incoming.id).command
       notify(%(
-Ataque detectado as #{command.create_at.format_date} na aldeia #{command.target.to_s}
+Ataque detectado as #{command.create_at.format_date} na aldeia #{command.target}
 Jogador: #{command.origin.player.name}
 Possiveis unidades:
 #{command.possible_troop.map { |id| Unit.get(id).name }.map { |a| "\t- #{a}" }.join("\n")}

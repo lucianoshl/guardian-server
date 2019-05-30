@@ -20,28 +20,24 @@ SimpleCov.start do
   end
 end
 
-
 module RequestStub
-
   def self.content_types(extension)
     {
-      ".html" => "text/html; charset=utf-8"
+      '.html' => 'text/html; charset=utf-8'
     }[extension]
   end
 
-  def self.each &block
-    requests_information = YAML.load(File.read("#{File.dirname(__FILE__)}/stub/requests.yml"))
-    requests_information.map do |method,requests|
-      requests.map do |desc,info|
-        block.call(method,info)
+  def self.each(&block)
+    requests_information = YAML.safe_load(File.read("#{File.dirname(__FILE__)}/stub/requests.yml"))
+    requests_information.map do |method, requests|
+      requests.map do |_desc, info|
+        block.call(method, info)
       end
     end
   end
 end
 
-
 RSpec.configure do |config|
-
   unless Mongoid.default_client.options[:database].ends_with?('-specs')
     raise('In test env guardian needs a specific base for test (ends with -specs)')
   end
@@ -66,9 +62,9 @@ RSpec.configure do |config|
 
     allow(Account).to receive(:main).and_return(stub_account)
 
-    allow(Screen::AllyContracts).to receive(:new).and_return(OpenStruct.new({
-      allies_ids: ['ally1','ally2']
-    }))
+    allow(Screen::AllyContracts).to receive(:new).and_return(OpenStruct.new(
+                                                               allies_ids: %w[ally1 ally2]
+                                                             ))
 
     allow(Village).to receive(:my).and_return([
       Village.new(x: 10, y: 10)
@@ -76,24 +72,24 @@ RSpec.configure do |config|
 
     # binding.pry
     # stub_default_requests
-    RequestStub.each do |method,info|
+    RequestStub.each do |method, info|
       extension = File.extname(info['body'])
 
-      stub_request( method.to_sym,  Regexp.new(info['uri']) ).
-      to_return(status: 200, body: lambda { |request|
-        logger.debug("Stub request: #{request.uri.to_s}")
-        stub_body_file = "#{File.dirname(__FILE__)}/stub/requests/#{info['body']}"
-        raise Exception.new("Stub not found #{stub_body_file}") unless File.exists? stub_body_file
-        File.read(stub_body_file)
-      }, headers: {
-        "content-type" => RequestStub.content_types(extension)
-      })
+      stub_request(method.to_sym, Regexp.new(info['uri']))
+        .to_return(status: 200, body: lambda { |request|
+                                        logger.debug("Stub request: #{request.uri}")
+                                        stub_body_file = "#{File.dirname(__FILE__)}/stub/requests/#{info['body']}"
+                                        raise Exception, "Stub not found #{stub_body_file}" unless File.exist? stub_body_file
+
+                                        File.read(stub_body_file)
+                                      }, headers: {
+                                        'content-type' => RequestStub.content_types(extension)
+                                      })
     end
 
     WebMock.allow_net_connect!
 
     Service::StartupTasks.new.fill_units_information
-
   end
 
   config.before :all do

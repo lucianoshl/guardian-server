@@ -7,7 +7,7 @@ module Routes::HealthCheck
 
       Report.where('_type': 'Troop').delete
       Task::Abstract.remove_orphan_tasks
-      
+
       errors = Service::HealthCheck.check_system
       status errors.empty? ? 200 : 500
       body errors.to_json

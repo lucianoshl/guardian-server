@@ -3,6 +3,7 @@
 module Mongoid::Document
   def store
     raise Exception, "Error saving #{self.class} : #{errors.to_a}" unless save
+
     self
   end
 

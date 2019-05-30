@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe Troop do
-
   it 'test_distribute_1' do
     troop = Troop.new(spear: 76, sword: 36, spy: 83)
     result = troop.distribute(1458)

@@ -47,7 +47,7 @@ class Screen::Train < Screen::Base
   def parse_build_info(page)
     (page.search('#train_form > .mobileBlock').map do |block_item|
       item = OpenStruct.new
-      item.name = block_item.search('img').attr('src').value.scan(/big\/(.+?).png/).first.first
+      item.name = block_item.search('img').attr('src').value.scan(%r{big/(.+?).png}).first.first
       item.actual, item.total = block_item.search('div')[0].text.scan(/\d+/).map(&:to_i)
 
       main_info = block_item.search('.unitOther p')

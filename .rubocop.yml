@@ -8,5 +8,5 @@ Metrics/LineLength:
   Enabled: true
   Max: 100
 
-Layout/IndentArray:
+Layout/IndentFirstArrayElement:
   Enabled: false 

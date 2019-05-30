@@ -13,13 +13,14 @@ class Troop
   def distribute(resources, type = :speed)
     current = Troop.new(attributes.clone)
     result = Troop.new
-    units = Unit.all.sort(:"#{type}" => 'desc').to_a
+    units = Unit.all.sort("#{type}": 'desc').to_a
 
     found_unit_candidate = nil
     loop do
       found_unit_candidate = false
       units.map do |unit|
         next unless unit.carry > 0
+
         while current[unit.id] > 0 && resources >= 0
           current[unit.id] -= 1
           result[unit.id] += 1
@@ -35,8 +36,8 @@ class Troop
 
   def upgrade(disponible, type = :attack)
     result = clone
-    to_insert = Unit.all.sort(:"#{type}" => 'desc').to_a
-    to_remove = Unit.nin(id: [:spy]).sort(:"#{type}" => 'asc').to_a
+    to_insert = Unit.all.sort("#{type}": 'desc').to_a
+    to_remove = Unit.nin(id: [:spy]).sort("#{type}": 'asc').to_a
 
     resolved = false
     to_insert.map do |insert_unit|
@@ -44,6 +45,7 @@ class Troop
         next if insert_unit[type] <= remove_unit[type]
         next if disponible[insert_unit.id] <= 0
         next if result[remove_unit.id] <= 0
+
         carry_equivalent = insert_unit.equivalent(remove_unit, :carry)
         next if carry_equivalent.zero?
 
@@ -72,6 +74,7 @@ class Troop
     end
 
     raise Exception, 'Invalid logic' if disponible.has_negative? || result.has_negative?
+
     result
   end
 
@@ -118,6 +121,7 @@ class Troop
 
   def ==(other)
     return false if other.class != Troop
+
     other.to_a == to_a
   end
 
@@ -167,6 +171,7 @@ class Troop
     loop do
       win = Service::Simulator.win?(result, wall: wall, moral: moral)
       return result if win
+
       new_troop = result.upgrade(disponible - result)
       raise Exception, 'Invalid state' if new_troop.has_negative?
       if new_troop == result
@@ -191,6 +196,7 @@ class Troop
       win = simulator.atk_looses.ram.zero? && simulator.atk_looses.population <= 10
 
       return result if win
+
       new_troop = result.increment(disponible - result)
       raise Exception, 'Invalid state' if new_troop.has_negative?
       if new_troop == result
@@ -207,6 +213,7 @@ class Troop
     increment_number = 5
     possible.each do |unit|
       next unless disponible[unit.id] >= increment_number
+
       disponible[unit.id] -= increment_number
       result[unit.id] += increment_number
       break

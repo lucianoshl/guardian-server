@@ -17,7 +17,7 @@ module Service::Targets
 
     unless current_ally.nil?
       current_allies = Screen::AllyContracts.new.allies_ids << current_ally.id
-      
+
       ally_players = Player.in(ally_id: current_allies).pluck(:id)
       Village.targets.in(player_id: ally_players).update_all(status: 'ally', next_event: Time.now + 1.day)
     end
@@ -32,13 +32,14 @@ module Service::Targets
     my_villages = Village.my.clone
     logger.info("sort_by_priority: targets #{targets.count}")
     targets = targets.to_a
-    
+
     distances = targets.each_with_index.to_a.pmap do |target, index|
       logger.debug("#{targets.size}/#{index}")
       villages = my_villages.select { |a| target.distance(a) <= @distance }
       villages = villages.sort { |a, b| target.distance(a) <=> target.distance(b) }
 
       next if villages.empty?
+
       [
         villages.first.distance(target),
         villages,

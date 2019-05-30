@@ -13,9 +13,10 @@ module MongoInflector
 
   def field_type(name, meta, types)
     return types.ID if name == '_id'
+
     result = @@type_mapping[meta.type]
     return result if @@type_mapping.key?(meta.type)
-    
+
     return nil if meta.class == Mongoid::Relations::Metadata && meta.relation == Mongoid::Relations::Embedded::In
 
     type = meta.type
@@ -63,8 +64,9 @@ module Type::Base
       def definition
         this = self
         Type::Base.register_type(self, class_base)
-        
+
         return @definition unless @definition.nil?
+
         @definition = GraphQL::ObjectType.define do
           class_base = this.class_base
           name this.definition_name
@@ -82,6 +84,7 @@ module Type::Base
       def input_type
         this = self
         return @input_type unless @input_type.nil?
+
         @input_type = GraphQL::InputObjectType.define do
           name("#{this.to_s.gsub('Type::', '')}Input")
           fields = this.class_base.fields

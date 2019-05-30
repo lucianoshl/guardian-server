@@ -9,7 +9,7 @@ module Type::ActiveCommand
   end
 
   criteria do |base, args|
-    base.or({:arrival.gte => Time.now}, :returning_arrival.gte => Time.now )
+    base.or({ :arrival.gte => Time.now }, :returning_arrival.gte => Time.now)
 
     base.where((args.to_h.map do |k, v|
       field, operation = k.split('_')

@@ -42,7 +42,7 @@ class Task::Abstract
     else
       self.next_execution = nil
       execution_result = run
-      self.next_execution = execution_result if [Time,DateTime].include? execution_result.class
+      self.next_execution = execution_result if [Time, DateTime].include? execution_result.class
       if runs_every.nil?
         job&.delete
         delete
@@ -73,6 +73,7 @@ class Task::Abstract
 
   def calc_next_execution
     return Time.now if last_execution.nil?
+
     possible_next_execution(last_execution)
   end
 

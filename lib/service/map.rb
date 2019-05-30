@@ -36,8 +36,8 @@ class Service::Map
 
     targets = {}
 
-    for i in (0..size - 1)
-      for j in (0..size - 1)
+    (0..size - 1).each do |i|
+      (0..size - 1).each do |j|
         x = start_x + (i * 20)
         y = start_y + (j * 20)
         targets["#{x.to_i}_#{y.to_i}"] = 1
@@ -51,6 +51,7 @@ class Service::Map
     @json.map do |i|
       node = i['data']['allies']
       next if node.empty?
+
       allies = allies.merge(node)
     end
 
@@ -70,6 +71,7 @@ class Service::Map
     @json.map do |i|
       node = i['data']['players']
       next if node.empty?
+
       players = players.merge(node)
     end
 
@@ -116,6 +118,7 @@ class Service::Map
         v.each do |k, v_info|
           current_y = y + k.to_i
           next if v_info.nil?
+
           villages[v_info[0].to_i] = OpenStruct.new(
             id: v_info[0].to_i,
             name: v_info[2],

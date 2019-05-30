@@ -12,7 +12,7 @@ class Task::StealResourcesTask < Task::Abstract
     @@places = {}
     Service::Report.sync
     update_steal_candidates
-    
+
     criteria = targets_criteria.lte(next_event: Time.now)
 
     criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
@@ -24,6 +24,7 @@ class Task::StealResourcesTask < Task::Abstract
       element = list.shift
 
       break if element.nil?
+
       distance, @origins, target = element
 
       logger.info('-' * 50)
@@ -34,9 +35,7 @@ class Task::StealResourcesTask < Task::Abstract
       @range_villages = @origins.clone
       @origin = @origins.shift
       @target = target
-      if @origin.nil?
-        @target.status = 'far_away'
-      end
+      @target.status = 'far_away' if @origin.nil?
 
       begin
         send(@target.status)
@@ -119,7 +118,7 @@ class Task::StealResourcesTask < Task::Abstract
       resource = 200
       place_troops = place.troops_available
 
-      if place_troops.carry >= resource && ( last_report.nil? || last_report.produced_resource?(resource) )
+      if place_troops.carry >= resource && (last_report.nil? || last_report.produced_resource?(resource))
         troops, _remaining = place_troops.distribute(200)
         result = troops.upgrade_until_win(place_troops)
         command = place.send_attack(@target, result)
@@ -172,20 +171,21 @@ class Task::StealResourcesTask < Task::Abstract
     report.save
   end
 
-  def check_is_possible_attack_before_incoming(place, troops)
+  def check_is_possible_attack_before_incoming(_place, troops)
     incomings = all_places.map(&:incomings).flatten
     return if incomings.empty?
+
     travel_time = troops.travel_time(@target, @origin)
     next_incoming = incomings.first.arrival
     back_time = Time.now + travel_time * 2
     if back_time.to_datetime > (next_incoming - 1.minute)
-      raise NotPossibleAttackBeforeIncomingException.new(next_incoming)
+      raise NotPossibleAttackBeforeIncomingException, next_incoming
     end
   end
 
   def send_to(status, time = Time.now)
-    switch_village_stages = ['waiting_incoming','waiting_strong_troops','waiting_troops','waiting_resource_production','waiting_spies']
-    
+    switch_village_stages = %w[waiting_incoming waiting_strong_troops waiting_troops waiting_resource_production waiting_spies]
+
     if switch_village_stages.include?(status) && @origins.size.positive?
       @origin = @origins.shift
       puts "Change village to #{@origin}".black.on_red
@@ -210,15 +210,14 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def all_places
-    @range_villages.map{|v| place(v.id)}
+    @range_villages.map { |v| place(v.id) }
   end
 
   def next_returning_command
     all_commands = all_places.map(&:commands)
-    
+
     result = all_commands.map(&:returning).flatten.min_by(&:arrival)
     result ||= all_commands.map(&:all).flatten.min_by(&:arrival)
-    
 
     if result.nil?
       finish_recruit = Screen::Train.new.queue.to_h.values.flatten.map(&:next_finish).compact.min
@@ -281,7 +280,7 @@ class Task::StealResourcesTask < Task::Abstract
 
   def invited_player
     waiting_report
-  end  
+  end
 
   def waiting_incoming
     waiting_report
@@ -294,5 +293,4 @@ class Task::StealResourcesTask < Task::Abstract
   def newbie_protection
     waiting_report
   end
-
 end

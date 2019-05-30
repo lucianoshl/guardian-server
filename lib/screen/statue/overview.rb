@@ -12,6 +12,4 @@ class Screen::Statue::Overview < Screen::Base
     self.builded = !json.nil?
     self.knights_data = JSON.parse(json) if builded
   end
-
-
 end
