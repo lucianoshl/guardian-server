@@ -1,7 +1,7 @@
 module RequestStub
 
   def self.defaults(rspec)
-    each do |method, info|
+    each(true) do |method, info|
       handler = lambda { |request|
         logger.debug("Stub request: #{request.uri}")
         stub_body_file = "#{File.dirname(__FILE__)}/../stub/requests/#{info['body']}"
@@ -29,11 +29,11 @@ module RequestStub
     result[extension]
   end
 
-  def self.each(&block)
+  def self.each(only_default = false, &block)
     requests_information = YAML.safe_load(File.read("#{File.dirname(__FILE__)}/../stub/requests.yml"))
     requests_information.map do |method, requests|
       requests.map do |_desc, info|
-        block.call(method, info)
+        block.call(method, info) if (!only_default || info['default'] == true)
       end
     end
   end
