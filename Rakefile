@@ -12,7 +12,7 @@ namespace 'guardian' do
   desc 'Run webapp'
   task :server do
     ENV['PORT'] = ENV['PORT'] || '3000'
-    sh("ENV=#{ENV['ENV']} bundle exec rackup -p #{ENV['PORT']} config/config.ru")
+    sh("ENV=#{ENV['ENV']} bundle exec rackup --host 0.0.0.0 -p #{ENV['PORT']} config/config.ru")
   end
 
   desc 'Run worker'

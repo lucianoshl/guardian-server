@@ -10,5 +10,5 @@ WORKDIR $APP
 
 COPY Gemfile $APP
 COPY Gemfile.lock $APP
-RUN bundle install --with development test
+RUN bundle install
 COPY . $APP

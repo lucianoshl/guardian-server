@@ -1,5 +1,21 @@
 version: '3.4'
 services:
+  guardian:
+    image: lucianoshl/guardian-base
+    command: bundle exec rake guardian:server
+    volumes:
+      - .:/usr/app
+    environment:
+      ENV: development
+      MONGO_URL: mongodb://mongo:27017/guardian
+      TZ: America/Sao_Paulo
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+    stdin_open: true
+    tty: true
   tests:
     image: lucianoshl/guardian-tests
     command: bundle exec rspec spec
