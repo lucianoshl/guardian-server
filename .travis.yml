@@ -17,7 +17,7 @@ jobs:
         - docker-compose run travis /./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
     - stage: deploy
       before_script:
-        - mkdir -p /tmp/bin/ && base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/bin/docker-machine
+        - mkdir -p /tmp/bin/ && base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/bin/docker-machine && chmod +x /tmp/bin/docker-machine
         - docker-machine create --driver generic swarm
       script: ls
       after_script:
