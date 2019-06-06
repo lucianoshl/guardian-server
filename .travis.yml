@@ -13,6 +13,13 @@ jobs:
       after_script:
         - docker-compose run travis bundle exec rake coveralls:push
         - docker-compose run travis /./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+    - stage: deploy
+      before_script:
+        - docker-machine create --driver generic swarm
+      script: ls
+      after_script:
+        - docker-machine rm swarm
 stages:
   - test
-cache: bundler
+  - name: deploy
+    if: branch = docker-compose-deploy
