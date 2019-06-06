@@ -1,8 +1,10 @@
 language: generic
+env:
+  - PATH=$PATH:/tmp/bin
 services:
   - docker  
-before_install:
-  - docker-compose -f docker/images/docker-compose.yml build
+# before_install:
+#   - docker-compose -f docker/images/docker-compose.yml build
 jobs:
   include:
     - stage: test
@@ -15,7 +17,7 @@ jobs:
         - docker-compose run travis /./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
     - stage: deploy
       before_script:
-        - base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && install /tmp/docker-machine /usr/local/bin/docker-machine
+        - mkdir -p /tmp/bin/ && base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/bin/docker-machine
         - docker-machine create --driver generic swarm
       script: ls
       after_script:
