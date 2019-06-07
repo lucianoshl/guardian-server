@@ -2,3 +2,4 @@ coverage/
 .env
 docker/travis/ssh/id_rsa
 docker/travis/ssh/id_rsa.pub
+docker/travis/ssh/secrets.tar
