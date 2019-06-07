@@ -20,7 +20,7 @@ jobs:
         - cd docker/travis/ssh
         - openssl aes-256-cbc -K $encrypted_680080ebd873_key -iv $encrypted_680080ebd873_iv -in id_rsa.enc -out id_rsa -d
         - openssl aes-256-cbc -K $encrypted_680080ebd873_key -iv $encrypted_680080ebd873_iv -in id_rsa.pub.enc -out id_rsa.pub -d
-        cd ../../..
+        - cd ../../..
         - mkdir -p /tmp/bin/ && base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/bin/docker-machine && chmod +x /tmp/bin/docker-machine
         - docker-machine create --driver generic --generic-ssh-key docker/travis/ssh/id_rsa swarm
       script: docker-machine ls
