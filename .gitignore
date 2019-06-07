@@ -1,5 +1,5 @@
 coverage/
 .env
-docker/travis/ssh/id_rsa
-docker/travis/ssh/id_rsa.pub
-docker/travis/ssh/secrets.tar
+docker/production/ssh/id_rsa
+docker/production/ssh/id_rsa.pub
+docker/production/ssh/secrets.tar
