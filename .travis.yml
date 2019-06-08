@@ -3,6 +3,8 @@ env:
   - PATH=$PATH:/tmp/bin
 services:
   - docker  
+sudo: required
+dist: precise
 # before_install:
 #   - docker-compose -f docker/images/docker-compose.yml build
 jobs:
