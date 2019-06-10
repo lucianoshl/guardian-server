@@ -30,7 +30,7 @@ jobs:
         - eval "$(docker-machine env swarm)"
         - docker-compose -f docker/images/docker-compose.yml build
         - cd docker/production
-      script: docker-compose rm guardian && docker-compose up -d guardian
+      script: docker-compose rm -f guardian && docker-compose up -d guardian
       after_script:
         - docker-machine rm -y swarm
 stages:
