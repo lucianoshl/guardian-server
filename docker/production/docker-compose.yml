@@ -24,7 +24,7 @@ services:
     restart: always
     image: mongo:latest
     volumes:
-      - /app/data/mongo:/data/db
+      - mongodata:/data/db
   fluentd:
     image: lucianoshl/guardian-fluentd
     links:
@@ -50,7 +50,7 @@ services:
     ports:
       - 9200:9200
     volumes:
-      - /app/data/elasticsearch:/usr/share/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/data
   kibana:
     image: 'docker.elastic.co/kibana/kibana:7.1.0'
     container_name: kibana
@@ -61,3 +61,8 @@ services:
       - elasticsearch
     ports:
       - '3001:5601'
+volumes:
+  esdata:
+    driver: local
+  mongodata:
+    driver: local
