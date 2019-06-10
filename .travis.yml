@@ -5,18 +5,19 @@ services:
   - docker  
 sudo: required
 dist: xenial
-# before_install:
-#   - docker-compose -f docker/images/docker-compose.yml build
 jobs:
   include:
+
     - stage: test
       before_script:
+        - docker-compose -f docker/images/docker-compose.yml build
         - cd docker/travis/ 
         - docker-compose run travis /./cc-test-reporter before-build
       script: docker-compose run travis
       after_script:
         - docker-compose run travis bundle exec rake coveralls:push
         - docker-compose run travis /./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
     - stage: deploy
       before_script:
         - cd docker/production/ssh
@@ -28,11 +29,9 @@ jobs:
         - eval "$(docker-machine env swarm)"
         - docker-compose -f docker/images/docker-compose.yml build
         - cd docker/production
-      script: docker-compose rm guardian && docker-compose up guardian -d
+      script: docker-compose rm guardian && docker-compose up -d guardian
       after_script:
         - docker-machine rm -y swarm
 stages:
   - name: test
-    if: branch != docker-compose-deploy
   - name: deploy
-    if: branch = docker-compose-deploy
