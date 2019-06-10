@@ -3,7 +3,7 @@ services:
   guardian:
     restart: always
     image: lucianoshl/guardian-base
-    command: bundle exec foreman start -f Procfile.workers --timestamp=false
+    command: bundle exec rake guardian:server
     environment:
       ENV: production
       MONGO_URL: mongodb://mongo:27017/guardian
