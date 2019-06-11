@@ -28,7 +28,7 @@ jobs:
         - mkdir -p /tmp/bin/ && base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/bin/docker-machine && chmod +x /tmp/bin/docker-machine
         - docker-machine create --driver generic --generic-ssh-key docker/production/ssh/id_rsa swarm
         - eval "$(docker-machine env swarm)"
-        # - docker-compose -f docker/images/docker-compose.yml build
+        - docker-compose -f docker/images/docker-compose.yml build
         - cd docker/production
       script: docker-compose stop guardian && docker-compose rm -f guardian && docker-compose up -d guardian
       after_script:
