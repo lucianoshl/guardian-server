@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# migrate this file to thor structure
 
 require 'require_all'
 
@@ -6,25 +7,47 @@ ENV['ENV'] ||= 'development'
 ENV['RACK_ENV'] = ENV['ENV'] || 'development'
 
 require 'rubygems'
+require 'bundler'
+require 'bundler/setup'
+Bundler.require(:default, ENV['ENV'] || 'development')
+require_rel './lib/requirer.rb'
 require 'rake'
 
 namespace 'guardian' do
   desc 'Run webapp'
   task :server do
     ENV['PORT'] = ENV['PORT'] || '3000'
-    sh("ENV=#{ENV['ENV']} bundle exec rackup --host 0.0.0.0 -p #{ENV['PORT']} config/config.ru")
+    Requirer.with_sub_folder_as_namespace('sinatra')
+    require_rel './lib/sinatra/web_app.rb'
+    Rack::Handler::WEBrick.run WebApp
   end
 
   desc 'Run worker'
   task :worker do
-    ARGV.shift
-    queue = ARGV.empty? ? '' : " --queue=#{ARGV[0]}"
-    sh("ENV=#{ENV['ENV']} bundle exec ruby ./bin/delayed_job.rb run#{queue}")
+    require 'delayed/command'
+    Delayed::Worker.max_run_time = 10.minutes
+    Delayed::Worker.logger = Logging.logger
+    Delayed::Worker.backend = :mongoid
+
+    worker_args = ARGV[2..-1]
+    
+    queue_name = ARGV.select { |a| a =~ /--queue=/ }.first.scan(/--queue=(.+)/).first.first
+    
+    if ENV['ENV'] == 'production'
+      Delayed::Backend::Mongoid::Job.where(queue: queue_name).map do |job|
+        job.unlock
+        job.save
+      end
+    end
+    
+    Delayed::Command.new(worker_args).daemonize
   end
 
   desc 'Run console'
   task :console do
-    sh("ENV=#{ENV['ENV']} bundle exec ruby ./bin/console.rb")
+    require 'irb'
+    ARGV.clear
+    IRB.start
   end
 
   desc 'Run command'
