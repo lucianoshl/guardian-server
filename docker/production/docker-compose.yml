@@ -3,7 +3,8 @@ services:
   guardian:
     restart: always
     image: lucianoshl/guardian-base
-    command: bundle exec rake guardian:server
+    # command: bundle exec rake guardian:server
+    command: /bin/sh -c 'while sleep 1; do echo "Hi"; done'
     environment:
       ENV: production
       MONGO_URL: mongodb://mongo:27017/guardian
