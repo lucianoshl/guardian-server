@@ -19,7 +19,7 @@ namespace 'guardian' do
     ENV['PORT'] = ENV['PORT'] || '3000'
     Requirer.with_sub_folder_as_namespace('sinatra')
     require_rel './lib/sinatra/web_app.rb'
-    Rack::Handler::WEBrick.run WebApp
+    Rack::Handler::WEBrick.run(WebApp,{ Host: '0.0.0.0', Port: ENV['PORT'] })
   end
 
   desc 'Run worker'

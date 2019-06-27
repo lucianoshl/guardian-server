@@ -35,6 +35,3 @@ jobs:
         - docker-machine rm -y swarm
 stages:
   - name: test
-    if: branch != docker-compose-deploy
-  - name: deploy
-    if: branch = docker-compose-deploy
