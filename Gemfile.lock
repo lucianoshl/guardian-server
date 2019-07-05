@@ -199,7 +199,7 @@ DEPENDENCIES
   logger
   mechanize
   moneta
-  mongoid
+  mongoid (= 6.4.1)
   parallel
   pry
   pry-nav
