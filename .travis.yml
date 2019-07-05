@@ -1,7 +1,7 @@
 language: generic
-env:
-  - PATH=$PATH:/tmp/bin
-  - COMPOSE_HTTP_TIMEOUT=120
+# env:
+#   - PATH=$PATH:/tmp/bin
+#   - COMPOSE_HTTP_TIMEOUT=120
 services:
   - docker  
 sudo: required
