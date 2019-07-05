@@ -44,9 +44,9 @@ group :test do
   gem 'simplecov-console', require: false
 end
 
-group :development do
-  gem 'rubocop', require: false
-end
+# group :development do
+#   gem 'rubocop', require: false
+# end
 
 group :test, :development do
   gem 'pry'
