@@ -38,10 +38,10 @@ class Task::TrainKnight < Task::Abstract
   end
 
   def home(info)
-    village = Village.find(info['home_village']['id'])
+    village_id = info['home_village']['id'].to_i
     regimen = info['usable_regimens'].first
     train_cost = regimen['res_cost'].to_resource
-    statue = Screen::Statue::Main.new(village: village.id)
+    statue = Screen::Statue::Main.new(village: village_id)
     possible_train = statue.resources.include?(train_cost * 10)
     possible_train ? statue.train(info['id'], regimen['id']) : training(info)
   end
