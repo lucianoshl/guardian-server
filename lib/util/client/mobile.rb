@@ -53,6 +53,6 @@ class Client::Mobile < Mechanize
     result = post("https://#{account.world}.tribalwars.com.br/m/g/login", [token, 2, 'android'])
     add_global_arg('sid', JSON.parse(result.body)['result']['sid'])
     get("https://#{account.world}.tribalwars.com.br/login.php?mobile&2")
-    Property.put("#{self.class}_cookies", cookies)
+    Property.put("#{self.class}_#{account.username}_cookies", cookies)
   end
 end

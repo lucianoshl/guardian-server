@@ -20,13 +20,14 @@ class Screen::ReportView < Screen::Base
     report.erase_uri = page.search('a[href*=del_one]').attr('href').value
     report.id = report.erase_uri.scan(/id=(\d+)/).first.first.to_i
     report.ocurrence = report_table.search('tr > td')[1].text.strip.to_datetime
-    binding.pry
-    report.moral = report_table.search('h4')[1].text.number_part
     report.luck = page.search('#attack_luck').text.strip.delete('%').to_f
 
     bonus_title = report_table.search('h4')[2]
     report.night_bonus = bonus_title.nil? ? false : bonus_title.text.downcase.include?('bonus')
     report.origin_id, report.target_id = page.search('.village_anchor').map { |a| a.attr('data-id').to_i }
+
+    report.moral = 100
+    report.moral = report_table.search('h4')[1].text.number_part unless report.target.player.nil?
 
     attack_units = parse_table(page, '#attack_info_att_units', remove_columns: [0])
     defence_units = parse_table(page, '#attack_info_def_units', remove_columns: [0])
@@ -53,7 +54,7 @@ class Screen::ReportView < Screen::Base
     ram_label = Unit.get(:ram).name.downcase
     catapult_label = Unit.get(:catapult).name.downcase
 
-    buildings_regex = Building.all.map(&:name).map(&:downcase).join('|')
+    buildings_regex = Building.all.map(&:name).compact.map(&:downcase).join('|')
     catapult_damage_text = page.search("th:contains('#{catapult_label}')").first
     unless catapult_damage_text.nil?
       catapult_damage_text = catapult_damage_text.next.next.text

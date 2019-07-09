@@ -23,7 +23,7 @@ class Client::Logged
 
   def reload_cookies
     @client.cookie_jar.clear
-    Property.get("#{@client.class}_cookies", []).map do |cookie|
+    Property.get("#{@client.class}_#{Account.main.username}_cookies", []).map do |cookie|
       @client.cookie_jar.add(cookie)
     end
   end

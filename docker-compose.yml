@@ -7,7 +7,7 @@ services:
       - .:/usr/app
   guardian:
     image: lucianoshl/guardian-base
-    command: bundle exec foreman start -f Procfile.workers --timestamp=false
+    command: bundle exec rake guardian:server
     volumes:
       - .:/usr/app
     environment:
