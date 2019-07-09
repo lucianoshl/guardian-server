@@ -8,7 +8,8 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 # app
 gem 'graphql'
-gem 'mongoid'
+gem 'mongoid', '6.4.1'
+gem 'mongo', '2.8.0'
 gem 'rack'
 gem 'rack-contrib'
 gem 'rack-mount'
@@ -44,9 +45,9 @@ group :test do
   gem 'simplecov-console', require: false
 end
 
-group :development do
-  gem 'rubocop', require: false
-end
+# group :development do
+#   gem 'rubocop', require: false
+# end
 
 group :test, :development do
   gem 'pry'

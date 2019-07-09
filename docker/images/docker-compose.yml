@@ -12,3 +12,10 @@ services:
     image: lucianoshl/guardian-tests:latest
     depends_on:
       - base
+  fluentd: 
+    build:
+      context: .
+      dockerfile: ./fluentd.Dockerfile
+    image: lucianoshl/guardian-fluentd:latest
+    depends_on:
+      - base

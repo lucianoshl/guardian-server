@@ -1,8 +1,13 @@
 version: '3.4'
 services:
+  bundler:
+    image: lucianoshl/guardian-base
+    command: bundle install
+    volumes:
+      - .:/usr/app
   guardian:
     image: lucianoshl/guardian-base
-    command: bundle exec rake guardian:server
+    command: bundle exec foreman start -f Procfile.workers --timestamp=false
     volumes:
       - .:/usr/app
     environment:

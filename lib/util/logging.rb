@@ -6,7 +6,7 @@ module Logging
   class << self
     def logger
       if @logger.nil?
-        @logger ||= Logger.new($stdout)
+        @logger ||= Logger.new(STDOUT)
         @logger.level = "Logger::#{Enviroment['log']['level']}".constantize
         @logger.formatter = proc do |_severity, _datetime, _progname, _msg|
           eval('"' + Enviroment['log']['format'] + '"')
