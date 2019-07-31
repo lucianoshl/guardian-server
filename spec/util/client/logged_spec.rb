@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-# # frozen_string_literal: true
+describe Client::Logged do
+  it 'logged client with desktop' do
+    Client::Logged.desktop.get('/game.php')
+  end
 
-# describe Client::Logged do
-#   it 'logged client with desktop' do
-#     client = Client::Logged.new(Client::Desktop.new)
-#     client.get('/game.php')
-#   end
-# end
+  it 'logged client with mobile' do
+    Client::Logged.mobile.get('/game.php')
+  end
+end
