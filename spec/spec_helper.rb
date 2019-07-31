@@ -17,7 +17,7 @@ Coveralls.wear!
 SimpleCov.formatter = SimpleCov::Formatter::Console
 SimpleCov.start do
   add_filter do |source_file|
-    source_file.lines.count < 5
+    source_file.filename.include?('/graphql_model/')
   end
 end
 
