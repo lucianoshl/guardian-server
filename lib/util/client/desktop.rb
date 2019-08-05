@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Client::Desktop < Client::Base
-
   def post(uri, query = {}, headers = {})
     super(inject_global(uri), query, headers)
   end

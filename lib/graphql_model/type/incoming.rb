@@ -7,5 +7,4 @@ module Type::Incoming
   config do
     argument :id, types.Int
   end
-
 end

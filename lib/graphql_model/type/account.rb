@@ -16,6 +16,7 @@ module Type::Account
 
     def call(_object, inputs, _ctx)
       return Account.main unless Account.main.nil?
+
       new_account = Account.new(inputs.to_h)
       new_account.main = true
       new_account.save
@@ -23,5 +24,4 @@ module Type::Account
       new_account
     end
   end
-
 end

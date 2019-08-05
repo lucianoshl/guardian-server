@@ -9,6 +9,5 @@ describe Screen::Main do
     expect(diference < 500).to eq(true)
 
     main.possible_build?(:farm)
-
   end
 end
