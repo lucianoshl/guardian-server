@@ -60,7 +60,7 @@ class Task::StealResourcesTask < Task::Abstract
         send_to('waiting_incoming', e.incoming_time)
       rescue Exception => e
         binding.pry unless ENV['ENV'] == 'PRODUCTION'
-        send_to('error', Time.now + 10.minutes)
+        send_to('with_error', Time.now + 10.minutes)
       end
 
       logger.info("Finish for #{target} #{@original_status} > #{target.status} ")
@@ -286,7 +286,7 @@ class Task::StealResourcesTask < Task::Abstract
     waiting_report
   end
 
-  def error
+  def with_error
     waiting_report
   end
 
