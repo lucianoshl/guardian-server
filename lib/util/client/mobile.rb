@@ -1,15 +1,7 @@
 # frozen_string_literal: true
 
-class Client::Mobile < Mechanize
+class Client::Mobile < Client::Base
   include Logging
-
-  def initialize
-    super
-    user_agent = 'Mozilla/5.0 (Linux; Android 4.4.4; SAMSUNG-SM-N900A Build/tt) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36'
-    @global_args = {}
-    this = self
-    ObjectSpace.define_finalizer(self, proc { this.shutdown })
-  end
 
   def post(uri, query = {}, headers = {})
     uri = inject_global(uri, query)
