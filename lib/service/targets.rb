@@ -29,7 +29,7 @@ module Service::Targets
 
   def sort_by_priority(targets)
     logger.info('sort_by_priority: start')
-    my_villages = Village.my.clone
+    my_villages = Village.my.to_a.clone
     logger.info("sort_by_priority: targets #{targets.count}")
     targets = targets.to_a
 
