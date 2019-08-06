@@ -14,7 +14,7 @@ class Cookie
   field :httponly, type: Boolean
   field :expires, type: Time
   field :session, type: Boolean
-  field :max_age, type: String
+  field :max_age, type: Integer
   field :created_at, type: Time
   field :accessed_at, type: Time
 
