@@ -2,7 +2,7 @@ env:
   global:
       - RACK_ENV=test
       - ENV=test
-      - MONGO_URL=mongodb://mongo:27017/guardian-specs
+      - MONGO_URL=mongodb://127.0.0.1:27017/guardian-specs
       - STUB_USER=travis
       - STUB_PASS=travis123
       - STUB_WORLD=brp4
