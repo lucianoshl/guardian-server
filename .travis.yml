@@ -1,37 +1,21 @@
-language: generic
-# env:
-#   - PATH=$PATH:/tmp/bin
-#   - COMPOSE_HTTP_TIMEOUT=120
-services:
-  - docker  
-sudo: required
-dist: xenial
+env:
+  global:
+    - CC_TEST_REPORTER_ID=eb32be7afe8adcd1513d01d47bcb0ade2fd870bd9ee735b6f5077fa88a09b88b
+language: ruby
+rvm:
+  - 2.5.3
+bundler_args: --jobs=2
 jobs:
   include:
-
     - stage: test
       before_script:
-        - docker-compose -f docker/images/docker-compose.yml build
-        - cd docker/travis/ 
-        - docker-compose run travis /./cc-test-reporter before-build
-      script: docker-compose run travis
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
+      script: bundle exec rspec spec
       after_script:
-        - docker-compose run travis bundle exec rake coveralls:push
-        - docker-compose run travis /./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
-
-    # - stage: deploy
-    #   before_script:
-    #     - cd docker/production/ssh
-    #     - openssl aes-256-cbc -K $encrypted_680080ebd873_key -iv $encrypted_680080ebd873_iv -in secrets.tar.enc -out secrets.tar -d
-    #     - tar xvf secrets.tar
-    #     - cd ../../..
-    #     - mkdir -p /tmp/bin/ && base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/bin/docker-machine && chmod +x /tmp/bin/docker-machine
-    #     - docker-machine create --driver generic --generic-ssh-key docker/production/ssh/id_rsa swarm
-    #     - eval "$(docker-machine env swarm)"
-    #     - docker-compose -f docker/images/docker-compose.yml build
-    #     - cd docker/production
-    #   script: docker-compose stop guardian && docker-compose rm -f guardian && docker-compose up -d guardian
-    #   after_script:
-    #     - docker-machine rm -y swarm
+        - bundle exec rake coveralls:push
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 stages:
-  - name: test
+  - test
+cache: bundler
