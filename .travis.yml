@@ -1,6 +1,7 @@
 env:
   global:
     - CC_TEST_REPORTER_ID=eb32be7afe8adcd1513d01d47bcb0ade2fd870bd9ee735b6f5077fa88a09b88b
+    - MONGO_URL=mongodb://127.0.0.1:27017/guardian-specs
 language: ruby
 rvm:
   - 2.5.5
