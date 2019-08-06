@@ -6,6 +6,10 @@ class String
   R18n.set('pt')
   @@hash_values = nil
 
+  def alert
+    self.white.on_red
+  end
+
   def underscore
     to_s.gsub(/::/, '/')
         .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')

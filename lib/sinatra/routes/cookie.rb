@@ -3,9 +3,8 @@
 module Routes::Cookie
   def self.registered(app)
     app.get '/cookies/desktop' do
-      client = Client::Logged.new(Client::Desktop.new)
-      client.get('/game.php')
-      return YAML.dump(client.cookies)
+      Client::Logged.mobile.get('/game.php')
+      return YAML.dump(Session.current(Account.main).cookies.map(&:to_raw))
     end
   end
 end

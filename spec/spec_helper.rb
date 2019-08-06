@@ -27,6 +27,7 @@ RSpec.configure do |config|
   end
 
   config.include(RequestStub)
+  config.include(DatabaseStub)
 
   config.before :each do
     allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
@@ -36,17 +37,7 @@ RSpec.configure do |config|
     allow(Service::AttackDetector).to receive(:run).and_return(nil)
     allow_any_instance_of(Notifier).to receive(:notify).and_return(nil)
 
-    stub_account = Account.new
-    stub_account.username = ENV['STUB_USER']
-    stub_account.password = ENV['STUB_PASS']
-    stub_account.world = ENV['STUB_WORLD']
-    stub_account.main = true
-    stub_account.player = Player.new
-    stub_account.player.points = 1000
-    stub_account.player.ally = Ally.new
-    stub_account.player.ally.id = 'my_ally'
-
-    allow(Account).to receive(:main).and_return(stub_account)
+    # allow(Account).to receive(:main).and_return(Account.main)
 
     allow(Screen::AllyContracts).to receive(:new).and_return(OpenStruct.new(
                                                                allies_ids: %w[ally1 ally2]
@@ -62,12 +53,11 @@ RSpec.configure do |config|
   end
 
   config.before :all do
+    mock_account
   end
 
   config.after :all do
-    cookies = Property.where(key: /_cookies/).to_a
-    Mongoid.purge!
-    cookies.map(&:clone).map(&:save)
+    clean_db
   end
 
   # rspec-expectations config goes here. You can use an alternate

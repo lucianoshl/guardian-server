@@ -8,6 +8,8 @@ class Account
   field :world, type: String
   field :main, type: Boolean
 
+  has_many :sessions
+
   has_one :player
 
   def self.main

@@ -5,14 +5,14 @@ class Client::Mobile < Client::Base
 
   def post(uri, query = {}, headers = {})
     uri = inject_global(uri, query)
-    logger.debug("POST: #{uri}")
+    logger.trace("POST: #{uri}")
     is_form = headers['Content-Type']&.include?('form') || false
     super(uri, is_form ? query.to_query : query.to_json, headers)
   end
 
   def get(uri, parameters = [], referer = nil, headers = {})
     uri = inject_global(uri)
-    logger.debug("GET: #{uri}")
+    logger.trace("GET: #{uri}")
     super(uri, parameters, referer, headers)
   end
 
@@ -45,6 +45,6 @@ class Client::Mobile < Client::Base
     result = post("https://#{account.world}.tribalwars.com.br/m/g/login", [token, 2, 'android'])
     add_global_arg('sid', JSON.parse(result.body)['result']['sid'])
     get("https://#{account.world}.tribalwars.com.br/login.php?mobile&2")
-    Property.put("#{self.class}_#{account.username}_cookies", cookies)
+    Session.create(account, cookies)
   end
 end

@@ -32,6 +32,6 @@ class Client::Desktop < Client::Base
                                remember: 1
                              }, headers)
     get("https://www.tribalwars.com.br/page/play/#{account.world}")
-    Property.put("#{self.class}_#{account.username}_cookies", cookies)
+    Session.create(account, cookies)
   end
 end
