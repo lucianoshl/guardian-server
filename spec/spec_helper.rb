@@ -58,7 +58,6 @@ RSpec.configure do |config|
   end
 
   config.after :all do
-    
   end
 
   # rspec-expectations config goes here. You can use an alternate

@@ -26,15 +26,15 @@ class Session
 
   def desktop_session
     result = Marshal.load(Marshal.dump(self))
-    result.cookies.last['origin'].gsub(/\/\/game\.php.+/,'/game.php')
-    global_village_id_1 = result.cookies.select{|a| a['name'] == 'global_village_id'}.first
+    result.cookies.last['origin'].gsub(%r{//game\.php.+}, '/game.php')
+    global_village_id_1 = result.cookies.select { |a| a['name'] == 'global_village_id' }.first
     global_village_id_2 = global_village_id_1.clone
     result.cookies << global_village_id_2
 
-    global_village_id_1['origin'] = global_village_id_1['origin'].gsub(/\/\/game.php.+/,'/game.php')
+    global_village_id_1['origin'] = global_village_id_1['origin'].gsub(%r{//game.php.+}, '/game.php')
     global_village_id_1['path'] = '/'
 
-    global_village_id_2['origin'] = global_village_id_2['origin'].gsub(/\?.+/,'?screen=overview&intro')
+    global_village_id_2['origin'] = global_village_id_2['origin'].gsub(/\?.+/, '?screen=overview&intro')
 
     result
   end

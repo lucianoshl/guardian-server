@@ -13,5 +13,4 @@ module Type::Session
 
     criteria.desc(:created_at).to_a.map(&:desktop_session)
   end
-
 end
