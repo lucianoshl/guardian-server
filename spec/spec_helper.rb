@@ -53,11 +53,12 @@ RSpec.configure do |config|
   end
 
   config.before :all do
-    mock_account
+    clean_db
+    # mock_account
   end
 
   config.after :all do
-    clean_db
+    
   end
 
   # rspec-expectations config goes here. You can use an alternate

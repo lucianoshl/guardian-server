@@ -10,8 +10,8 @@ module Type::Session
       field, operation = k.split('_')
       [field.to_sym.send(operation), v]
     end).to_h)
-    
-    criteria.desc(:created_at)
+
+    criteria.desc(:created_at).to_a.map(&:desktop_session)
   end
 
 end
