@@ -19,3 +19,5 @@ jobs:
 stages:
   - test
 cache: bundler
+services:
+  - mongodb
