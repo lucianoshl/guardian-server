@@ -11,7 +11,7 @@ require 'rubygems'
 require 'bundler'
 require 'bundler/setup'
 Bundler.require(:default, ENV['ENV'] || 'development')
-require_rel './lib/requirer.rb'
+require_rel './app/requirer.rb'
 require 'rake'
 
 namespace 'guardian' do
@@ -19,7 +19,7 @@ namespace 'guardian' do
   task :server do
     ENV['PORT'] = ENV['PORT'] || '3000'
     Requirer.with_sub_folder_as_namespace('sinatra')
-    require_rel './lib/sinatra/web_app.rb'
+    require_rel './app/sinatra/web_app.rb'
     Rack::Handler::WEBrick.run(WebApp, Host: '0.0.0.0', Port: ENV['PORT'])
   end
 
@@ -56,7 +56,7 @@ namespace 'guardian' do
     require 'bundler/setup'
     require 'delayed/command'
     Bundler.require(:default, ENV['ENV'])
-    require_rel './lib/requirer.rb'
+    require_rel './app/requirer.rb'
     eval("lambda{#{ARGV.last}}").call
     exit(0)
   end

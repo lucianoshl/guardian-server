@@ -4,7 +4,7 @@ require 'bundler/setup'
 require 'delayed/command'
 Bundler.require(:default, ENV['ENV'])
 
-require_rel '../lib/requirer.rb'
+require_rel '../app/requirer.rb'
 
 Delayed::Worker.max_run_time = 10.minutes
 Delayed::Worker.logger = Logging.logger

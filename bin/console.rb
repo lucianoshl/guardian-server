@@ -5,7 +5,7 @@ require 'delayed/command'
 Bundler.require(:default, ENV['ENV'])
 require 'irb'
 
-require_rel '../lib/requirer.rb'
+require_rel '../app/requirer.rb'
 
 ARGV.clear # otherwise all script parameters get passed to IRB
 IRB.start

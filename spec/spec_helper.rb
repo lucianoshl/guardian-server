@@ -6,7 +6,7 @@ require 'rubygems'
 require 'bundler'
 Bundler.require(:default, ENV['ENV'])
 
-require_rel '../lib/requirer.rb'
+require_rel '../app/requirer.rb'
 require_rel './helpers'
 require 'coveralls'
 require 'simplecov'
