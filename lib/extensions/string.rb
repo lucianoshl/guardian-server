@@ -7,7 +7,7 @@ class String
   @@hash_values = nil
 
   def alert
-    self.white.on_red
+    white.on_red
   end
 
   def underscore

@@ -13,7 +13,7 @@ class Session
 
   def self.create(account, cookies)
     session = Session.new
-    session.account = account 
+    session.account = account
     session.cookies = cookies.map { |raw| Cookie.new(JSON.parse(raw.to_json)) }
     session.save
     session

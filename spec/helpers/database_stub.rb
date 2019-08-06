@@ -5,7 +5,7 @@ module DatabaseStub
     session = Session.current(Account.main).clone
     Mongoid.purge!
     session.account = mock_account
-    raise Exception.new("Error saving Session: #{session.errors.to_a}") unless session.save
+    raise Exception, "Error saving Session: #{session.errors.to_a}" unless session.save
   end
 
   def mock_account
