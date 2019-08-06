@@ -2,7 +2,7 @@
 
 module DatabaseStub
   def clean_db
-    session = Session.current(Account.main).clone
+    session = Session.current(Account.main, 'mobile').clone
     Mongoid.purge!
     session.account = mock_account
     raise Exception, "Error saving Session: #{session.errors.to_a}" unless session.save
