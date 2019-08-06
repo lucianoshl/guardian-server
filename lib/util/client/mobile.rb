@@ -45,6 +45,6 @@ class Client::Mobile < Client::Base
     result = post("https://#{account.world}.tribalwars.com.br/m/g/login", [token, 2, 'android'])
     add_global_arg('sid', JSON.parse(result.body)['result']['sid'])
     get("https://#{account.world}.tribalwars.com.br/login.php?mobile&2")
-    Session.create(account, cookies)
+    Session.create(account, cookies, 'mobile')
   end
 end

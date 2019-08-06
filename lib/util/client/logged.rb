@@ -23,7 +23,8 @@ class Client::Logged
 
   def reload_cookies
     @client.cookie_jar.clear
-    Session.current(Account.main).cookies.map { |cookie| @client.cookie_jar.add(cookie.to_raw) }
+    type = @client.class.name.split('::').last.downcase
+    Session.current(Account.main,type).cookies.map { |cookie| @client.cookie_jar.add(cookie.to_raw) }
   end
 
   def post(*args)

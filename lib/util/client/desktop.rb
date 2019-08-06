@@ -19,6 +19,7 @@ class Client::Desktop < Client::Base
   end
 
   def login
+    logger.info('Making desktop login'.on_blue)
     account = Account.main
     login_page = get('https://www.tribalwars.com.br')
     headers = {}
@@ -32,6 +33,6 @@ class Client::Desktop < Client::Base
                                remember: 1
                              }, headers)
     get("https://www.tribalwars.com.br/page/play/#{account.world}")
-    Session.create(account, cookies)
+    Session.create(account, cookies, 'desktop')
   end
 end
