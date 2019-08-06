@@ -36,7 +36,6 @@ gem 'washbullet'
 gem 'wisper'
 
 gem 'r18n-core'
-gem 'rack-graphiql'
 gem 'ruby-prof'
 
 group :test do
