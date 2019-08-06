@@ -6,8 +6,7 @@ module Type::Query
       name 'Query'
       description 'Guardian queries'
 
-      models = (Type.constants - %i[Query Base Time PointsEvolution Buildings Yaml])
-
+      models = (Type.constants - %i[Query Base Time PointsEvolution Buildings Yaml Hash])
       models.map do |model_name|
         model = Type.const_get(model_name)
         label = model.definition_name.to_s.snakecase

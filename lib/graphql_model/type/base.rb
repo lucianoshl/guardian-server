@@ -5,7 +5,7 @@ module MongoInflector
   @@type_mapping[String] = GraphQL::STRING_TYPE
   @@type_mapping[Integer] = GraphQL::INT_TYPE
   @@type_mapping[Float] = GraphQL::FLOAT_TYPE
-  @@type_mapping[Hash] = nil
+  @@type_mapping[Hash] = Type::Hash.definition
 
   def field_name(name)
     name == '_id' ? 'id' : name
