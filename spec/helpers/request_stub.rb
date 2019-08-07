@@ -7,7 +7,7 @@ module RequestStub
   end
 
   def mock_request(method, info)
-    stub = stub_request(method.to_sym, Regexp.new(info['uri']))
+    stub = WebMock.stub_request(method.to_sym, Regexp.new(info['uri']))
     stub.to_return(status: 200, body: mock_handler(info), headers: build_headers(info['body']))
   end
 

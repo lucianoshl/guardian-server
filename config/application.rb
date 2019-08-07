@@ -31,6 +31,11 @@ module Guardian
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
-    config.autoload_paths += Dir["#{config.root}/app/{extras,util}/**/"]
+    config.autoload_paths += Dir["#{config.root}/app/{models,extras,util}/**/"]
+
+    config.time_zone = 'America/Sao_Paulo'
+    # config.mongoid.logger = Logger.new($stdout, :warn)
+    # Mongoid.logger = Logger.new(STDOUT)
+    # Mongoid.logger.level = -1
   end
 end

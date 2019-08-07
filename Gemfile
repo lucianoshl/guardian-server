@@ -3,6 +3,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.5.5'
 
+
+# possible remove
+gem 'wisper', '2.0.0'
+gem 'activesupport'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
 # Use Puma as the app server
@@ -28,6 +33,7 @@ group :development, :test do
   gem 'pry-nav'
   gem 'pry-rescue'
   gem 'pry-stack_explorer'
+  gem 'webmock'
 end
 group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
@@ -52,7 +58,9 @@ gem 'colorize'
 gem 'daemons'
 gem 'delayed_job'
 gem 'delayed_job_mongoid'
+gem 'parallel'
 
 # to remove
 gem 'r18n-core'
 gem 'washbullet'
+
