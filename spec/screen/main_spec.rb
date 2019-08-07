@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Screen::Main do
+describe  do
   it 'main screen health check' do
     main = Screen::Main.new
     server_time = main.server_time

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+binding.pry
 class Screen::Main < Screen::Base
   screen :main
 
