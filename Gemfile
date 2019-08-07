@@ -27,7 +27,6 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # gem 'rack-cors'
 
 group :development, :test do
-  gem "graphiql-rails"
   gem 'rspec-rails'
   gem 'pry'
   gem 'pry-nav'
@@ -52,13 +51,13 @@ gem 'mongoid', '6.4.1'
 gem 'mechanize'
 gem 'graphql'
 gem 'colorize'
-
+gem 'parallel'
+gem "graphiql-rails"
 
 # jobs
 gem 'daemons'
 gem 'delayed_job'
 gem 'delayed_job_mongoid'
-gem 'parallel'
 
 # to remove
 gem 'r18n-core'

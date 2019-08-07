@@ -1,3 +1,0 @@
-api: bundle exec rake guardian:server
-n_q: rake guardian:worker -- run --queue=normal
-h_q: rake guardian:worker -- run --queue=high
