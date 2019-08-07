@@ -1,0 +1,3 @@
+api: bundle exec rails s
+n_q: bundle exec ruby bin/delayed_job.rb -- run --queue=normal
+h_q: bundle exec ruby bin/delayed_job.rb -- run --queue=high
