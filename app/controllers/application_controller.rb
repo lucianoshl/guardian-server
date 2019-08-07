@@ -7,8 +7,7 @@ class ApplicationController < ActionController::API
       variables: params['variables'],
       context: { current_user: nil }
     )
-    content_type :json
-    result.to_json
+    render json: result
   end
   
 end
