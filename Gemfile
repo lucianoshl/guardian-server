@@ -28,7 +28,6 @@ group :development, :test do
   gem 'pry-nav'
   gem 'pry-rescue'
   gem 'pry-stack_explorer'
-  gem 'webmock'
 end
 group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
