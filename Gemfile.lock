@@ -50,17 +50,33 @@ GEM
     bson (4.5.0)
     builder (3.2.3)
     coderay (1.1.2)
+    colorize (0.8.1)
     concurrent-ruby (1.1.5)
+    connection_pool (2.2.2)
     crass (1.0.4)
+    daemons (1.3.1)
     debug_inspector (0.0.3)
+    delayed_job (4.1.7)
+      activesupport (>= 3.0, < 5.3)
+    delayed_job_mongoid (2.3.1)
+      delayed_job (>= 3.0, < 5)
+      mongoid (>= 3.0, < 8)
+      mongoid-compatibility (>= 0.4.0)
     diff-lcs (1.3)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
     erubi (1.8.0)
+    faraday (0.9.2)
+      multipart-post (>= 1.2, < 3)
     ffi (1.11.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     graphiql-rails (1.7.0)
       railties
       sprockets-rails
+    graphql (1.9.8)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     interception (0.5)
@@ -75,7 +91,19 @@ GEM
       mini_mime (>= 0.1.1)
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
+    mechanize (2.7.6)
+      domain_name (~> 0.5, >= 0.5.1)
+      http-cookie (~> 1.0)
+      mime-types (>= 1.17.2)
+      net-http-digest_auth (~> 1.1, >= 1.1.1)
+      net-http-persistent (>= 2.5.2)
+      nokogiri (~> 1.6)
+      ntlm-http (~> 0.1, >= 0.1.1)
+      webrobots (>= 0.0.9, < 0.2)
     method_source (0.9.2)
+    mime-types (3.2.2)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2019.0331)
     mimemagic (0.3.3)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
@@ -85,10 +113,18 @@ GEM
     mongoid (6.4.1)
       activemodel (>= 5.1, < 6.0.0)
       mongo (>= 2.5.1, < 3.0.0)
+    mongoid-compatibility (0.5.1)
+      activesupport
+      mongoid (>= 2.0)
     msgpack (1.3.1)
+    multipart-post (2.1.1)
+    net-http-digest_auth (1.4.1)
+    net-http-persistent (3.0.1)
+      connection_pool (~> 2.2)
     nio4r (2.4.0)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
+    ntlm-http (0.1.1)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -101,6 +137,7 @@ GEM
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
     puma (3.12.1)
+    r18n-core (3.2.0)
     rack (2.0.7)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -165,6 +202,13 @@ GEM
     thread_safe (0.3.6)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.6)
+    washbullet (0.4.0)
+      faraday (~> 0.9.0)
+      mime-types
+    webrobots (0.1.2)
     websocket-driver (0.7.1)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
@@ -174,8 +218,14 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap (>= 1.1.0)
+  colorize
+  daemons
+  delayed_job
+  delayed_job_mongoid
   graphiql-rails
+  graphql
   listen (>= 3.0.5, < 3.2)
+  mechanize
   mongo (= 2.8.0)
   mongoid (= 6.4.1)
   pry
@@ -183,11 +233,13 @@ DEPENDENCIES
   pry-rescue
   pry-stack_explorer
   puma (~> 3.11)
+  r18n-core
   rails (~> 5.2.3)
   rspec-rails
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
+  washbullet
 
 RUBY VERSION
    ruby 2.5.5p157

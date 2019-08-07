@@ -43,3 +43,16 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'mongo', '2.8.0'
 gem 'mongoid', '6.4.1'
+gem 'mechanize'
+gem 'graphql'
+gem 'colorize'
+
+
+# jobs
+gem 'daemons'
+gem 'delayed_job'
+gem 'delayed_job_mongoid'
+
+# to remove
+gem 'r18n-core'
+gem 'washbullet'

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_rel './cookie.rb'
+# require_rel './cookie.rb'
 
 class Session
   include Mongoid::Document

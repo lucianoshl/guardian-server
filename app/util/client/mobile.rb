@@ -5,14 +5,14 @@ class Client::Mobile < Client::Base
 
   def post(uri, query = {}, headers = {})
     uri = inject_global(uri, query)
-    logger.trace("POST: #{uri}")
+    logger.debug("POST: #{uri}")
     is_form = headers['Content-Type']&.include?('form') || false
     super(uri, is_form ? query.to_query : query.to_json, headers)
   end
 
   def get(uri, parameters = [], referer = nil, headers = {})
     uri = inject_global(uri)
-    logger.trace("GET: #{uri}")
+    logger.debug("GET: #{uri}")
     super(uri, parameters, referer, headers)
   end
 
