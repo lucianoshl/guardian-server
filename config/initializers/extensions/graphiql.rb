@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # https://github.com/rmosolgo/graphiql-rails/issues/43
 module GraphiQL
   module Rails

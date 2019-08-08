@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   config.autoload_paths += Dir["#{config.root}/spec/{helpers}/**/"]
   # Settings specified here will take precedence over those in config/application.rb.

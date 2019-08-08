@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 # # frozen_string_literal: true
 
 # describe Session do
 #   it 'convert to desktop cookies' do
 #     mobile_client = Client::Mobile.new
-#     mobile_client.login 
+#     mobile_client.login
 
 #     desktop_client = Client::Desktop.new
 #     desktop_client.login

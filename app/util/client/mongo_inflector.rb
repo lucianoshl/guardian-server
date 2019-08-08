@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MongoInflector
   @@type_mapping = {}
   @@type_mapping[String] = GraphQL::STRING_TYPE

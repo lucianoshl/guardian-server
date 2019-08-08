@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require File.expand_path('../../config/environment', __FILE__)
+
+require File.expand_path('../config/environment', __dir__)
 require 'delayed/command'
 Delayed::Worker.max_run_time = 10.minutes
 Delayed::Worker.logger = Rails.logger

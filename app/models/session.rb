@@ -29,9 +29,6 @@ class Session
   # def desktop_session
   #   result = Marshal.load(Marshal.dump(self))
 
-
   #   result
   # end
-
-
 end
