@@ -63,3 +63,6 @@ gem 'delayed_job_mongoid'
 gem 'r18n-core'
 gem 'washbullet'
 
+group :production do
+  gem 'foreman'
+end
