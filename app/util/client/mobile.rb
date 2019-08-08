@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Client::Mobile < Client::Base
-  include Logging
 
   def post(uri, query = {}, headers = {})
     uri = inject_global(uri, query)

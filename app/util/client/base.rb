@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Client::Base < Mechanize
+  include Logging
+
   def initialize
     super
     self.user_agent = [
