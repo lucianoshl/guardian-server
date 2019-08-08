@@ -64,5 +64,5 @@ gem 'r18n-core'
 gem 'washbullet'
 
 group :production do
-  gem 'foreman'
+  gem 'foreman', '0.85.0'
 end
