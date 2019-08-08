@@ -35,7 +35,7 @@ module Guardian
 
     config.time_zone = 'America/Sao_Paulo'
 
-    config.mongoid.logger = Logger.new(Rails.root + '/log/mongoid.log', :warn)
+    config.mongoid.logger = Logger.new('/tmp/log/mongoid.log', :warn)
     config.mongoid.logger.level = Logger::INFO
 
   end
