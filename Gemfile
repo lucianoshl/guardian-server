@@ -34,6 +34,13 @@ group :development, :test do
   gem 'pry-stack_explorer'
   gem 'webmock'
 end
+
+group :test do
+  gem 'coveralls', require: false
+  gem 'simplecov', require: false
+  gem 'simplecov-console', require: false
+end
+
 group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
