@@ -3,7 +3,6 @@
 require 'logger'
 
 module Logging
-  
   def self.included(base)
     class << base
       def logger
