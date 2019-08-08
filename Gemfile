@@ -61,6 +61,9 @@ gem 'mongo', '2.8.0'
 gem 'mongoid', '6.4.1'
 gem 'parallel'
 
+gem 'rails_admin', '~> 2.0.0.rc'
+gem 'kaminari-mongoid'
+
 # jobs
 gem 'daemons'
 gem 'delayed_job'
