@@ -28,8 +28,6 @@ module Guardian
 
     # timezone config
     config.time_zone = 'America/Sao_Paulo'
-    config.active_record.default_timezone = :local
-
 
     # rails admin
     config.middleware.use ActionDispatch::Cookies
