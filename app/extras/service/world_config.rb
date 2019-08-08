@@ -4,7 +4,7 @@ class Service::WorldConfig
   extend Screen::Parser
 
   def self.has_milliseconds?
-    world_config_html = Cachy.cache('world_config') do
+    world_config_html = Rails.cache.fetch('world_config') do
       Mechanize.new.get("https://#{Account.main.world}.tribalwars.com.br/page/settings").body
     end
     page = Nokogiri::HTML(world_config_html)

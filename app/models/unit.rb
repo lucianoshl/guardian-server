@@ -42,7 +42,7 @@ class Unit
   end
 
   def self.get(id)
-    Cachy.cache("unit_#{id}") do
+    Rails.cache.fetch("unit_#{id}") do
       Unit.where(id: id).first
     end
   end
