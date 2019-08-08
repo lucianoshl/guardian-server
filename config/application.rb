@@ -24,8 +24,12 @@ module Guardian
     config.load_defaults 5.2
     config.api_only = true
     config.autoload_paths += Dir["#{config.root}/app/{models,extras,util}/**/"]
-    config.time_zone = 'America/Sao_Paulo'
     config.mongoid.logger.level = Logger::INFO
+
+    # timezone config
+    config.time_zone = 'America/Sao_Paulo'
+    config.active_record.default_timezone = :local
+
 
     # rails admin
     config.middleware.use ActionDispatch::Cookies
