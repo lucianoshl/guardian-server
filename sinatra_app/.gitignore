@@ -1,5 +1,0 @@
-coverage/
-.env
-docker/production/ssh/id_rsa
-docker/production/ssh/id_rsa.pub
-docker/production/ssh/secrets.tar
