@@ -108,9 +108,6 @@ class Service::Map
             v = v.to_index { |a| v.index(a).to_s }
           elsif v.first.class == Array
             v = v.to_index { |a| v.index(a).to_s }
-            # else
-            #   current_x += v.first.to_i
-            #   v = v.last
           end
 
         end

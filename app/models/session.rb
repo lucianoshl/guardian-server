@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# require_rel './cookie.rb'
-
 class Session
   include Mongoid::Document
   include Mongoid::Timestamps::Created
@@ -25,10 +23,4 @@ class Session
     last_session = Session.where(account: account, type: type).desc(:created_at).first
     last_session.nil? ? Session.new : last_session
   end
-
-  # def desktop_session
-  #   result = Marshal.load(Marshal.dump(self))
-
-  #   result
-  # end
 end

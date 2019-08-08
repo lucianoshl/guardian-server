@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# require_rel './desktop.rb'
-# require_rel './mobile.rb'
-
 class Client::Logged
   class << self
     def mobile
