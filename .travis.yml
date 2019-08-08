@@ -6,7 +6,6 @@ env:
       - STUB_USER=travis
       - STUB_PASS=travis123
       - STUB_WORLD=brp4
-      - TZ=America/Sao_Paulo
       - CC_TEST_REPORTER_ID=eb32be7afe8adcd1513d01d47bcb0ade2fd870bd9ee735b6f5077fa88a09b88b
 language: ruby
 rvm:

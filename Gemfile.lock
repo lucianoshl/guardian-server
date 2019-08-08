@@ -81,6 +81,8 @@ GEM
     faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
     ffi (1.11.1)
+    figaro (1.1.1)
+      thor (~> 0.14)
     foreman (0.85.0)
       thor (~> 0.19.1)
     globalid (0.4.2)
@@ -263,6 +265,7 @@ DEPENDENCIES
   daemons
   delayed_job
   delayed_job_mongoid
+  figaro
   foreman (= 0.85.0)
   graphiql-rails
   graphql
