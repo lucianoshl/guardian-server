@@ -58,6 +58,7 @@ gem "graphiql-rails"
 gem 'daemons'
 gem 'delayed_job'
 gem 'delayed_job_mongoid'
+gem 'cachy'
 
 # to remove
 gem 'r18n-core'
