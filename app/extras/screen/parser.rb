@@ -2,7 +2,7 @@
 
 module Screen::Parser
   def parse_json_argument(page, function)
-    JSON.parse(page.body.scan(/#{function}\(({.+})\)/).flatten.first)
+    JSON.parse(page.body.scan(/#{function}\(\s*({.+})/).flatten.first)
   end
 
   def parse_table(page, selector, remove_columns: [], include_header: false)

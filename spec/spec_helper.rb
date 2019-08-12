@@ -17,12 +17,20 @@
 require 'coveralls'
 require 'simplecov'
 require 'simplecov-console'
+require 'webmock/rspec'
+
+$tested_files = []
 
 Coveralls.wear!('rails')
 SimpleCov.formatter = SimpleCov::Formatter::Console
 SimpleCov.start do
   add_filter do |source_file|
-    source_file.filename.include?('/graphql_model/')
+    if ARGV.empty?
+      false
+    else
+      origin_file = source_file.filename.gsub('/spec/','/app/').gsub('_spec.rb','.rb')
+      !$tested_files.include?(origin_file)
+    end 
   end
 end
 
@@ -32,7 +40,9 @@ RSpec.configure do |config|
   config.include(RequestStub)
   config.include(DatabaseStub)
 
-  config.before :each do
+  config.before :each do |spec|
+    $tested_files << spec.metadata[:absolute_file_path].gsub('/spec/','/app/').gsub('_spec.rb','.rb')
+
     allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
     allow_any_instance_of(Report).to receive(:erase).and_return(nil)
 

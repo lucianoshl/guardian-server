@@ -2,7 +2,14 @@
 
 class Client::Mobile < Client::Base
   def post(uri, query = {}, headers = {})
-    uri = inject_global(uri, query)
+    with_hash = headers.delete(:'with-hash')
+
+    if with_hash.nil? || with_hash == true
+      uri = inject_global(uri, query)
+    else
+      uri = inject_base(uri) unless uri.include?('http')
+    end
+
     logger.debug("POST: #{uri}")
     is_form = headers['Content-Type']&.include?('form') || false
     super(uri, is_form ? query.to_query : query.to_json, headers)

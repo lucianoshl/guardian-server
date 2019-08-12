@@ -6,3 +6,6 @@ get:
   place_with_commands_incomings:
     body: place_with_commands_incomings.html
     uri: .*screen=place.*
+  daily_bonus_with_2_chests:
+    body: daily_bonus_with_2_chests.html
+    uri: .*daily_bonus.*
