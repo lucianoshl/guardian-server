@@ -17,7 +17,7 @@ class Screen::DailyBonus < Screen::Base
   end
 
   def closed_chests
-    chests.select{|a| !a.is_locked && !a.is_collected}
+    chests.select { |a| !a.is_locked && !a.is_collected }
   end
 
   def open_chest(chest)
@@ -28,9 +28,8 @@ class Screen::DailyBonus < Screen::Base
     }
     headers = { 'with-hash': false }
     headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    
-    @client.post("/game.php?village=#{village.id}&screen=daily_bonus&ajaxaction=open",args,headers)
+
+    @client.post("/game.php?village=#{village.id}&screen=daily_bonus&ajaxaction=open", args, headers)
     reload
   end
 end
-

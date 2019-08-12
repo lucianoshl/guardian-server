@@ -20,7 +20,7 @@ module RequestStub
   end
 
   def mock_handler(info)
-    lambda { |request|
+    lambda { |_request|
       stub_body_file = "#{File.dirname(__FILE__)}/../stub/requests/#{info['body']}"
       raise Exception, "Stub not found #{stub_body_file}" unless File.exist? stub_body_file
 

@@ -28,9 +28,9 @@ SimpleCov.start do
     if ARGV.empty?
       false
     else
-      origin_file = source_file.filename.gsub('/spec/','/app/').gsub('_spec.rb','.rb')
+      origin_file = source_file.filename.gsub('/spec/', '/app/').gsub('_spec.rb', '.rb')
       !$tested_files.include?(origin_file)
-    end 
+    end
   end
 end
 
@@ -41,7 +41,7 @@ RSpec.configure do |config|
   config.include(DatabaseStub)
 
   config.before :each do |spec|
-    $tested_files << spec.metadata[:absolute_file_path].gsub('/spec/','/app/').gsub('_spec.rb','.rb')
+    $tested_files << spec.metadata[:absolute_file_path].gsub('/spec/', '/app/').gsub('_spec.rb', '.rb')
 
     allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
     allow_any_instance_of(Report).to receive(:erase).and_return(nil)

@@ -13,8 +13,9 @@ require 'fileutils'
 
 Dir['./app/**/*.rb'].map do |file|
   next if file.include? 'extensions'
-  spec_file = file.gsub('/app/','/spec/').gsub('.rb','_spec.rb')
-  unless File.exists? spec_file
+
+  spec_file = file.gsub('/app/', '/spec/').gsub('.rb', '_spec.rb')
+  unless File.exist? spec_file
     FileUtils.mkdir_p(File.dirname(spec_file))
     FileUtils.touch(spec_file)
   end
