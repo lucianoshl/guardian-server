@@ -53,5 +53,6 @@ class Service::StartupTasks
     Task::RecruitBuildTask.new.save
     Task::StealResourcesTask.new.save
     Task::TrainKnight.new.save
+    Task::DailyBonus.new.save
   end
 end
