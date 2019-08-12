@@ -24,7 +24,11 @@ class Task::TrainKnight < Task::Abstract
   end
 
   def reviving(info)
-    Time.at(info['activity']['finish_time'])
+    Time.at(info['activity']['finish_time'].to_i)
+  end
+
+  def travel(info)
+    Time.at(info['activity']['finish_time'].to_i)
   end
 
   def dead(info)
