@@ -1,5 +1,25 @@
 # frozen_string_literal: true
 
+require 'pry'
+require 'fileutils'
+
+# Dir['./spec/**/*_spec.rb'].map do |file|
+#   next if file.include? 'extensions'
+#   source_file = file.gsub('/spec/','/app/').gsub('_spec.rb','.rb')
+#   unless File.exists? source_file
+#     abort "Missing source file for text #{file} , candidates = #{Dir["./**/#{File.basename(source_file)}"]}"
+#   end
+# end
+
+Dir['./app/**/*.rb'].map do |file|
+  next if file.include? 'extensions'
+  spec_file = file.gsub('/app/','/spec/').gsub('.rb','_spec.rb')
+  unless File.exists? spec_file
+    FileUtils.mkdir_p(File.dirname(spec_file))
+    FileUtils.touch(spec_file)
+  end
+end
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
