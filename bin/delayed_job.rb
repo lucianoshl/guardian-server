@@ -17,7 +17,6 @@ if ENV['ENV'] == 'production'
   end
 end
 
-
 disable_spring = ENV['DISABLE_SPRING'] == '1'
 
 if disable_spring

@@ -77,7 +77,6 @@ group :production do
   gem 'foreman', '0.85.0'
 end
 
-
 install_if -> { ENV['DISABLE_SPRING'] == '1' && ENV['RAILS_ENV'] == 'production' } do
   gem 'pry'
   gem 'pry-nav'

@@ -33,7 +33,7 @@ class Client::Logged
 
       @client.login
       reload_cookies
-      result = @client.send( *args)
+      result = @client.send(*args)
       tries += 1
     end
     result
