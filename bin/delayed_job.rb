@@ -17,4 +17,13 @@ if ENV['ENV'] == 'production'
   end
 end
 
-Delayed::Command.new(worker_args).daemonize
+
+disable_spring = ENV['DISABLE_SPRING'] == '1'
+
+if disable_spring
+  command = Delayed::Command.new(worker_args)
+  Delayed::Worker.before_fork
+  command.run
+else
+  Delayed::Command.new(worker_args).daemonize
+end

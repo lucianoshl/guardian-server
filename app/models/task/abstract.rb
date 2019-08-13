@@ -80,7 +80,7 @@ class Task::Abstract
   def possible_next_execution(base = Time.now)
     base = base.to_datetime if base.class == Time
 
-    return base + runs_every.to_f / 1.day unless runs_every.nil?
+    return base + runs_every.to_f unless runs_every.nil?
   end
 
   def self.remove_orphan_tasks

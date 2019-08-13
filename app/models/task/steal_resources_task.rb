@@ -59,7 +59,7 @@ class Task::StealResourcesTask < Task::Abstract
       rescue NotPossibleAttackBeforeIncomingException => e
         send_to('waiting_incoming', e.incoming_time)
       rescue Exception => e
-        binding.pry unless ENV['ENV'] == 'PRODUCTION'
+        binding.pry unless Rails.env.production?
         send_to('with_error', Time.now + 10.minutes)
       end
 
