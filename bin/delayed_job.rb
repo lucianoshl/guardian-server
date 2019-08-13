@@ -10,7 +10,7 @@ worker_args = ARGV[1..-1]
 
 queue_name = ARGV.select { |a| a =~ /--queue=/ }.first.scan(/--queue=(.+)/).first.first
 
-if ENV['ENV'] == 'production'
+if Rails.env.production?
   Delayed::Backend::Mongoid::Job.where(queue: queue_name).map do |job|
     job.unlock
     job.save
