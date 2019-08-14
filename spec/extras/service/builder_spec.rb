@@ -46,4 +46,10 @@ describe Service::Builder do
     village.should_receive(:disable_build).and_return true
     subject.build(village, main)
   end
+
+  it 'with village witout model' do
+    main = create_main
+    village = create_village
+    subject.build(village, main)
+  end
 end
