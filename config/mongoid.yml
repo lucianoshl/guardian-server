@@ -13,9 +13,13 @@ test:
     default:
       uri: mongodb://localhost:27017/guardian-specs
       options: *defaults
+  options:
+    use_activesupport_time_zone: true
 
 production:
   clients:
     default:
       uri: <%= ENV['MONGO_URL'] %>
       options: *defaults
+  options:
+    use_activesupport_time_zone: true
