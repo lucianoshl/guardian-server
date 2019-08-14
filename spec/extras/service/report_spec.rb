@@ -3,12 +3,12 @@
 describe Service::Report do
   it 'report_with_old_player' do
     mock_request_from_id('report_with_old_player')
-    report = Screen::ReportView.new(view: 15326288).report
+    report = Screen::ReportView.new(view: 15_326_288).report
 
-    expect(report.erase_uri.empty?).to be_falsey 
+    expect(report.erase_uri.empty?).to be_falsey
     expect(report.moral).to eq(100)
     expect(report.dot).to eq('red')
-    expect(report.ocurrence.to_i).to eq(Time.zone.strptime("2019-08-12T23:17:58", "%FT%T").to_i)
+    expect(report.ocurrence.to_i).to eq(Time.zone.strptime('2019-08-12T23:17:58', '%FT%T').to_i)
     expect(report.luck).to eq(-21)
     expect(report.night_bonus).to eq(false)
     expect(report.read).to eq(false)

@@ -15,18 +15,17 @@ Dir['./app/**/*.rb'].map do |file|
   next if file.include? 'extensions'
 
   spec_file = file.gsub('/app/', '/spec/').gsub('.rb', '_spec.rb')
-  unless File.exist? spec_file
-    source_content = File.read(file)
-    FileUtils.mkdir_p(File.dirname(spec_file))
-    FileUtils.touch(spec_file)
-    test_name = source_content.scan(/module (.+)/).flatten.first || source_content.scan(/class (.+)/).flatten.first
-    test_name = test_name.split(' ').first
-    File.write(spec_file,%{# frozen_string_literal: true
-describe #{test_name} do
-end
-    }.strip)
+  next if File.exist? spec_file
 
+  source_content = File.read(file)
+  FileUtils.mkdir_p(File.dirname(spec_file))
+  FileUtils.touch(spec_file)
+  test_name = source_content.scan(/module (.+)/).flatten.first || source_content.scan(/class (.+)/).flatten.first
+  test_name = test_name.split(' ').first
+  File.write(spec_file, %(# frozen_string_literal: true
+  describe #{test_name} do
   end
+  ).strip)
 end
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
