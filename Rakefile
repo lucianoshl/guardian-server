@@ -12,3 +12,14 @@ if Rails.env.test?
   Coveralls::RakeTask.new
   task test_with_coveralls: [:spec, :features, 'coveralls:push']
 end
+
+if Rails.env.development?
+  desc 'Copy production db to dev db'
+  task :copydb do
+    config = YAML.safe_load(File.read("#{Rails.root}/config/application.yml"))
+    prd_mongo = config['production']['MONGO_URL']
+    `mongodump --uri=#{prd_mongo} --gzip --archive > dump.gz`
+    `mongorestore --drop --gzip --archive=dump.gz --nsFrom "guardian-tenant-01.*" --nsTo "guardian-dev.*"`
+    `rm dump.gz`
+  end
+end
