@@ -27,7 +27,8 @@ class Screen::ReportView < Screen::Base
     report.origin_id, report.target_id = page.search('.village_anchor').map { |a| a.attr('data-id').to_i }
 
     report.moral = 100
-    report.moral = report_table.search('h4')[1].text.number_part unless report.target.player.nil?
+    moral_title = report_table.search('h4')[1]
+    report.moral = moral_title.text.number_part unless moral_title.nil?
 
     attack_units = parse_table(page, '#attack_info_att_units', remove_columns: [0])
     defence_units = parse_table(page, '#attack_info_def_units', remove_columns: [0])
@@ -49,7 +50,7 @@ class Screen::ReportView < Screen::Base
     report.def_bonus = fix_bonus_names(report.def_bonus)
 
     away_units = parse_table(page, '#attack_spy_away table', include_header: true)
-    report.def_away = away_units.empty? ? Troop.new : parse_units(away_units, 1)
+    report.def_away = away_units.empty? ? nil : parse_units(away_units, 1)
 
     ram_label = Unit.get(:ram).name.downcase
     catapult_label = Unit.get(:catapult).name.downcase

@@ -9,3 +9,8 @@ get:
   daily_bonus_with_2_chests:
     body: daily_bonus_with_2_chests.html
     uri: .*daily_bonus.*
+  report_with_old_player:
+    body: report/with_old_player.html
+    uri: .*view=15326288.*
+
+    
