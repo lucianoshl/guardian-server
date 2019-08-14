@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 RailsAdmin.config do |config|
+  config.included_models = ['Village']
+
+  config.model 'Village' do
+    list do
+      scopes [:my]
+      field :name
+      field :disable_recruit
+      field :disable_build
+      field :reserved_troops
+      field :model
+    end
+  end
+
+
   ### Popular gems integration
 
   ## == Devise ==
