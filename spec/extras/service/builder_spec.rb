@@ -3,7 +3,13 @@
 describe Service::Builder do
   subject { Object.new.extend(Service::Builder) }
 
-  def create_main(farm_warning: false, storage_warning: false)
+  def create_main(farm_warning: false, storage_warning: false, buildings_meta: nil)
+    buildings_meta ||= {
+      'wood' => { wood: 100, stone: 100, iron: 100 },
+      'stone' => { wood: 50, stone: 50, iron: 50 },
+      'barracks' => { wood: 10, stone: 10, iron: 10 }
+    }
+
     main = double('main')
     buildings = Buildings.new(main: 3, barracks: 1, wood: 2, stone: 2, iron: 1)
     main.should_receive(:queue).and_return []
@@ -13,20 +19,15 @@ describe Service::Builder do
     allow(main).to receive(:farm).and_return double('farm_info', warning: farm_warning)
     allow(main).to receive(:storage).and_return double('storage_info', warning: storage_warning)
     allow(main).to receive(:buildings).and_return buildings
-    allow(main).to receive(:buildings_meta).and_return({
-      'wood' => { wood: 100, stone: 100, iron: 100 },
-      'stone' => { wood: 50, stone: 50, iron: 50 },
-      'barracks' => { wood: 10, stone: 10, iron: 10 },
-    })
+    allow(main).to receive(:buildings_meta).and_return(buildings_meta)
     main
   end
 
-  def create_village
-    basic_model = VillageModel.basic_model
+  def create_village(model: VillageModel.basic_model)
     village = double('village')
     allow(village).to receive(:id).and_return 1
     allow(village).to receive(:disable_build).and_return false
-    allow(village).to receive(:defined_model).and_return basic_model
+    allow(village).to receive(:defined_model).and_return model
     village
   end
 
@@ -58,8 +59,13 @@ describe Service::Builder do
 
   it 'build lowest item(barracks)' do
     main = create_main
-    village = create_village
     main.should_receive(:build).with(:barracks)
-    subject.build(village, main)
+    subject.build(create_village, main)
+  end
+
+  it 'build with completed model' do
+    completed_model = VillageModel.new
+    completed_model.buildings = [Buildings.new(main: 1, barracks: 1)]
+    subject.build(create_village(model: completed_model), create_main)
   end
 end
