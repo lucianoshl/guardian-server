@@ -63,6 +63,7 @@ RSpec.configure do |config|
     request_mock_defaults
 
     Service::StartupTasks.new.fill_units_information
+    Service::StartupTasks.new.fill_buildings_information
   end
 
   config.before :all do

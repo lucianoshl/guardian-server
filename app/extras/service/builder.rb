@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Service::Builder
+  include Logging
+
   def build(village, main)
     return unless main.queue.empty?
 
@@ -35,7 +37,7 @@ module Service::Builder
     model.map do |building, _level|
       if main.possible_build?(building)
         logger.info("Building #{building} in village #{village.id}")
-        return main.build(building)
+        return main.build(building.to_sym)
       end
     end
 
