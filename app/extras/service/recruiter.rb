@@ -3,7 +3,8 @@
 module Service::Recruiter
   include Logging
 
-  def recruit(village)
+  # TODO: refactor to receive train
+  def recruit(village, queue_size)
     return if village.points < 200
 
     train_screen = Screen::Train.new(village: village.id)
@@ -20,7 +21,7 @@ module Service::Recruiter
       [building, ((queue&.finish || now) - now).floor]
     end).to_h
 
-    to_train = define_units_to_train(model, train_screen, queue_seconds)
+    to_train = define_units_to_train(model, train_screen, queue_seconds, queue_size)
 
     if to_train.total > 0
       logger.info("Recruting: #{to_train}")
@@ -28,9 +29,8 @@ module Service::Recruiter
     end
   end
 
-  def define_units_to_train(model, train_screen, queue_seconds)
+  def define_units_to_train(model, train_screen, queue_seconds,queue_size)
     result = Troop.new
-    queue_size = runs_every * 2
     resources = train_screen.resources
     loop do
       executed = false

@@ -39,6 +39,8 @@ RSpec.configure do |config|
   Dir['./spec/helpers/*'].map { |a| require a }
   config.include(RequestStub)
   config.include(DatabaseStub)
+  config.include(VillageHelper)
+  config.include(ScreenHelper)
 
   config.before :each do |spec|
     $tested_files << spec.metadata[:absolute_file_path].gsub('/spec/', '/app/').gsub('_spec.rb', '.rb')
