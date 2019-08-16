@@ -87,4 +87,17 @@ describe Task::StealResourcesTask do
     target.should_receive(:save)
     subject.run
   end
+
+  it 'with existing command' do
+    target = stub_target
+    command = double('command')
+    command.should_receive(:next_arrival).and_return Time.now
+
+    allow_any_instance_of(Screen::Place).to receive(:has_command_for_village).with(anything).and_return(command)
+
+    target.should_receive(:status=).with('waiting_report')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
 end

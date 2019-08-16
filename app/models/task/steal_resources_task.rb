@@ -32,7 +32,7 @@ class Task::StealResourcesTask < Task::Abstract
       [my_village, target.distance(my_village)]
     end
     nearby = nearby.select { |a| a.last <= @distance }
-    nearby
+    nearby.sort_by(&:last).map(&:first)
   end
 
   def researched_spies?
@@ -42,12 +42,19 @@ class Task::StealResourcesTask < Task::Abstract
   def run
     return nil if target.nil?
 
-    return send('strong') if is_strong_player
-    return send('ally') if is_ally_player
-    return send('far_away') if nearby.size.zero? # TODO: optmize
-    return send('waiting_spy_research') if !target.barbarian? && !researched_spies?
+    return send_to('strong') if is_strong_player
+    return send_to('ally') if is_ally_player
+    return send_to('far_away') if nearby.size.zero? # TODO: optmize
+    return send_to('waiting_spy_research') if !target.barbarian? && !researched_spies?
 
-    Service::Report.sync
+    nearby.map do |village|
+      command = Screen::Place.get_place(village.id).has_command_for_village(target)
+      return send_to('waiting_report', command.next_arrival) unless command.nil?
+    end
+
+    binding.pry
+
+    # Service::Report.sync
 
     loop do
       element = list.shift
