@@ -4,7 +4,7 @@ describe Task::StealResourcesTask do
   subject { Task::StealResourcesTask.new }
 
   before :each do
-    allow(Account.main).to receive_message_chain(:player, :points).and_return 1000
+    allow(Account.main).to receive_message_chain(:player, :points).and_return 2000
   end
 
   def stub_target(args = {})
@@ -12,7 +12,7 @@ describe Task::StealResourcesTask do
     player = stub_player(args)
 
     allow(stub).to receive(:player).and_return player
-    allow(subject).to receive(:village).and_return stub
+    allow(subject).to receive(:target).and_return stub
     stub
   end
 

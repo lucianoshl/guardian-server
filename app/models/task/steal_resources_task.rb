@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Task::StealResourcesTask < Task::Abstract
-  belongs_to :village
+  belongs_to :target, class_name: Village.to_s
 
   runs_every 10.minutes
 
@@ -9,10 +9,10 @@ class Task::StealResourcesTask < Task::Abstract
 
   def is_strong_player
     current_points = Account.main.player.points
-    strong_player = if village.player.nil?
+    strong_player = if target.player.nil?
                       false
                     else
-                      village.player.points > current_points * 0.6
+                      target.player.points > current_points * 0.6
                     end
     strong_player
   end
@@ -20,26 +20,29 @@ class Task::StealResourcesTask < Task::Abstract
   def is_ally_player
     current_ally = Account.main.player.ally
 
-    return false if current_ally.nil? || village.player.nil? || village.player.ally.nil?
+    return false if current_ally.nil? || target.player.nil? || target.player.ally.nil?
 
     current_allies = Screen::AllyContracts.new.allies_ids << current_ally.id
-    current_allies.include? village.player.ally.id
+    current_allies.include? target.player.ally.id
+  end
+
+  def in_nearby
+    Account.main.player.villages.map do |my_village|
+      my_village.distance(target)
+    end 
   end
 
   def run
-    return nil if village.nil?
-
-    @spy_is_researched = !!Screen::Train.new.build_info['spy']&.active
-
-    @distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
-    @@places = {}
-    Service::Report.sync
+    return nil if target.nil?
 
     return send('strong') if is_strong_player
     return send('ally') if is_ally_player
+    return send('far_away') if in_nearby
 
-    logger.info("Running for #{sort_by_priority(criteria).size} targets")
-    list = sort_by_priority(criteria)
+    # @spy_is_researched = !!Screen::Train.new.build_info['spy']&.active
+    # 
+    # @@places = {}
+    # Service::Report.sync
 
     loop do
       element = list.shift
@@ -216,9 +219,9 @@ class Task::StealResourcesTask < Task::Abstract
 
     logger.info("Moving to #{status} until #{time}")
     time += 1.second
-    village.status = status
-    village.next_event = time
-    village.save
+    target.status = status
+    target.next_event = time
+    target.save
   end
 
   def spy_qte
