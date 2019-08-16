@@ -259,6 +259,10 @@ class Task::StealResourcesTask < Task::Abstract
     send_to('strong', Time.now + 1.hour)
   end
 
+  def ally
+    send_to('ally', Time.now + 1.hour)
+  end
+
   # deprecated
   def has_troops
     send_spies
