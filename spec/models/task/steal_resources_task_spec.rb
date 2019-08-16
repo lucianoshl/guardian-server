@@ -3,7 +3,7 @@
 describe Task::StealResourcesTask do
   subject { Task::StealResourcesTask.new }
 
-  def stub_target(args= {})
+  def stub_target(args = {})
     stub = double('target')
     player = stub_player(args)
 
@@ -17,7 +17,7 @@ describe Task::StealResourcesTask do
     points = args[:points] || 500
     ally_id = args[:ally_id]
 
-    allow(player).to receive_message_chain(:ally,:id).and_return ally_id unless ally_id.nil?
+    allow(player).to receive_message_chain(:ally, :id).and_return ally_id unless ally_id.nil?
     allow(player).to receive(:points).and_return points
     player
   end
@@ -37,5 +37,4 @@ describe Task::StealResourcesTask do
   #   target.should_receive(:save)
   #   subject.run
   # end
-
 end
