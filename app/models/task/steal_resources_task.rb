@@ -1,21 +1,42 @@
 # frozen_string_literal: true
 
 class Task::StealResourcesTask < Task::Abstract
+  belongs_to :village
+
   runs_every 10.minutes
 
   include Service::Targets
 
+  def is_strong_player
+    current_points = Account.main.player.points
+    strong_player = if village.player.nil?
+                      false
+                    else
+                      village.player.points > current_points * 0.6
+                    end
+    strong_player
+  end
+
+  def is_ally_player
+    current_ally = Account.main.player.ally
+
+    return false if current_ally.nil? || village.player.nil? || village.player.ally.nil?
+
+    current_allies = Screen::AllyContracts.new.allies_ids << current_ally.id
+    current_allies.include? village.player.ally.id
+  end
+
   def run
+    return nil if village.nil?
+
     @spy_is_researched = !!Screen::Train.new.build_info['spy']&.active
 
     @distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
     @@places = {}
     Service::Report.sync
-    update_steal_candidates
 
-    criteria = targets_criteria.lte(next_event: Time.now)
-
-    criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
+    return send('strong') if is_strong_player
+    return send('ally') if is_ally_player
 
     logger.info("Running for #{sort_by_priority(criteria).size} targets")
     list = sort_by_priority(criteria)
@@ -195,13 +216,13 @@ class Task::StealResourcesTask < Task::Abstract
 
     logger.info("Moving to #{status} until #{time}")
     time += 1.second
-    @target.status = status
-    @target.next_event = time
-    @target.save
+    village.status = status
+    village.next_event = time
+    village.save
   end
 
   def spy_qte
-    @target.player.nil? ? 1 : 5
+    village.player.nil? ? 1 : 5
   end
 
   def place(id = @origin.id)
@@ -230,10 +251,11 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def strong
-    unless @target.latest_valid_report.nil?
-      waiting_report
-      return
-    end
+    # TODO: continue steal resources task if has report
+    # unless village.latest_valid_report.nil?
+    #   waiting_report
+    #   return
+    # end
     send_to('strong', Time.now + 1.hour)
   end
 
