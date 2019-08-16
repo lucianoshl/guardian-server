@@ -46,7 +46,15 @@ RSpec.configure do |config|
     $tested_files << spec.metadata[:absolute_file_path].gsub('/spec/', '/app/').gsub('_spec.rb', '.rb')
 
     allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
+    command = double('send_attack')
+    allow(command).to receive(:arrival).and_return(Time.zone.now + 1.hour)
+    allow(command).to receive(:origin_report=)
+    allow(command).to receive(:store)
+
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).and_return(command)
     allow_any_instance_of(Report).to receive(:erase).and_return(nil)
+
+    allow_any_instance_of(Village).to receive(:reload).and_return { |a| binding.pry }
 
     allow(Notifier).to receive(:notify).and_return(nil)
     allow(Service::AttackDetector).to receive(:run).and_return(nil)

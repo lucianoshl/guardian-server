@@ -104,9 +104,10 @@ class Screen::Place < Screen::Base
   end
 
   def self.all_places
-    Village.my.map do |village|
-      Screen::Place.new(village: village.id)
+    Account.main.player.villages do |village|
+      get_place(village.id)
     end
+    @@places
   end
 
   def self.get_place(vid)
