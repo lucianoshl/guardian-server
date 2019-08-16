@@ -23,7 +23,7 @@ describe Task::StealResourcesTask do
   end
 
   it 'with strong player' do
-    allow(Account.main).to receive_message_chain(:player,:points).and_return 1000
+    allow(Account.main).to receive_message_chain(:player, :points).and_return 1000
 
     target = stub_target(points: Account.main.player.points * 100)
     target.should_receive(:status=).with('strong')
