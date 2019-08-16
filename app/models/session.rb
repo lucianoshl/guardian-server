@@ -15,7 +15,8 @@ class Session
     session.account_id = account.id
     session.type = type
     session.cookies = cookies.map { |raw| Cookie.new(JSON.parse(raw.to_json)) }
-    raise Exception.new("Error saving session: #{session.errors}") unless session.save
+    raise Exception, "Error saving session: #{session.errors}" unless session.save
+
     session
   end
 
