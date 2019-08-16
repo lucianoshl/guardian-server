@@ -52,7 +52,17 @@ RSpec.configure do |config|
     allow(Service::AttackDetector).to receive(:run).and_return(nil)
     allow_any_instance_of(Notifier).to receive(:notify).and_return(nil)
 
-    # allow(Account).to receive(:main).and_return(Account.main)
+    values = {
+      id: BSON::ObjectId('5d56ba9919290b2e9c88210c'),
+      world: ENV['STUB_WORLD'],
+      username: ENV['STUB_USER'],
+      password: ENV['STUB_PASS']
+    }
+
+    account = double('account', values)
+    allow(Account).to receive(:main).and_return(account)
+
+    allow(account).to receive(:world).and_return ENV['STUB_WORLD']
 
     allow(Screen::AllyContracts).to receive(:new).and_return(OpenStruct.new(
                                                                allies_ids: %w[ally1 ally2]
