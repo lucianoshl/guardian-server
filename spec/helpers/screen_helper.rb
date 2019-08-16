@@ -23,10 +23,12 @@ module ScreenHelper
 
   def train_screen(args = {})
     troops = args[:troops] || Troop.new
+    build_info = args[:build_info]
 
     train = create_base('train', args)
     allow(train).to receive(:queue).and_return []
     allow(train).to receive(:troops).and_return troops
+    allow(train).to receive(:build_info).and_return build_info unless build_info.nil?
     train
   end
 

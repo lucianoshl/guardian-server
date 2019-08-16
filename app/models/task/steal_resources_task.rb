@@ -26,10 +26,17 @@ class Task::StealResourcesTask < Task::Abstract
     current_allies.include? target.player.ally.id
   end
 
-  def in_nearby
-    Account.main.player.villages.map do |my_village|
-      my_village.distance(target)
-    end 
+  def nearby
+    @distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
+    nearby = Account.main.player.villages.map do |my_village|
+      [my_village, target.distance(my_village)]
+    end
+    nearby = nearby.select { |a| a.last <= @distance }
+    nearby
+  end
+
+  def researched_spies?
+    !!Screen::Train.new.build_info['spy']&.active
   end
 
   def run
@@ -37,12 +44,10 @@ class Task::StealResourcesTask < Task::Abstract
 
     return send('strong') if is_strong_player
     return send('ally') if is_ally_player
-    return send('far_away') if in_nearby
+    return send('far_away') if nearby.size.zero? # TODO: optmize
+    return send('waiting_spy_research') if !target.barbarian? && !researched_spies?
 
-    # @spy_is_researched = !!Screen::Train.new.build_info['spy']&.active
-    # 
-    # @@places = {}
-    # Service::Report.sync
+    Service::Report.sync
 
     loop do
       element = list.shift
@@ -263,7 +268,18 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def ally
+    # TODO: rector this to use EVENTS
     send_to('ally', Time.now + 1.hour)
+  end
+
+  def far_away
+    # TODO: rector this to use EVENTS
+    send_to('far_away', Time.now + 1.hour)
+  end
+
+  def waiting_spy_research
+    # TODO: rector this to use EVENTS
+    send_to('waiting_spy_research', Time.now + 1.hour)
   end
 
   # deprecated
@@ -292,10 +308,6 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def banned
-    waiting_report
-  end
-
-  def far_away
     waiting_report
   end
 
