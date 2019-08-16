@@ -8,14 +8,14 @@ class Session
   field :type, type: String
 
   embeds_many :cookies, class_name: Cookie.to_s
-  belongs_to :account
+  belongs_to :account, optional: Rails.env.test?
 
   def self.create(account, cookies, type)
     session = Session.new
     session.account_id = account.id
     session.type = type
     session.cookies = cookies.map { |raw| Cookie.new(JSON.parse(raw.to_json)) }
-    session.save
+    raise Exception.new("Error saving session: #{session.errors}") unless session.save
     session
   end
 

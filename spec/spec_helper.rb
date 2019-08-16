@@ -61,7 +61,6 @@ RSpec.configure do |config|
 
     account = double('account', values)
     allow(Account).to receive(:main).and_return(account)
-
     allow(account).to receive(:world).and_return ENV['STUB_WORLD']
 
     allow(Screen::AllyContracts).to receive(:new).and_return(OpenStruct.new(
