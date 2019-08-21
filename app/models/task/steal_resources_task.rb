@@ -119,7 +119,7 @@ class Task::StealResourcesTask < Task::Abstract
     if troops.spy >= spy_qte
       troop = Troop.new(spy: spy_qte)
       check_is_possible_attack_before_incoming(place_screen, troop)
-      command = place_screen.send_attack(@target, troop)
+      command = place_screen.send_attack(target, troop)
       send_to('waiting_report', command.arrival)
     else
       send_to_waiting_spies
@@ -184,7 +184,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     check_is_possible_attack_before_incoming(place, to_send)
 
-    command = place.send_attack(@target, to_send)
+    command = place.send_attack(target, to_send)
     command.origin_report = report
     command.store
 
@@ -197,7 +197,7 @@ class Task::StealResourcesTask < Task::Abstract
     incomings = Screen::Place.all_places.values.map(&:incomings).flatten
     return if incomings.empty?
 
-    travel_time = troops.travel_time(@target, @origin)
+    travel_time = troops.travel_time(target, @origin)
     next_incoming = incomings.first.arrival
     back_time = Time.now + travel_time * 2
     if back_time.to_datetime > (next_incoming - 1.minute)

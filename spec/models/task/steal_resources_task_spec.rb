@@ -154,4 +154,30 @@ describe Task::StealResourcesTask do
     target.should_receive(:save)
     subject.run
   end
+
+  it 'attack with report without troops troops' do
+    target = stub_target(status: 'waiting_report')
+
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 5, spear: 100, light: 50))
+    allow(target).to receive(:latest_valid_report).and_return(stub_report)
+
+    target.should_receive(:status=).with('waiting_report')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
+
+  it 'attack with report with wall and strong troops' do
+    target = stub_target(status: 'waiting_report')
+
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 5, spear: 100, light: 50))
+    allow_any_instance_of(Troop).to receive(:upgrade_until_win)
+    allow(target).to receive(:latest_valid_report).and_return(stub_report)
+
+    target.should_receive(:status=).with('waiting_report')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
+
 end
