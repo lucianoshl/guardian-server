@@ -19,11 +19,10 @@ class String
   end
 
   def to_datetime
-    result = nil
     this = gsub(/ +/, ' ')
     time_parts = split(':').size
     has_milliseconds = time_parts > 3
-    miliseconds_format = has_milliseconds ? ':%L' : ''
+    # miliseconds_format = has_milliseconds ? ':%L' : '' TODO: fix this
     base_format = '%b %d, %Y %H:%M'
 
     base_format += ':%S' if time_parts > 2

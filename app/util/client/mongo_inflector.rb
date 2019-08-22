@@ -36,7 +36,7 @@ module MongoInflector
       binding.pry
     else
       definition = graphql_type.definition
-      meta.is_list? ? types[definition] : definition
+      meta.list? ? types[definition] : definition
     end
   end
 end
