@@ -14,7 +14,7 @@ describe Service::HealthCheck do
 
   # TODO: add case with invalid DelayedJob state
   it 'check_inconsistent_job_size' do
-    basic_task = Task::StealResourcesTask.new(village: Village.new)
+    basic_task = Task::StealResourcesTask.new(target: Village.new)
     basic_task.save
     basic_task.job.delete
 

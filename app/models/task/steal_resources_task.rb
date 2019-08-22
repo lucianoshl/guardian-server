@@ -39,15 +39,43 @@ class Task::StealResourcesTask < Task::Abstract
     !!Screen::Train.new.build_info['spy']&.active
   end
 
+  def run_to_state state
+    begin
+      send(state)
+      # rescue BannedPlayerException => e
+      #   send_to('banned', Time.now + 1.day)
+      # rescue NewbieProtectionException => e
+      #   send_to('newbie_protection', e.expiration)
+    rescue UpgradeIsImpossibleException => e
+      send_to('waiting_strong_troops', next_returning_command.arrival)
+      # rescue VeryWeakPlayerException => e
+      #   send_to('weak_player', Time.now + 1.day)
+      # rescue RemovedPlayerException => e
+      #   send_to('removed_player', Time.now + 1.day)
+      # rescue InvitedPlayerException => e
+      #   send_to('invited_player', e.expiration)
+      # rescue NeedsMinimalPopulationException => e
+      #   report = @target.latest_valid_report
+      #   next_attack = report.time_to_produce(e.population * 25)
+      #   report.mark_read
+      #   send_to('waiting_resource_production', next_attack)
+    rescue NotPossibleAttackBeforeIncomingException => e
+        send_to('waiting_incoming', e.incoming_time)
+      # rescue Exception => e
+      #   binding.pry unless Rails.env.production?
+      #   send_to('with_error', Time.now + 10.minutes)
+    end
+  end
+
   def run
     return nil if target.nil?
 
     @original_status = target.status
 
-    return send_to('strong') if is_strong_player
-    return send_to('ally') if is_ally_player
-    return send_to('far_away') if (@nearby = nearby).size.zero? # TODO: optmize
-    return send_to('waiting_spy_research') if !target.barbarian? && !researched_spies?
+    return strong if is_strong_player
+    return ally if is_ally_player
+    return far_away if (@nearby = nearby).size.zero? # TODO: optmize
+    return waiting_spy_research if !target.barbarian? && !researched_spies?
 
     @nearby.map do |village|
       command = Screen::Place.get_place(village.id).has_command_for_village(target)
@@ -57,33 +85,9 @@ class Task::StealResourcesTask < Task::Abstract
     Service::Report.sync
     @origin = @nearby.shift
     @report = target.latest_valid_report
-    return send('send_spies') if @report.nil?
+    return run_to_state('send_spies') if @report.nil?
 
-    # begin
-      send(target.status)
-    # rescue BannedPlayerException => e
-    #   send_to('banned', Time.now + 1.day)
-    # rescue NewbieProtectionException => e
-    #   send_to('newbie_protection', e.expiration)
-    # rescue UpgradeIsImpossibleException => e
-    #   send_to('waiting_strong_troops', next_returning_command.arrival)
-    # rescue VeryWeakPlayerException => e
-    #   send_to('weak_player', Time.now + 1.day)
-    # rescue RemovedPlayerException => e
-    #   send_to('removed_player', Time.now + 1.day)
-    # rescue InvitedPlayerException => e
-    #   send_to('invited_player', e.expiration)
-    # rescue NeedsMinimalPopulationException => e
-    #   report = @target.latest_valid_report
-    #   next_attack = report.time_to_produce(e.population * 25)
-    #   report.mark_read
-    #   send_to('waiting_resource_production', next_attack)
-    # rescue NotPossibleAttackBeforeIncomingException => e
-    #   send_to('waiting_incoming', e.incoming_time)
-    # rescue Exception => e
-    #   binding.pry unless Rails.env.production?
-    #   send_to('with_error', Time.now + 10.minutes)
-    # end
+    return run_to_state(equivalment_state(target.status))
   end
 
   def send_spies
@@ -108,25 +112,21 @@ class Task::StealResourcesTask < Task::Abstract
       place = Screen::Place.get_place(@origin.id)
       place_troops = place.troops_available
 
-      if place_troops.carry >= resource && (last_report.nil? || last_report.produced_resource?(resource))
+      if place_troops.carry >= resource
         troops, _remaining = place_troops.distribute(200)
         result = troops.upgrade_until_win(place_troops)
         command = place.send_attack(target, result)
         send_to('waiting_report', command.arrival)
       elsif place_troops.carry < resource
-        Village.in(status: %w[not_initialized waiting_troops]).update_all(next_event: next_returning_command.arrival, status: 'waiting_troops')
         send_to('waiting_troops', next_returning_command.arrival)
-      elsif last_report.produced_resource?(resource)
-        target.latest_valid_report&.mark_read
-        send_to('waiting_resource_production', last_report.time_to_produce(resource))
       end
     end
   end
 
   def waiting_report
-    return send('send_spies') if @report.nil?
-    
-    return send_to('has_spies') unless @report.possible_attack?
+    return run_to_state('send_spies') if @report.nil?
+
+    return has_spies unless @report.possible_attack?
 
     @report.has_troops ? send_spies : send_pillage_troop(@report)
   end
@@ -152,7 +152,7 @@ class Task::StealResourcesTask < Task::Abstract
         strong_troop = Troop.new(ram: report.rams_to_destroy_wall)
         to_send = strong_troop.increment_until_win(place_troops, report.buildings.wall, report.moral)
       else
-        raise e
+        raise UpgradeIsImpossibleException
       end
     end
 
@@ -177,7 +177,7 @@ class Task::StealResourcesTask < Task::Abstract
     next_incoming = incomings.first.arrival
     back_time = Time.now + travel_time * 2
     if back_time.to_datetime > (next_incoming - 1.minute)
-      raise NotPossibleAttackBeforeIncomingException, next_incoming
+      raise NotPossibleAttackBeforeIncomingException.new(next_incoming)
     end
   end
 
@@ -186,8 +186,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     if switch_village_stages.include?(status) && @nearby.size.positive?
       @origin = @nearby.shift
-      send(@original_status)
-      return
+      return run_to_state(@original_status)
     end
 
     logger.info("Moving to #{status} until #{time}")
@@ -221,6 +220,7 @@ class Task::StealResourcesTask < Task::Abstract
     result
   end
 
+  
   def strong
     # TODO: continue steal resources task if has report
     # unless village.latest_valid_report.nil?
@@ -245,56 +245,25 @@ class Task::StealResourcesTask < Task::Abstract
     send_to('waiting_spy_research', Time.now + 1.hour)
   end
 
-  # deprecated
-  def has_troops
-    send_spies
-  end
 
   def has_spies
     send_to('has_spies', Time.now + 1.hour)
   end
 
-  def waiting_spies
-    waiting_report
+  def equivalment_state(state)
+    equivalences = {}
+    equivalences['waiting_spies'] = 'waiting_report'
+    equivalences['waiting_resource_production'] = 'waiting_report'
+    equivalences['waiting_troops'] = 'waiting_report'
+    equivalences['waiting_strong_troops'] = 'waiting_report'
+    equivalences['banned'] = 'waiting_report'
+    equivalences['weak_player'] = 'waiting_report'
+    equivalences['removed_player'] = 'waiting_report'
+    equivalences['invited_player'] = 'waiting_report'
+    equivalences['waiting_incoming'] = 'waiting_report'
+    equivalences['with_error'] = 'waiting_report'
+    equivalences['newbie_protection'] = 'waiting_report'
+    equivalences[state] || state
   end
 
-  def waiting_resource_production
-    waiting_report
-  end
-
-  def waiting_troops
-    waiting_report
-  end
-
-  def waiting_strong_troops
-    waiting_report
-  end
-
-  def banned
-    waiting_report
-  end
-
-  def weak_player
-    waiting_report
-  end
-
-  def removed_player
-    waiting_report
-  end
-
-  def invited_player
-    waiting_report
-  end
-
-  def waiting_incoming
-    waiting_report
-  end
-
-  def with_error
-    waiting_report
-  end
-
-  def newbie_protection
-    waiting_report
-  end
 end

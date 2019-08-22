@@ -29,10 +29,10 @@ class Client::Desktop < Client::Base
 
     # world_select_page
     post('https://www.tribalwars.com.br/page/auth', {
-                               username: account.username,
-                               password: account.password,
-                               remember: 1
-                             }, headers)
+           username: account.username,
+           password: account.password,
+           remember: 1
+         }, headers)
     get("https://www.tribalwars.com.br/page/play/#{account.world}")
     Session.create(account, cookies, 'desktop')
   end

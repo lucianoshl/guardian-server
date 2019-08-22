@@ -27,16 +27,18 @@ describe Task::StealResourcesTask do
     stub
   end
 
-  def stub_report(_args = {})
+  def stub_report(args = {})
+    wall = args[:wall] || 0
+    rams_to_destroy_wall = args[:rams_to_destroy_wall] || 0
     stub = double('report')
     allow(stub).to receive(:possible_attack?).and_return(true)
-    allow(stub).to receive(:rams_to_destroy_wall).and_return(0)
+    allow(stub).to receive(:rams_to_destroy_wall).and_return(rams_to_destroy_wall)
     allow(stub).to receive(:has_troops).and_return(false)
     allow(stub).to receive(:moral).and_return(100)
     allow(stub).to receive(:read=)
     allow(stub).to receive(:save)
     allow(stub).to receive(:resources).and_return(Resource.new(wood: 300, iron: 300, stone: 300))
-    allow(stub).to receive(:buildings).and_return(Buildings.new(wall: 0))
+    allow(stub).to receive(:buildings).and_return(Buildings.new(wall: wall))
     stub
   end
 
@@ -45,7 +47,7 @@ describe Task::StealResourcesTask do
 
     stub = double('target')
     if args[:barbarian] != false
-      player = stub_player(args) 
+      player = stub_player(args)
       allow(stub).to receive(:player).and_return player
     end
 
@@ -112,8 +114,8 @@ describe Task::StealResourcesTask do
   it 'with barbarian and without spy research' do
     target = stub_target(barbarian: true)
     screen = train_screen(build_info: { 'spy' => OpenStruct.new(active: false) })
-    
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new( spear: 100, light: 100))
+
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spear: 100, light: 100))
 
     allow(Screen::Train).to receive(:new).and_return(screen)
     allow(target).to receive(:latest_valid_report).and_return(nil)
@@ -128,8 +130,8 @@ describe Task::StealResourcesTask do
   it 'with barbarian and without spy research and no troops enough' do
     target = stub_target(barbarian: true)
     screen = train_screen(build_info: { 'spy' => OpenStruct.new(active: false) })
-    
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new( spear: 1))
+
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spear: 1))
 
     allow(Screen::Train).to receive(:new).and_return(screen)
     allow(target).to receive(:latest_valid_report).and_return(nil)
@@ -190,6 +192,20 @@ describe Task::StealResourcesTask do
     subject.run
   end
 
+  it 'target waiting_report' do
+    target = stub_target(status: 'waiting_report')
+
+    report = stub_report
+
+    allow(report).to receive(:possible_attack?).and_return(false)
+    allow(target).to receive(:latest_valid_report).and_return(report)
+
+    target.should_receive(:status=).with('has_spies')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
+
   it 'attack with report without troops' do
     target = stub_target(status: 'waiting_report')
 
@@ -202,17 +218,52 @@ describe Task::StealResourcesTask do
     subject.run
   end
 
-  # it 'attack with report with wall and strong troops' do
-  #   target = stub_target(status: 'waiting_report')
+  it 'attack with report with wall, strong troops and wall to destroy' do
+    target = stub_target(status: 'waiting_report')
 
-  #   allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 5, spear: 100, light: 50))
-  #   allow_any_instance_of(Troop).to receive(:upgrade_until_win)
-  #   allow(target).to receive(:latest_valid_report).and_return(stub_report)
+    troops_available = Troop.new(light: 50, ram: 800)
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(troops_available)
+    allow(target).to receive(:latest_valid_report).and_return(stub_report(wall: 1))
+    allow(troops_available).to receive(:distribute).with(anything, anything).and_return(Troop.new(light: 1))
 
-  #   target.should_receive(:status=).with('waiting_report')
-  #   target.should_receive(:next_event=).with(anything)
-  #   target.should_receive(:save)
-  #   subject.run
-  # end
+    target.should_receive(:status=).with('waiting_report')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
 
+  it 'attack with report with wall, strong troops without ram' do
+    target = stub_target(status: 'waiting_report')
+
+    troops_available = Troop.new(light: 50, ram: 0)
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(troops_available)
+    allow(target).to receive(:latest_valid_report).and_return(stub_report(wall: 20, rams_to_destroy_wall: 20))
+    allow(troops_available).to receive(:distribute).with(anything, anything).and_return(Troop.new(light: 1))
+
+    target.should_receive(:status=).with('waiting_strong_troops')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
+
+  
+
+  context 'with incomings' do
+    it 'finish after' do
+      target = stub_target(barbarian: true)
+      allow(target).to receive(:latest_valid_report).and_return(stub_report)
+      
+      incomings = [OpenStruct.new(
+        incomings: Command::Incoming.new(arrival: Time.now + 1.minute)
+      )]
+      allow(Screen::Place).to receive_message_chain(:all_places,:values).and_return(incomings)
+      allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spear: 100, light: 100))
+
+
+      target.should_receive(:status=).with('waiting_incoming')
+      target.should_receive(:next_event=).with(anything)
+      target.should_receive(:save)
+      subject.run
+    end
+  end
 end
