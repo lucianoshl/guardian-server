@@ -29,7 +29,7 @@ module Service::Recruiter
     end
   end
 
-  def define_units_to_train(model, train_screen, queue_seconds,queue_size)
+  def define_units_to_train(model, train_screen, queue_seconds, queue_size)
     result = Troop.new
     resources = train_screen.resources
     loop do

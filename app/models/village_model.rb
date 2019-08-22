@@ -13,12 +13,12 @@ class VillageModel
 
   def self.yaml_configs
     yaml = YAML.safe_load(File.read("#{Rails.root}/config/model/village.yml"), [], [], true)
-    converted = yaml.map do |name,config|
+    converted = yaml.map do |name, config|
       item = VillageModel.new
       item.name = name.upcase
       item.buildings = config['buildings'].flatten.map { |a| Buildings.new(a) }
       item.train = TroopModel.new(config['train'])
-      [item.name,item]
+      [item.name, item]
     end
     converted.to_h
   end
