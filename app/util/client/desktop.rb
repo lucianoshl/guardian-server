@@ -27,7 +27,8 @@ class Client::Desktop < Client::Base
     headers['Content-Type'] = 'application/x-www-form-urlencoded'
     headers['X-Requested-With'] = 'XMLHttpRequest'
 
-    world_select_page = post('https://www.tribalwars.com.br/page/auth', {
+    # world_select_page
+    post('https://www.tribalwars.com.br/page/auth', {
                                username: account.username,
                                password: account.password,
                                remember: 1

@@ -7,6 +7,11 @@ Style/Documentation:
 Metrics/LineLength:
   Enabled: true
   Max: 100
+  IgnoredPatterns: ['(\A|\s)#']
 
 Layout/IndentFirstArrayElement:
   Enabled: false 
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
