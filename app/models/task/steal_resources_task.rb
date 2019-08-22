@@ -39,32 +39,30 @@ class Task::StealResourcesTask < Task::Abstract
     !!Screen::Train.new.build_info['spy']&.active
   end
 
-  def run_to_state state
-    begin
-      send(state)
-      # rescue BannedPlayerException => e
-      #   send_to('banned', Time.now + 1.day)
-      # rescue NewbieProtectionException => e
-      #   send_to('newbie_protection', e.expiration)
-    rescue UpgradeIsImpossibleException => e
-      send_to('waiting_strong_troops', next_returning_command.arrival)
-      # rescue VeryWeakPlayerException => e
-      #   send_to('weak_player', Time.now + 1.day)
-      # rescue RemovedPlayerException => e
-      #   send_to('removed_player', Time.now + 1.day)
-      # rescue InvitedPlayerException => e
-      #   send_to('invited_player', e.expiration)
-      # rescue NeedsMinimalPopulationException => e
-      #   report = @target.latest_valid_report
-      #   next_attack = report.time_to_produce(e.population * 25)
-      #   report.mark_read
-      #   send_to('waiting_resource_production', next_attack)
-    rescue NotPossibleAttackBeforeIncomingException => e
-        send_to('waiting_incoming', e.incoming_time)
-      # rescue Exception => e
-      #   binding.pry unless Rails.env.production?
-      #   send_to('with_error', Time.now + 10.minutes)
-    end
+  def run_to_state(state)
+    send(state)
+  rescue BannedPlayerException => e
+    send_to('banned', Time.now + 1.day)
+  rescue NewbieProtectionException => e
+    send_to('newbie_protection', e.expiration)
+  rescue UpgradeIsImpossibleException => e
+    send_to('waiting_strong_troops', next_returning_command.arrival)
+  rescue VeryWeakPlayerException => e
+    send_to('weak_player', Time.now + 1.day)
+  rescue RemovedPlayerException => e
+    send_to('removed_player', Time.now + 1.day)
+  rescue InvitedPlayerException => e
+    send_to('invited_player', e.expiration)
+  rescue NeedsMinimalPopulationException => e
+    report = @target.latest_valid_report
+    next_attack = report.time_to_produce(e.population * 25)
+    report.mark_read
+    send_to('waiting_resource_production', next_attack)
+  rescue NotPossibleAttackBeforeIncomingException => e
+    send_to('waiting_incoming', e.incoming_time)
+  rescue Exception => e
+    binding.pry unless Rails.env.production?
+    send_to('with_error', Time.now + 10.minutes)
   end
 
   def run
@@ -87,7 +85,7 @@ class Task::StealResourcesTask < Task::Abstract
     @report = target.latest_valid_report
     return run_to_state('send_spies') if @report.nil?
 
-    return run_to_state(equivalment_state(target.status))
+    run_to_state(equivalment_state(target.status))
   end
 
   def send_spies
@@ -177,7 +175,7 @@ class Task::StealResourcesTask < Task::Abstract
     next_incoming = incomings.first.arrival
     back_time = Time.now + travel_time * 2
     if back_time.to_datetime > (next_incoming - 1.minute)
-      raise NotPossibleAttackBeforeIncomingException.new(next_incoming)
+      raise NotPossibleAttackBeforeIncomingException, next_incoming
     end
   end
 
@@ -220,7 +218,6 @@ class Task::StealResourcesTask < Task::Abstract
     result
   end
 
-  
   def strong
     # TODO: continue steal resources task if has report
     # unless village.latest_valid_report.nil?
@@ -245,7 +242,6 @@ class Task::StealResourcesTask < Task::Abstract
     send_to('waiting_spy_research', Time.now + 1.hour)
   end
 
-
   def has_spies
     send_to('has_spies', Time.now + 1.hour)
   end
@@ -265,5 +261,4 @@ class Task::StealResourcesTask < Task::Abstract
     equivalences['newbie_protection'] = 'waiting_report'
     equivalences[state] || state
   end
-
 end

@@ -246,19 +246,16 @@ describe Task::StealResourcesTask do
     subject.run
   end
 
-  
-
   context 'with incomings' do
     it 'finish after' do
       target = stub_target(barbarian: true)
       allow(target).to receive(:latest_valid_report).and_return(stub_report)
-      
+
       incomings = [OpenStruct.new(
         incomings: Command::Incoming.new(arrival: Time.now + 1.minute)
       )]
-      allow(Screen::Place).to receive_message_chain(:all_places,:values).and_return(incomings)
+      allow(Screen::Place).to receive_message_chain(:all_places, :values).and_return(incomings)
       allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spear: 100, light: 100))
-
 
       target.should_receive(:status=).with('waiting_incoming')
       target.should_receive(:next_event=).with(anything)
