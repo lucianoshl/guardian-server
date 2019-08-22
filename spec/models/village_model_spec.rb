@@ -7,6 +7,6 @@ describe VillageModel do
   end
 
   it 'check basic model' do
-    expect(Village.basic_model.name).to eq('FIRST_VILLAGE')
+    expect(VillageModel.basic_model.name).to eq('FIRST_VILLAGE')
   end
 end

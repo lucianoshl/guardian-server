@@ -17,5 +17,6 @@ describe Troop do
     troop = Troop.new(spear: 20)
     disponible = Troop.new(sword: 1)
     result = troop.upgrade(disponible)
+    pp result
   end
 end

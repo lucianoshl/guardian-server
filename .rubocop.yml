@@ -7,7 +7,7 @@ Style/Documentation:
 Metrics/LineLength:
   Enabled: true
   Max: 100
-  IgnoredPatterns: ['\A#']
+  IgnoredPatterns: ['(\A|\s)#']
 
 Layout/IndentFirstArrayElement:
   Enabled: false 

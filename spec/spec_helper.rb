@@ -19,8 +19,6 @@ require 'simplecov'
 require 'simplecov-console'
 require 'webmock/rspec'
 
-$tested_files = []
-
 Coveralls.wear!('rails')
 SimpleCov.formatter = SimpleCov::Formatter::Console
 SimpleCov.start do
@@ -29,7 +27,7 @@ SimpleCov.start do
       false
     else
       origin_file = source_file.filename.gsub('/spec/', '/app/').gsub('_spec.rb', '.rb')
-      !$tested_files.include?(origin_file)
+      !SimpleCov.tested_files.include?(origin_file)
     end
   end
 end
@@ -43,7 +41,8 @@ RSpec.configure do |config|
   config.include(ScreenHelper)
 
   config.before :each do |spec|
-    $tested_files << spec.metadata[:absolute_file_path].gsub('/spec/', '/app/').gsub('_spec.rb', '.rb')
+    tested_file = spec.metadata[:absolute_file_path].gsub('/spec/', '/app/').gsub('_spec.rb', '.rb')
+    SimpleCov.register_tested_file(tested_file)
 
     allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
     allow_any_instance_of(Report).to receive(:erase).and_return(nil)
@@ -70,7 +69,6 @@ RSpec.configure do |config|
 
   config.before :all do
     clean_db
-    # mock_account
   end
 
   # rspec-expectations config goes here. You can use an alternate
