@@ -55,62 +55,35 @@ class Task::StealResourcesTask < Task::Abstract
     end
 
     Service::Report.sync
-
     @origin = @nearby.shift
-
     @report = target.latest_valid_report
     return send('send_spies') if @report.nil?
 
-    send(target.status)
-
-    # loop do
-    #   element = list.shift
-
-    #   break if element.nil?
-
-    #   distance, @origins, target = element
-
-    #   logger.info('-' * 50)
-    #   logger.info("#{list.size} targets for #{target} current_status=#{target.status} ")
-
-    #   @range_villages = @origins.clone
-    #   @origin = @origins.shift
-    #   @target = target
-    #   @target.status = 'far_away' if @origin.nil?
-
-    #   begin
-    #     send(@target.status)
-    #   rescue BannedPlayerException => e
-    #     send_to('banned', Time.now + 1.day)
-    #   rescue NewbieProtectionException => e
-    #     send_to('newbie_protection', e.expiration)
-    #   rescue UpgradeIsImpossibleException => e
-    #     send_to('waiting_strong_troops', next_returning_command.arrival)
-    #   rescue VeryWeakPlayerException => e
-    #     send_to('weak_player', Time.now + 1.day)
-    #   rescue RemovedPlayerException => e
-    #     send_to('removed_player', Time.now + 1.day)
-    #   rescue InvitedPlayerException => e
-    #     send_to('invited_player', e.expiration)
-    #   rescue NeedsMinimalPopulationException => e
-    #     report = @target.latest_valid_report
-    #     next_attack = report.time_to_produce(e.population * 25)
-    #     report.mark_read
-    #     send_to('waiting_resource_production', next_attack)
-    #   rescue NotPossibleAttackBeforeIncomingException => e
-    #     send_to('waiting_incoming', e.incoming_time)
-    #   rescue Exception => e
-    #     binding.pry unless Rails.env.production?
-    #     send_to('with_error', Time.now + 10.minutes)
-    #   end
-
-    #   logger.info("Finish for #{target} #{@original_status} > #{target.status} ")
+    # begin
+      send(target.status)
+    # rescue BannedPlayerException => e
+    #   send_to('banned', Time.now + 1.day)
+    # rescue NewbieProtectionException => e
+    #   send_to('newbie_protection', e.expiration)
+    # rescue UpgradeIsImpossibleException => e
+    #   send_to('waiting_strong_troops', next_returning_command.arrival)
+    # rescue VeryWeakPlayerException => e
+    #   send_to('weak_player', Time.now + 1.day)
+    # rescue RemovedPlayerException => e
+    #   send_to('removed_player', Time.now + 1.day)
+    # rescue InvitedPlayerException => e
+    #   send_to('invited_player', e.expiration)
+    # rescue NeedsMinimalPopulationException => e
+    #   report = @target.latest_valid_report
+    #   next_attack = report.time_to_produce(e.population * 25)
+    #   report.mark_read
+    #   send_to('waiting_resource_production', next_attack)
+    # rescue NotPossibleAttackBeforeIncomingException => e
+    #   send_to('waiting_incoming', e.incoming_time)
+    # rescue Exception => e
+    #   binding.pry unless Rails.env.production?
+    #   send_to('with_error', Time.now + 10.minutes)
     # end
-
-    # criteria = targets_criteria
-    # criteria = criteria.in(player_id: [nil]) unless @spy_is_researched
-
-    # sort_by_priority(criteria).map(&:last).min_by(&:next_event).next_event
   end
 
   def send_spies
@@ -130,26 +103,29 @@ class Task::StealResourcesTask < Task::Abstract
     if researched_spies?
       send_to('waiting_spies', next_returning_command.arrival)
     else
-      # last_report = @target.reports.last
-      # resource = 200
-      # place_troops = place.troops_available
+      last_report = target.reports.last
+      resource = 200
+      place = Screen::Place.get_place(@origin.id)
+      place_troops = place.troops_available
 
-      # if place_troops.carry >= resource && (last_report.nil? || last_report.produced_resource?(resource))
-      #   troops, _remaining = place_troops.distribute(200)
-      #   result = troops.upgrade_until_win(place_troops)
-      #   command = place.send_attack(@target, result)
-      #   send_to('waiting_report', command.arrival)
-      # elsif place_troops.carry < resource
-      #   Village.in(status: %w[not_initialized waiting_troops]).update_all(next_event: next_returning_command.arrival, status: 'waiting_troops')
-      #   send_to('waiting_troops', next_returning_command.arrival)
-      # elsif last_report.produced_resource?(resource)
-      #   @target.latest_valid_report&.mark_read
-      #   send_to('waiting_resource_production', last_report.time_to_produce(resource))
-      # end
+      if place_troops.carry >= resource && (last_report.nil? || last_report.produced_resource?(resource))
+        troops, _remaining = place_troops.distribute(200)
+        result = troops.upgrade_until_win(place_troops)
+        command = place.send_attack(target, result)
+        send_to('waiting_report', command.arrival)
+      elsif place_troops.carry < resource
+        Village.in(status: %w[not_initialized waiting_troops]).update_all(next_event: next_returning_command.arrival, status: 'waiting_troops')
+        send_to('waiting_troops', next_returning_command.arrival)
+      elsif last_report.produced_resource?(resource)
+        target.latest_valid_report&.mark_read
+        send_to('waiting_resource_production', last_report.time_to_produce(resource))
+      end
     end
   end
 
   def waiting_report
+    return send('send_spies') if @report.nil?
+    
     return send_to('has_spies') unless @report.possible_attack?
 
     @report.has_troops ? send_spies : send_pillage_troop(@report)
@@ -210,7 +186,6 @@ class Task::StealResourcesTask < Task::Abstract
 
     if switch_village_stages.include?(status) && @nearby.size.positive?
       @origin = @nearby.shift
-      puts "Change village to #{@origin}".black.on_red
       send(@original_status)
       return
     end
