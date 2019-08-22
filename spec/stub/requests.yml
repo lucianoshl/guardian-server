@@ -16,5 +16,8 @@ get:
   report_with_old_player:
     body: report/with_old_player.html
     uri: .*view=15326288.*
+  report_with_conquer:
+    body: report/with_conquer.html
+    uri: .*view=24273855.*
 
     

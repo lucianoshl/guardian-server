@@ -86,7 +86,11 @@ class Troop
   end
 
   def total
-    to_a.sum
+    sum
+  end
+
+  def sum
+    to_a.reject(&:nil?).sum
   end
 
   def carry

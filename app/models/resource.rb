@@ -19,6 +19,10 @@ class Resource
     wood + stone + iron
   end
 
+  def sum
+    total
+  end
+
   def self.parse(obj)
     if !obj.search('#wood').empty?
       element = obj.search('#wood').first
