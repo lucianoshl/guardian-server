@@ -82,6 +82,7 @@ RSpec.configure do |config|
 
     Service::StartupTasks.new.fill_units_information
     Service::StartupTasks.new.fill_buildings_information
+    # allow(Screen::Place).to receive(:get_place).and_return(double('place'))
   end
 
   config.before :all do

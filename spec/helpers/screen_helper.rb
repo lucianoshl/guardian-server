@@ -1,6 +1,28 @@
 # frozen_string_literal: true
 
 module ScreenHelper
+  def stub_place(args = {})
+    command_for_village = args[:has_command_for_village]
+    troops = args[:troops] || Troop.new
+
+    place = create_base('place', args)
+    allow(place).to receive(:has_command_for_village).with(anything).and_return(command_for_village)
+    allow(place).to receive(:troops_available).and_return(troops)
+    allow(place).to receive(:commands).and_return(OpenStruct.new(
+                                                    all: [],
+                                                    returning: [],
+                                                    leaving: []
+                                                  ))
+
+    command = double('command', arrival: Time.zone.now + 1.minute)
+    allow(command).to receive(:origin_report=)
+    allow(command).to receive(:store)
+    allow(place).to receive(:send_attack).with(anything, anything).and_return(command)
+
+    allow(Screen::Place).to receive_message_chain(:all_places, :values).and_return([])
+    place
+  end
+
   def create_main(args = {})
     buildings_meta = args[:buildings_meta]
 
@@ -21,14 +43,14 @@ module ScreenHelper
     main
   end
 
-  def train_screen(args = {})
+  def stub_train(args = {})
     troops = args[:troops] || Troop.new
-    build_info = args[:build_info]
+    build_info = args[:build_info] || { 'spy' => OpenStruct.new(active: true) }
 
     train = create_base('train', args)
     allow(train).to receive(:queue).and_return []
     allow(train).to receive(:troops).and_return troops
-    allow(train).to receive(:build_info).and_return build_info unless build_info.nil?
+    allow(train).to receive(:build_info).and_return build_info
     train
   end
 

@@ -4,6 +4,11 @@ describe Task::StealResourcesTask do
   subject { Task::StealResourcesTask.new }
 
   before :each do
+    # WebMock.disable_net_connect!
+
+    allow(Screen::Place).to receive(:new).and_return(@place = stub_place)
+    allow(Screen::Train).to receive(:new).and_return(@train = stub_train)
+
     @distance = 10
     allow(Property).to receive(:get).with('STEAL_RESOURCES_DISTANCE', 10).and_return @distance
 
@@ -16,7 +21,7 @@ describe Task::StealResourcesTask do
       stub_village('my_003')
     ]
 
-    screen = train_screen(build_info: { 'spy' => OpenStruct.new(active: true) })
+    screen = stub_train(build_info: { 'spy' => OpenStruct.new(active: true) })
     allow(Screen::Train).to receive(:new).and_return(screen)
     allow_any_instance_of(Screen::Place).to receive(:has_command_for_village).with(anything).and_return(nil)
     allow(Service::Report).to receive(:sync)
@@ -72,103 +77,74 @@ describe Task::StealResourcesTask do
     player
   end
 
-  it 'with strong player' do
-    target = stub_target(points: Account.main.player.points * 100)
-    target.should_receive(:status=).with('strong')
+  def expect_target_with(target, status)
+    target.should_receive(:status=).with(status)
     target.should_receive(:next_event=).with(anything)
     target.should_receive(:save)
     subject.run
+  end
+
+  it 'with strong player' do
+    target = stub_target(points: Account.main.player.points * 100)
+    expect_target_with(target, 'strong')
   end
 
   it 'with banned player' do
     target = stub_target
-
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(@place).to receive(:send_attack).with(anything, anything).and_raise(BannedPlayerException)
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(BannedPlayerException)
-
-    target.should_receive(:status=).with('banned')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    expect_target_with(target, 'banned')
   end
 
   it 'with newbie protection player' do
     target = stub_target
-
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
-
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(NewbieProtectionException.new('termina ago 22, 2019 20:16:10.'))
-
-    target.should_receive(:status=).with('newbie_protection')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    allow(@place).to receive(:send_attack).with(anything, anything).and_raise(NewbieProtectionException.new('termina ago 22, 2019 20:16:10.'))
+    expect_target_with(target, 'newbie_protection')
   end
 
   it 'with weak player' do
     target = stub_target
-
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(VeryWeakPlayerException)
-
-    target.should_receive(:status=).with('weak_player')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    allow(@place).to receive(:send_attack).with(anything, anything).and_raise(VeryWeakPlayerException)
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise
+    expect_target_with(target, 'weak_player')
   end
 
   it 'with removed player' do
     target = stub_target
-
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(RemovedPlayerException)
-
-    target.should_receive(:status=).with('removed_player')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    allow(@place).to receive(:send_attack).with(anything, anything).and_raise(RemovedPlayerException)
+    expect_target_with(target, 'removed_player')
   end
 
   it 'with invited player' do
     target = stub_target
-
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(InvitedPlayerException.new('22/Aug/2019  20:30,'))
-
-    target.should_receive(:status=).with('invited_player')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    allow(@place).to receive(:send_attack).with(anything, anything).and_raise(InvitedPlayerException.new('22/Aug/2019  20:30,'))
+    expect_target_with(target, 'invited_player')
   end
 
   it 'with minimal population to attack player' do
     target = stub_target
     report = stub_report
-
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50, light: 100))
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50, light: 100))
     allow(report).to receive(:time_to_produce).with(anything).and_return(Time.zone.now + 1.hour)
     allow(report).to receive(:mark_read)
     allow(target).to receive(:latest_valid_report).and_return(report)
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(NeedsMinimalPopulationException.new('200'))
-
-    target.should_receive(:status=).with('waiting_resource_production')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    allow(@place).to receive(:send_attack).with(anything, anything).and_raise(NeedsMinimalPopulationException.new('200'))
+    expect_target_with(target, 'waiting_resource_production')
   end
 
   it 'with ally player' do
     allow(Account.main).to receive(:player).and_return(stub_player(ally_id: 10))
     target = stub_target(ally_id: 10)
-    target.should_receive(:status=).with('ally')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    expect_target_with(target, 'ally')
   end
 
   it 'with far way barbarian village' do
@@ -176,102 +152,72 @@ describe Task::StealResourcesTask do
     target.should_receive(:player).and_return(nil)
     allow(target).to receive(:distance).with(anything).and_return(@distance + 1)
 
-    target.should_receive(:status=).with('far_away')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    expect_target_with(target, 'far_away')
   end
 
-  it 'with player but without spy research' do
-    target = stub_target
-    screen = train_screen(build_info: { 'spy' => OpenStruct.new(active: false) })
-    allow(Screen::Train).to receive(:new).and_return(screen)
+  context 'without spy research' do
+    before :each do
+      allow(Screen::Train).to receive(:new).and_return(@train = stub_train)
+      allow(@train).to receive(:build_info).and_return('spy' => OpenStruct.new(active: false))
+    end
 
-    target.should_receive(:status=).with('waiting_spy_research')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
-  end
+    it 'with player' do
+      target = stub_target
+      allow(target).to receive(:latest_valid_report).and_return(nil)
+      expect_target_with(target, 'waiting_spy_research')
+    end
 
-  it 'with barbarian and without spy research' do
-    target = stub_target(barbarian: true)
-    screen = train_screen(build_info: { 'spy' => OpenStruct.new(active: false) })
-
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spear: 100, light: 100))
-
-    allow(Screen::Train).to receive(:new).and_return(screen)
-    allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow(target).to receive(:reports).and_return([])
-
-    target.should_receive(:status=).with('waiting_report')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    it 'with barbarian' do
+      target = stub_target(barbarian: true)
+      allow(@place).to receive(:troops_available).and_return(Troop.new(spear: 100, light: 100))
+      allow(target).to receive(:latest_valid_report).and_return(nil)
+      allow(target).to receive(:reports).and_return([])
+      expect_target_with(target, 'waiting_report')
+    end
   end
 
   it 'with barbarian and without spy research and no troops enough' do
     target = stub_target(barbarian: true)
-    screen = train_screen(build_info: { 'spy' => OpenStruct.new(active: false) })
+    screen = stub_train(build_info: { 'spy' => OpenStruct.new(active: false) })
 
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spear: 1))
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spear: 1))
 
     allow(Screen::Train).to receive(:new).and_return(screen)
     allow(target).to receive(:latest_valid_report).and_return(nil)
     allow(target).to receive(:reports).and_return([])
 
-    target.should_receive(:status=).with('waiting_troops')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    expect_target_with(target, 'waiting_troops')
   end
 
   it 'with existing command' do
     target = stub_target
     command = double('command')
     command.should_receive(:next_arrival).and_return Time.now
-
-    allow_any_instance_of(Screen::Place).to receive(:has_command_for_village).with(anything).and_return(command)
-
-    target.should_receive(:status=).with('waiting_report')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    allow(@place).to receive(:has_command_for_village).with(anything).and_return(command)
+    expect_target_with(target, 'waiting_report')
   end
 
   it 'without latest_valid_report' do
     target = stub_target
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
-
-    target.should_receive(:status=).with('waiting_report')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    expect_target_with(target, 'waiting_report')
   end
 
   it 'without report and spies' do
     target = stub_target
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 0))
-
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 0))
     allow(target).to receive(:status).and_return('send_spies')
-
-    target.should_receive(:status=).with('waiting_spies')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    expect_target_with(target, 'waiting_spies')
   end
 
   it 'target waiting_report' do
     target = stub_target(status: 'waiting_report')
 
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 5, spear: 100, light: 50))
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 5, spear: 100, light: 50))
     allow(target).to receive(:latest_valid_report).and_return(stub_report)
-
-    target.should_receive(:status=).with('waiting_report')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    expect_target_with(target, 'waiting_report')
   end
 
   it 'target waiting_report' do
@@ -281,51 +227,35 @@ describe Task::StealResourcesTask do
 
     allow(report).to receive(:possible_attack?).and_return(false)
     allow(target).to receive(:latest_valid_report).and_return(report)
-
-    target.should_receive(:status=).with('has_spies')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    expect_target_with(target, 'has_spies')
   end
 
   it 'attack with report without troops' do
     target = stub_target(status: 'waiting_report')
 
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 5, spear: 100, light: 50))
+    allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 5, spear: 100, light: 50))
     allow(target).to receive(:latest_valid_report).and_return(stub_report)
-
-    target.should_receive(:status=).with('waiting_report')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    expect_target_with(target, 'waiting_report')
   end
 
   it 'attack with report with wall, strong troops and wall to destroy' do
     target = stub_target(status: 'waiting_report')
 
     troops_available = Troop.new(light: 50, ram: 800)
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(troops_available)
+    allow(@place).to receive(:troops_available).and_return(troops_available)
     allow(target).to receive(:latest_valid_report).and_return(stub_report(wall: 1))
     allow(troops_available).to receive(:distribute).with(anything, anything).and_return(Troop.new(light: 1))
-
-    target.should_receive(:status=).with('waiting_report')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    expect_target_with(target, 'waiting_report')
   end
 
   it 'attack with report with wall, strong troops without ram' do
     target = stub_target(status: 'waiting_report')
 
     troops_available = Troop.new(light: 50, ram: 0)
-    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(troops_available)
+    allow(@place).to receive(:troops_available).and_return(troops_available)
     allow(target).to receive(:latest_valid_report).and_return(stub_report(wall: 20, rams_to_destroy_wall: 20))
     allow(troops_available).to receive(:distribute).with(anything, anything).and_return(Troop.new(light: 1))
-
-    target.should_receive(:status=).with('waiting_strong_troops')
-    target.should_receive(:next_event=).with(anything)
-    target.should_receive(:save)
-    subject.run
+    expect_target_with(target, 'waiting_strong_troops')
   end
 
   context 'with incomings' do
@@ -336,13 +266,14 @@ describe Task::StealResourcesTask do
       incomings = [OpenStruct.new(
         incomings: Command::Incoming.new(arrival: Time.now + 1.minute)
       )]
+
+      troops_available = Troop.new(light: 50, ram: 0)
+      allow(@place).to receive(:troops_available).and_return(troops_available)
+      allow(troops_available).to receive(:distribute).with(anything, anything).and_return(Troop.new(light: 1))
+
       allow(Screen::Place).to receive_message_chain(:all_places, :values).and_return(incomings)
       allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spear: 100, light: 100))
-
-      target.should_receive(:status=).with('waiting_incoming')
-      target.should_receive(:next_event=).with(anything)
-      target.should_receive(:save)
-      subject.run
+      expect_target_with(target, 'waiting_incoming')
     end
   end
 end
