@@ -129,7 +129,7 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def waiting_report
-    return run_to_state('send_spies') if @report.nil?
+    return run_to_state('send_spies') if @report.nil? || @report.resources.nil?
 
     return has_spies unless @report.possible_attack?
 
