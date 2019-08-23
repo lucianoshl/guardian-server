@@ -54,15 +54,17 @@ class Task::StealResourcesTask < Task::Abstract
   rescue InvitedPlayerException => e
     send_to('invited_player', e.expiration)
   rescue NeedsMinimalPopulationException => e
-    report = @target.latest_valid_report
-    next_attack = report.time_to_produce(e.population * 25)
-    report.mark_read
-    send_to('waiting_resource_production', next_attack)
+    report = target.latest_valid_report
+    unless report.nil?
+      next_attack = report.time_to_produce(e.population * 25)
+      report.mark_read
+    end
+    send_to('waiting_resource_production', report.nil? ? (Time.zone.now + 1.hour) : next_attack)
   rescue NotPossibleAttackBeforeIncomingException => e
     send_to('waiting_incoming', e.incoming_time)
-  rescue Exception => e
-    binding.pry unless Rails.env.production?
-    send_to('with_error', Time.now + 10.minutes)
+  # rescue Exception => e
+  #   binding.pry unless Rails.env.production?
+  #   send_to('with_error', Time.now + 10.minutes)
   end
 
   def run
@@ -90,7 +92,7 @@ class Task::StealResourcesTask < Task::Abstract
 
   def send_spies
     place_screen = Screen::Place.get_place(@origin.id)
-    troops = place_screen.troops
+    troops = place_screen.troops_available
     if troops.spy >= spy_qte
       troop = Troop.new(spy: spy_qte)
       check_is_possible_attack_before_incoming(place_screen, troop)

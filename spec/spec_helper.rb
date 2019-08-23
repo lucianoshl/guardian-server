@@ -50,7 +50,7 @@ RSpec.configure do |config|
     allow(command).to receive(:origin_report=)
     allow(command).to receive(:store)
 
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).and_return(command)
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_return(command)
     allow_any_instance_of(Report).to receive(:erase).and_return(nil)
 
     allow_any_instance_of(Village).to receive(:reload).and_return { |a| binding.pry }

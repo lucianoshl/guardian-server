@@ -80,6 +80,88 @@ describe Task::StealResourcesTask do
     subject.run
   end
 
+  it 'with banned player' do
+    target = stub_target
+
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(BannedPlayerException)
+
+    target.should_receive(:status=).with('banned')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
+
+  it 'with newbie protection player' do
+    target = stub_target
+
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(target).to receive(:latest_valid_report).and_return(nil)
+    
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(NewbieProtectionException.new('termina ago 22, 2019 20:16:10.'))
+
+    target.should_receive(:status=).with('newbie_protection')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
+
+  it 'with weak player' do
+    target = stub_target
+
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(VeryWeakPlayerException)
+
+    target.should_receive(:status=).with('weak_player')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
+
+  it 'with removed player' do
+    target = stub_target
+
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(RemovedPlayerException)
+
+    target.should_receive(:status=).with('removed_player')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
+
+  it 'with invited player' do
+    target = stub_target
+
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
+    allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(InvitedPlayerException.new('22/Aug/2019  20:30,'))
+
+    target.should_receive(:status=).with('invited_player')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
+
+  it 'with minimal population to attack player' do
+    target = stub_target
+    report = stub_report
+
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50, light: 100))
+    allow(report).to receive(:time_to_produce).with(anything).and_return(Time.zone.now + 1.hour)
+    allow(report).to receive(:mark_read)
+    allow(target).to receive(:latest_valid_report).and_return(report)
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(NeedsMinimalPopulationException.new('200'))
+
+    target.should_receive(:status=).with('waiting_resource_production')
+    target.should_receive(:next_event=).with(anything)
+    target.should_receive(:save)
+    subject.run
+  end
+
   it 'with ally player' do
     allow(Account.main).to receive(:player).and_return(stub_player(ally_id: 10))
     target = stub_target(ally_id: 10)
@@ -156,10 +238,10 @@ describe Task::StealResourcesTask do
     subject.run
   end
 
-  it 'without report' do
+  it 'without latest_valid_report' do
     target = stub_target
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:troops).and_return(Troop.new(spy: 50))
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
 
     target.should_receive(:status=).with('waiting_report')
     target.should_receive(:next_event=).with(anything)
@@ -170,7 +252,7 @@ describe Task::StealResourcesTask do
   it 'without report and spies' do
     target = stub_target
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:troops).and_return(Troop.new(spy: 0))
+    allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 0))
 
     allow(target).to receive(:status).and_return('send_spies')
 
