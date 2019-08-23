@@ -105,16 +105,17 @@ class Village
   def defined_model
     model || VillageModel.basic_model
   end
+
+  def barbarian?
+    player.nil?
   end
 
-def barbarian?
-  player.nil?
-end
+  def self.load_if_not_exists(village_id)
+    return false unless where(id: village_id).empty?
 
-def self.load_if_not_exists(village_id)
-  return false unless where(id: village_id).empty?
+    screen = Screen::GuestInfoVillage.new(id: village_id)
+    screen.village.save
+    true
+  end
 
-  screen = Screen::GuestInfoVillage.new(id: village_id)
-  screen.village.save
-  true
 end

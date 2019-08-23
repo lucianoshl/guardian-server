@@ -102,7 +102,6 @@ class Report
   end
 
   def possible_attack?
-    binding.pry
     dot != 'red'
   end
 end

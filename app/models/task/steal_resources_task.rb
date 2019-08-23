@@ -40,7 +40,7 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def run_to_state(state)
-    send(state)
+    send(equivalment_state(state))
   rescue BannedPlayerException => e
     send_to('banned', Time.now + 1.day)
   rescue NewbieProtectionException => e
@@ -70,6 +70,8 @@ class Task::StealResourcesTask < Task::Abstract
   def run
     return nil if target.nil?
 
+    logger.info("Running for target #{target}")
+
     @original_status = target.status
 
     return strong if is_strong_player
@@ -84,10 +86,13 @@ class Task::StealResourcesTask < Task::Abstract
 
     Service::Report.sync
     @origin = @nearby.shift
+
+    logger.info("Origin for #{target} is #{@origin}")
+
     @report = target.latest_valid_report
     return run_to_state('send_spies') if @report.nil?
 
-    run_to_state(equivalment_state(target.status))
+    run_to_state(target.status)
   end
 
   def send_spies

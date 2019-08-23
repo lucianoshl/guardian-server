@@ -10,7 +10,7 @@ module Service::AttackDetector
     return if @running
 
     @running = true
-    Screen::Place.all_places.map(&:incomings).flatten.map do |incoming|
+    Screen::Place.all_places.values.map(&:incomings).flatten.map do |incoming|
       run_for_incoming(incoming)
     end
     @running = true
