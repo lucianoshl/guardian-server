@@ -268,4 +268,8 @@ class Task::StealResourcesTask < Task::Abstract
     equivalences['newbie_protection'] = 'waiting_report'
     equivalences[state] || state
   end
+
+  def define_name
+    "#{self.class} : #{target} > #{target&.status}"
+  end
 end
