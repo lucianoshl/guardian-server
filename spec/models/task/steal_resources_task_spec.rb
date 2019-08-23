@@ -12,69 +12,10 @@ describe Task::StealResourcesTask do
     @distance = 10
     allow(Property).to receive(:get).with('STEAL_RESOURCES_DISTANCE', 10).and_return @distance
 
-    allow(Account.main).to receive_message_chain(:player, :points).and_return 3000
-    allow(Account.main).to receive_message_chain(:player, :ally).and_return nil
-
-    allow(Account.main).to receive_message_chain(:player, :villages).and_return [
-      stub_village('my_001'),
-      stub_village('my_002'),
-      stub_village('my_003')
-    ]
-
     screen = stub_train(build_info: { 'spy' => OpenStruct.new(active: true) })
     allow(Screen::Train).to receive(:new).and_return(screen)
     allow_any_instance_of(Screen::Place).to receive(:has_command_for_village).with(anything).and_return(nil)
     allow(Service::Report).to receive(:sync)
-  end
-
-  def stub_village(name, _args = {})
-    stub = Village.new(name: name)
-    stub
-  end
-
-  def stub_report(args = {})
-    wall = args[:wall] || 0
-    rams_to_destroy_wall = args[:rams_to_destroy_wall] || 0
-    stub = double('report')
-    allow(stub).to receive(:possible_attack?).and_return(true)
-    allow(stub).to receive(:rams_to_destroy_wall).and_return(rams_to_destroy_wall)
-    allow(stub).to receive(:has_troops).and_return(false)
-    allow(stub).to receive(:moral).and_return(100)
-    allow(stub).to receive(:read=)
-    allow(stub).to receive(:save)
-    allow(stub).to receive(:resources).and_return(Resource.new(wood: 300, iron: 300, stone: 300))
-    allow(stub).to receive(:buildings).and_return(Buildings.new(wall: wall))
-    stub
-  end
-
-  def stub_target(args = {})
-    status = args[:status] || 'waiting_report'
-
-    stub = double('target')
-    if args[:barbarian] != false
-      player = stub_player(args)
-      allow(stub).to receive(:player).and_return player
-    end
-
-    allow(stub).to receive(:barbarian?).and_return args[:barbarian] == true
-    allow(stub).to receive(:distance).with(anything).and_return((@distance / 2).ceil)
-
-    allow(stub).to receive(:status).and_return(status)
-    allow(subject).to receive(:target).and_return stub
-    stub
-  end
-
-  def stub_player(args = {})
-    player = double('player')
-    points = args[:points] || Account.main.player.points * 0.5
-    ally_id = args[:ally_id]
-
-    ally = double('ally')
-    allow(ally).to receive(:id).and_return ally_id unless ally_id.nil?
-
-    allow(player).to receive(:ally).and_return ally unless ally_id.nil?
-    allow(player).to receive(:points).and_return points
-    player
   end
 
   def expect_target_with(target, status)

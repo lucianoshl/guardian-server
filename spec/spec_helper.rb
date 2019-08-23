@@ -39,6 +39,8 @@ RSpec.configure do |config|
   config.include(DatabaseStub)
   config.include(VillageHelper)
   config.include(ScreenHelper)
+  config.include(ModelStub)
+  
 
   config.before :each do |spec|
     tested_file = spec.metadata[:absolute_file_path].gsub('/spec/', '/app/').gsub('_spec.rb', '.rb')
@@ -69,6 +71,14 @@ RSpec.configure do |config|
     account = double('account', values)
     allow(Account).to receive(:main).and_return(account)
     allow(account).to receive(:world).and_return ENV['STUB_WORLD']
+    allow(account).to receive_message_chain(:player, :points).and_return 3000
+    allow(account).to receive_message_chain(:player, :ally).and_return nil
+    allow(account).to receive_message_chain(:player, :villages).and_return [
+      stub_village('my_001'),
+      stub_village('my_002'),
+      stub_village('my_003')
+    ]
+
 
     allow(Screen::AllyContracts).to receive(:new).and_return(OpenStruct.new(
                                                                allies_ids: %w[ally1 ally2]
