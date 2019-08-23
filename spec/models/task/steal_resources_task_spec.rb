@@ -85,7 +85,7 @@ describe Task::StealResourcesTask do
 
     allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(BannedPlayerException)
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(BannedPlayerException)
 
     target.should_receive(:status=).with('banned')
     target.should_receive(:next_event=).with(anything)
@@ -98,8 +98,8 @@ describe Task::StealResourcesTask do
 
     allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(NewbieProtectionException.new('termina ago 22, 2019 20:16:10.'))
+
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(NewbieProtectionException.new('termina ago 22, 2019 20:16:10.'))
 
     target.should_receive(:status=).with('newbie_protection')
     target.should_receive(:next_event=).with(anything)
@@ -112,7 +112,7 @@ describe Task::StealResourcesTask do
 
     allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(VeryWeakPlayerException)
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(VeryWeakPlayerException)
 
     target.should_receive(:status=).with('weak_player')
     target.should_receive(:next_event=).with(anything)
@@ -125,7 +125,7 @@ describe Task::StealResourcesTask do
 
     allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(RemovedPlayerException)
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(RemovedPlayerException)
 
     target.should_receive(:status=).with('removed_player')
     target.should_receive(:next_event=).with(anything)
@@ -138,7 +138,7 @@ describe Task::StealResourcesTask do
 
     allow_any_instance_of(Screen::Place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(InvitedPlayerException.new('22/Aug/2019  20:30,'))
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(InvitedPlayerException.new('22/Aug/2019  20:30,'))
 
     target.should_receive(:status=).with('invited_player')
     target.should_receive(:next_event=).with(anything)
@@ -154,7 +154,7 @@ describe Task::StealResourcesTask do
     allow(report).to receive(:time_to_produce).with(anything).and_return(Time.zone.now + 1.hour)
     allow(report).to receive(:mark_read)
     allow(target).to receive(:latest_valid_report).and_return(report)
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything,anything).and_raise(NeedsMinimalPopulationException.new('200'))
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise(NeedsMinimalPopulationException.new('200'))
 
     target.should_receive(:status=).with('waiting_resource_production')
     target.should_receive(:next_event=).with(anything)
