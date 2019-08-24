@@ -4,16 +4,16 @@ module Service::AttackDetector
   extend Notifier
 
   # TODO: this is not thread safe
-  @running = false
+  @@running = false
 
-  def self.run(_village)
-    return if @running
+  def self.run
+    return if @@running
 
-    @running = true
+    @@running = true
     Screen::Place.all_places.values.map(&:incomings).flatten.map do |incoming|
       run_for_incoming(incoming)
     end
-    @running = true
+    @@running = true
   end
 
   def self.run_for_incoming(incoming)

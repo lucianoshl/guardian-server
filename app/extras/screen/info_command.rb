@@ -21,7 +21,7 @@ class Screen::InfoCommand < Screen::Base
       command.id = page.uri.to_s.scan(/id=(\d+)/).number_part
       command.arrival = table[4].search('td').last.text.to_datetime
       command.create_at = Time.now
-      command.origin_id = origin.id
+      command.origin = Village.load_if_not_exists(origin.id)
       command.target = target.coordinate
       command.possible_troop = define_possible_troop(command)
     end

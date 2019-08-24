@@ -115,7 +115,7 @@ class Village
 
     screen = Screen::GuestInfoVillage.new(id: village_id)
     screen.village.save
-    true
+    screen.village
   end
 
 end
