@@ -23,19 +23,19 @@ class Task::PlayerMonitoringTask < Task::Abstract
     # save_or_update(Ally, all_allies)
 
     my_villages = Village.my.to_a
-    targets = Village.all.pluck(:id,:x,:y)
-    to_create = (targets.pmap do |id,x,y|
-      c_distance = my_villages.map {|v| v.distance(OpenStruct.new(x: x, y:y)) }.sort.first
+    targets = Village.all.pluck(:id, :x, :y)
+    to_create = (targets.pmap do |id, x, y|
+      c_distance = my_villages.map { |v| v.distance(OpenStruct.new(x: x, y: y)) }.min
       next if c_distance > max_distance || c_distance.zero?
 
-      [id,c_distance]
-    end).compact.sort_by {|id,distance| distance }.map{|id,d| id }
+      [id, c_distance]
+    end).compact.sort_by { |_id, distance| distance }.map { |id, _d| id }
 
     now = Time.zone.now
     saveds = Task::StealResourcesTask.pluck(:target_id).compact
-    to_create = to_create - saveds
+    to_create -= saveds
 
-    to_create.each_with_index do |id,index|
+    to_create.each_with_index do |id, index|
       job = Task::StealResourcesTask.new(target_id: id)
       job.next_execution = now + (10.seconds * index)
       job.save

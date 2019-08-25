@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ModelStub
   def stub_village(name, _args = {})
     stub = Village.new(name: name)
@@ -48,5 +50,4 @@ module ModelStub
     allow(player).to receive(:points).and_return points
     player
   end
-
 end

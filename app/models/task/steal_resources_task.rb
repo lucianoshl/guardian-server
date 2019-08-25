@@ -62,9 +62,9 @@ class Task::StealResourcesTask < Task::Abstract
     send_to('waiting_resource_production', report.nil? ? (Time.zone.now + 1.hour) : next_attack)
   rescue NotPossibleAttackBeforeIncomingException => e
     send_to('waiting_incoming', e.incoming_time)
-    # rescue Exception => e
-    #   binding.pry unless Rails.env.production?
-    #   send_to('with_error', Time.now + 10.minutes)
+  rescue Exception => e
+    binding.pry unless Rails.env.production?
+    send_to('with_error', Time.now + 10.minutes)
   end
 
   def run
@@ -87,7 +87,16 @@ class Task::StealResourcesTask < Task::Abstract
     Service::Report.sync
     @origin = @nearby.shift
 
-    logger.info("Origin for #{target} is #{@origin}")
+    @report = target.latest_report
+    return run_to_state('send_spies') if @report.nil?
+
+    if %w[red yellow].include? @report.dot
+      only_spies = @report.atk_troops.total == @report.atk_troops.spy
+      next_execute = Time.zone.now + 1.day
+      return send_to('has_spies', next_execute) if only_spies
+
+      return send_to('has_troops', next_execute)
+    end
 
     @report = target.latest_valid_report
     return run_to_state('send_spies') if @report.nil?
@@ -249,10 +258,6 @@ class Task::StealResourcesTask < Task::Abstract
     send_to('waiting_spy_research', Time.now + 1.hour)
   end
 
-  def has_spies
-    send_to('has_spies', Time.now + 1.hour)
-  end
-
   def equivalment_state(state)
     equivalences = {}
     equivalences['waiting_spies'] = 'waiting_report'
@@ -266,6 +271,8 @@ class Task::StealResourcesTask < Task::Abstract
     equivalences['waiting_incoming'] = 'waiting_report'
     equivalences['with_error'] = 'waiting_report'
     equivalences['newbie_protection'] = 'waiting_report'
+    equivalences['has_troops'] = 'waiting_report'
+    equivalences['has_spies'] = 'waiting_report'
     equivalences[state] || state
   end
 

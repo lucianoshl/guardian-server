@@ -40,7 +40,6 @@ RSpec.configure do |config|
   config.include(VillageHelper)
   config.include(ScreenHelper)
   config.include(ModelStub)
-  
 
   config.before :each do |spec|
     tested_file = spec.metadata[:absolute_file_path].gsub('/spec/', '/app/').gsub('_spec.rb', '.rb')
@@ -78,7 +77,6 @@ RSpec.configure do |config|
       stub_village('my_002'),
       stub_village('my_003')
     ]
-
 
     allow(Screen::AllyContracts).to receive(:new).and_return(OpenStruct.new(
                                                                allies_ids: %w[ally1 ally2]
