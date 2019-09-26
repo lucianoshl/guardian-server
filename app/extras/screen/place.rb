@@ -96,9 +96,24 @@ class Screen::Place < Screen::Base
     result
   end
 
-  def self.all_places
-    Village.my.map do |village|
-      Screen::Place.new(village: village.id)
+  def has_command_for_village(village)
+    selected = commands.all.select do |command|
+      command.target.distance(village).zero?
     end
+    selected.min_by(&:next_arrival)
+  end
+
+  def self.all_places
+    Account.main.player.villages.map do |village|
+      get_place(village.id)
+    end
+    @@places
+  end
+
+  def self.get_place(vid)
+    @@places ||= {}
+    return @@places[vid] unless @@places[vid].nil?
+
+    @@places[vid] = Screen::Place.new(village: vid)
   end
 end

@@ -23,11 +23,12 @@ class Task::Abstract
   after_initialize do
     self.runs_every = self.class._runs_every
     self.queue = 'normal'
-    self.name = self.class.name
+    self.name = define_name
   end
 
   before_save do
     self.next_execution ||= calc_next_execution
+    self.name = define_name
   end
 
   after_save do
@@ -100,5 +101,9 @@ class Task::Abstract
 
   def self.remove_inconsistent_job
     (Delayed::Backend::Mongoid::Job.all - Task::Abstract.all.map(&:job)).map(&:delete)
+  end
+
+  def define_name
+    self.class.name
   end
 end

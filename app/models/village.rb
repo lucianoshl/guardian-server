@@ -37,6 +37,10 @@ class Village
     Report.where(target: self, read: false).gte(ocurrence: Time.now - 5.hours).order(ocurrence: 'desc').first
   end
 
+  def latest_report
+    Report.where(target: self, read: false).order(ocurrence: 'desc').first
+  end
+
   def self.reset_all
     Village.update_all(next_event: nil, status: nil)
   end
@@ -106,11 +110,16 @@ class Village
     model || VillageModel.basic_model
   end
 
+  def barbarian?
+    player.nil?
+  end
+
   def self.load_if_not_exists(village_id)
-    return false unless where(id: village_id).empty?
+    village = where(id: village_id).first
+    return village unless village.nil?
 
     screen = Screen::GuestInfoVillage.new(id: village_id)
     screen.village.save
-    true
+    screen.village
   end
 end

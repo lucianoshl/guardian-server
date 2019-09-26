@@ -39,19 +39,44 @@ RSpec.configure do |config|
   config.include(DatabaseStub)
   config.include(VillageHelper)
   config.include(ScreenHelper)
+  config.include(ModelStub)
 
   config.before :each do |spec|
     tested_file = spec.metadata[:absolute_file_path].gsub('/spec/', '/app/').gsub('_spec.rb', '.rb')
     SimpleCov.register_tested_file(tested_file)
 
     allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
+    command = double('send_attack')
+    allow(command).to receive(:arrival).and_return(Time.zone.now + 1.hour)
+    allow(command).to receive(:origin_report=)
+    allow(command).to receive(:store)
+
+    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_return(command)
     allow_any_instance_of(Report).to receive(:erase).and_return(nil)
+
+    allow_any_instance_of(Village).to receive(:reload).and_return { |a| binding.pry }
 
     allow(Notifier).to receive(:notify).and_return(nil)
     allow(Service::AttackDetector).to receive(:run).and_return(nil)
     allow_any_instance_of(Notifier).to receive(:notify).and_return(nil)
 
-    # allow(Account).to receive(:main).and_return(Account.main)
+    values = {
+      id: BSON::ObjectId('5d56ba9919290b2e9c88210c'),
+      world: ENV['STUB_WORLD'],
+      username: ENV['STUB_USER'],
+      password: ENV['STUB_PASS']
+    }
+
+    account = double('account', values)
+    allow(Account).to receive(:main).and_return(account)
+    allow(account).to receive(:world).and_return ENV['STUB_WORLD']
+    allow(account).to receive_message_chain(:player, :points).and_return 3000
+    allow(account).to receive_message_chain(:player, :ally).and_return nil
+    allow(account).to receive_message_chain(:player, :villages).and_return [
+      stub_village('my_001'),
+      stub_village('my_002'),
+      stub_village('my_003')
+    ]
 
     allow(Screen::AllyContracts).to receive(:new).and_return(OpenStruct.new(
                                                                allies_ids: %w[ally1 ally2]
@@ -65,6 +90,7 @@ RSpec.configure do |config|
 
     Service::StartupTasks.new.fill_units_information
     Service::StartupTasks.new.fill_buildings_information
+    # allow(Screen::Place).to receive(:get_place).and_return(double('place'))
   end
 
   config.before :all do

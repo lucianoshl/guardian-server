@@ -20,7 +20,7 @@ class Screen::Base < Screen::Logged
     self.load_time = Time.now
     self.initial_server_time = page.body.scan(/Timing.init\((.+)\)/).first.first.to_i
     self.csrf_token = game_data['csrf']
-    Service::AttackDetector.run(village) if incomings.positive?
+    Service::AttackDetector.run if incomings.positive?
   end
 
   def parse_server_time(page)
