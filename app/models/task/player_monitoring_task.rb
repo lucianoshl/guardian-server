@@ -6,23 +6,23 @@ class Task::PlayerMonitoringTask < Task::Abstract
   def run
     max_distance = Property.get('STEAL_RESOURCES_DISTANCE', 10)
     distance_border = Property.get('STEAL_RESOURCES_DISTANCE', 10) * 2
-    # nearby = Service::Map.find_nearby(Account.main.player.villages, distance_border)
+    nearby = Service::Map.find_nearby(Account.main.player.villages, distance_border)
 
-    # moved_villages = Village.all.pluck(:id) - nearby.keys
-    # Village.in(id: moved_villages).delete_all
+    moved_villages = Village.all.pluck(:id) - nearby.keys
+    Village.in(id: moved_villages).delete_all
 
-    # all_villages = nearby
-    # all_players = nearby.values.map(&:player).compact.uniq.to_index(&:id)
-    # all_allies = all_players.values.map(&:ally).compact.uniq.to_index(&:id)
+    all_villages = nearby
+    all_players = nearby.values.map(&:player).compact.uniq.to_index(&:id)
+    all_allies = all_players.values.map(&:ally).compact.uniq.to_index(&:id)
 
-    # all_players.values.map { |a| a.ally = nil }
-    # all_villages.values.map { |a| a.player = nil }
+    all_players.values.map { |a| a.ally = nil }
+    all_villages.values.map { |a| a.player = nil }
 
-    # save_or_update(Village, all_villages)
-    # save_or_update(Player, all_players)
-    # save_or_update(Ally, all_allies)
+    save_or_update(Village, all_villages)
+    save_or_update(Player, all_players)
+    save_or_update(Ally, all_allies)
 
-    my_villages = Village.my.to_a
+    my_villages = Account.main.player.villages
     targets = Village.all.pluck(:id, :x, :y)
     to_create = (targets.pmap do |id, x, y|
       c_distance = my_villages.map { |v| v.distance(OpenStruct.new(x: x, y: y)) }.min
