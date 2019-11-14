@@ -39,7 +39,8 @@ module Service::Recruiter
         next if qte.zero?
 
         current_queue = Unit.get(unit).prod_building.to_sym
-        next unless queue_seconds[current_queue] < queue_size
+        current_queue_seconds = queue_seconds[current_queue] || 0
+        next unless current_queue_seconds < queue_size
 
         build_info = train_screen.build_info[unit]
         next if build_info.nil?
@@ -47,6 +48,7 @@ module Service::Recruiter
 
         result[unit] += 1
         model[unit] -= 1
+        queue_seconds[current_queue] ||= 0
         queue_seconds[current_queue] += build_info.cost_time
         resources -= build_info.cost
         executed = true

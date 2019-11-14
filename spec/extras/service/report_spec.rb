@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 describe Service::Report do
+  it 'just sync' do
+    Service::Report.sync
+  end
+
   it 'report_with_old_player' do
     mock_request_from_id('report_with_old_player')
     report = Screen::ReportView.new(view: 15_326_288).report

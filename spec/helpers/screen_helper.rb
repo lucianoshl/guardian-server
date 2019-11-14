@@ -46,9 +46,10 @@ module ScreenHelper
   def stub_train(args = {})
     troops = args[:troops] || Troop.new
     build_info = args[:build_info] || { 'spy' => OpenStruct.new(active: true) }
+    queue = args[:queue] || []
 
     train = create_base('train', args)
-    allow(train).to receive(:queue).and_return []
+    allow(train).to receive(:queue).and_return queue
     allow(train).to receive(:troops).and_return troops
     allow(train).to receive(:build_info).and_return build_info
     train
