@@ -5,7 +5,7 @@ class Task::StealResourcesTask < Task::Abstract
 
   runs_every 10.minutes
 
-  include Service::Targets
+  # include Service::Targets
 
   def is_strong_player
     current_points = Account.main.player.points
