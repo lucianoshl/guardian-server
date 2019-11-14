@@ -10,6 +10,7 @@ module ModelStub
     wall = args[:wall] || 0
     rams_to_destroy_wall = args[:rams_to_destroy_wall] || 0
     stub = double('report')
+    allow(stub).to receive(:dot).and_return(:green)
     allow(stub).to receive(:possible_attack?).and_return(true)
     allow(stub).to receive(:rams_to_destroy_wall).and_return(rams_to_destroy_wall)
     allow(stub).to receive(:has_troops).and_return(false)

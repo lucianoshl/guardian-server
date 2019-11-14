@@ -87,7 +87,7 @@ class Task::StealResourcesTask < Task::Abstract
     Service::Report.sync
     @origin = @nearby.shift
 
-    @report = target.latest_report
+    @report = target.latest_valid_report
     return run_to_state('send_spies') if @report.nil?
 
     if %w[red yellow].include? @report.dot
@@ -140,7 +140,7 @@ class Task::StealResourcesTask < Task::Abstract
   def waiting_report
     return run_to_state('send_spies') if @report.nil? || @report.resources.nil?
 
-    return has_spies unless @report.possible_attack?
+    return send_to('has_spies') unless @report.possible_attack?
 
     @report.has_troops ? send_spies : send_pillage_troop(@report)
   end
@@ -253,6 +253,12 @@ class Task::StealResourcesTask < Task::Abstract
     send_to('far_away', Time.now + 1.hour)
   end
 
+  def has_spies
+    return send_to('has_spies', Time.now + 1.hour) if @target.latest_report.dot != :green
+
+    send_to('waiting_report')
+  end
+
   def waiting_spy_research
     # TODO: rector this to use EVENTS
     send_to('waiting_spy_research', Time.now + 1.hour)
@@ -272,7 +278,6 @@ class Task::StealResourcesTask < Task::Abstract
     equivalences['with_error'] = 'waiting_report'
     equivalences['newbie_protection'] = 'waiting_report'
     equivalences['has_troops'] = 'waiting_report'
-    equivalences['has_spies'] = 'waiting_report'
     equivalences[state] || state
   end
 
