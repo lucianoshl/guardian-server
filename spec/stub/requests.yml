@@ -19,5 +19,6 @@ get:
   report_with_conquer:
     body: report/with_conquer.html
     uri: .*view=24273855.*
-
-    
+  player_command:
+    body: place/commands/player_command.html
+    uri: .*id=506937843.*
