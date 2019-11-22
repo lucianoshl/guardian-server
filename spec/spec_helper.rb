@@ -30,6 +30,11 @@ SimpleCov.start do
       !SimpleCov.tested_files.include?(origin_file)
     end
   end
+
+  add_filter do |source_file|
+    source_file.filename.include?('/event/') || source_file.filename.include?('/controllers/') || source_file.filename.include?('/graphql_model/')
+  end
+  
 end
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
