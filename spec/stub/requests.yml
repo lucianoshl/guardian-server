@@ -24,4 +24,4 @@ get:
     uri: .*id=506937843.*
   report_list:
     body: report/report_list.html
-    uri: .*mode=attack.*
+    uri: .*mode=spec.*

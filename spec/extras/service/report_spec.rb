@@ -2,8 +2,14 @@
 
 describe Service::Report do
   it 'just sync' do
+    mock_request_from_id('report_with_conquer')
     mock_request_from_id('report_list')
-    Service::Report.sync
+
+    my_command_criteria = double(:my_command_criteria)
+    my_command_criteria.should_receive(:min).with(anything).and_return Command::My.new
+    Command::My.stub(:where).and_return my_command_criteria
+
+    Service::Report.sync(modes: ['spec'])
   end
 
   it 'report_with_old_player' do
