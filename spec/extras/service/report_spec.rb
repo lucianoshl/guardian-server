@@ -2,6 +2,7 @@
 
 describe Service::Report do
   it 'just sync' do
+    mock_request_from_id('report_list')
     Service::Report.sync
   end
 
