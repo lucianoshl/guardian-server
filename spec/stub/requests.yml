@@ -25,3 +25,8 @@ get:
   report_list:
     body: report/report_list.html
     uri: .*mode=spec.*
+  smith_screen_basic:
+    body: smith/basic.html
+    uri: .*screen=smith.*
+
+    

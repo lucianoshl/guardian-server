@@ -3,6 +3,7 @@
 describe Screen::Smith do
   subject { Screen::Smith.new }
   it 'do_request' do
+    mock_request_from_id('smith_screen_basic')
     researched = subject.researched_units
     expect(researched.spear).to eq(1)
     expect(researched.sword).to eq(1)
@@ -19,6 +20,7 @@ describe Screen::Smith do
   end
 
   it 'check_spy_is_researched' do
+    mock_request_from_id('smith_screen_basic')
     expect(subject.spy_is_researched?).to eq(false)
   end
 end
