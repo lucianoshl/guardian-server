@@ -11,5 +11,4 @@ describe Service::WorldConfig do
     allow(Service::WorldConfig).to receive(:parse_table).and_return([])
     expect { subject.has_milliseconds? }.to raise_error('needs implementation')
   end
-
 end

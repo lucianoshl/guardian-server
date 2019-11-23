@@ -2,7 +2,9 @@
 
 module ModelStub
   def stub_village(name, _args = {})
-    stub = Village.new(name: name)
+    stub = double("village_#{name}")
+    allow(stub).to receive(:name).and_return(name)
+    allow(stub).to receive(:player).and_return(stub_player)
     stub
   end
 
@@ -43,11 +45,13 @@ module ModelStub
     player = double('player')
     points = args[:points] || Account.main.player.points * 0.5
     ally_id = args[:ally_id]
+    name = args[:name] || 'fake_name'
 
     ally = double('ally')
     allow(ally).to receive(:id).and_return ally_id unless ally_id.nil?
-
     allow(player).to receive(:ally).and_return ally unless ally_id.nil?
+
+    allow(player).to receive(:name).and_return name
     allow(player).to receive(:points).and_return points
     player
   end

@@ -15,7 +15,7 @@ describe Service::Recruiter do
     queue = OpenStruct.new
     queue.stable = OpenStruct.new
     queue.stable.itens = [OpenStruct.new(finish: 10)]
-    
+
     train = stub_train(troops: Troop.new(spear: 10, spy: 10), build_info: build_info, queue: queue)
     allow(train).to receive(:resources).and_return Resource.new(wood: 100, stone: 100, iron: 100)
     Screen::Train.stub(:new).and_return train

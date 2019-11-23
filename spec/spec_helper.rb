@@ -34,7 +34,6 @@ SimpleCov.start do
   add_filter do |source_file|
     source_file.filename.include?('/event/') || source_file.filename.include?('/controllers/') || source_file.filename.include?('/graphql_model/')
   end
-  
 end
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
@@ -61,7 +60,6 @@ RSpec.configure do |config|
 
     allow_any_instance_of(Village).to receive(:reload).and_return { |a| binding.pry }
 
-    allow(Service::AttackDetector).to receive(:run).and_return(nil)
     allow_any_instance_of(Washbullet::Client).to receive(:push_note).and_return(nil)
 
     values = {
