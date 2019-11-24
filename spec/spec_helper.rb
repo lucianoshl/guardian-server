@@ -61,6 +61,7 @@ RSpec.configure do |config|
     allow_any_instance_of(Village).to receive(:reload).and_return { |a| binding.pry }
 
     allow_any_instance_of(Washbullet::Client).to receive(:push_note).and_return(nil)
+    allow(Service::AttackDetector).to receive(:run).and_return(nil)
 
     values = {
       id: BSON::ObjectId('5d56ba9919290b2e9c88210c'),

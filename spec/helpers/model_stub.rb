@@ -3,6 +3,7 @@
 module ModelStub
   def stub_village(name, _args = {})
     stub = double("village_#{name}")
+    allow(stub).to receive(:id).and_return(rand)
     allow(stub).to receive(:name).and_return(name)
     allow(stub).to receive(:player).and_return(stub_player)
     stub
