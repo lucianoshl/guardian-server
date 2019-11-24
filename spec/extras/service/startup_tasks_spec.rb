@@ -8,7 +8,7 @@ describe Service::StartupTasks do
     allow(Task::PlayerMonitoringTask).to receive(:new).and_return task_stub
     allow(task_stub).to receive(:run).and_return nil
     allow(task_stub).to receive(:save).and_return nil
-    
+
     account = Account.main
     allow(account).to receive(:player=).and_return(nil)
     allow(account.player).to receive(:save).and_return(nil)
