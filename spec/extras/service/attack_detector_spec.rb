@@ -4,6 +4,7 @@ describe Service::AttackDetector do
   subject { Service::AttackDetector }
 
   it 'detect' do
+    allow(Service::AttackDetector).to receive(:run).and_call_original
     place = double(:place_screen)
     incoming = double(:incoming)
 
