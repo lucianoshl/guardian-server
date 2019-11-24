@@ -8,9 +8,9 @@ describe Task::TrainKnight do
   end
 
   def run_for_status(status)
-    allow(@stub).to receive(:knights_data).and_return({ '11': {
-      "activity" => { "type" => status }
-    }})
+    allow(@stub).to receive(:knights_data).and_return('11': {
+                                                        'activity' => { 'type' => status }
+                                                      })
     Task::TrainKnight.new.run
   end
 
@@ -36,11 +36,11 @@ describe Task::TrainKnight do
     allow(statue_main).to receive_message_chain(:resources, :include?).and_return(true)
     allow(statue_main).to receive(:train).and_return(nil)
 
-    allow(@stub).to receive(:knights_data).and_return({ '11': {
-      "activity" => { "type" => 'home' },
-      "home_village" => { "id" => 1 },
-      "usable_regimens" => [{ "id" => 1, "res_cost" => {wood: 1, stone: 1, iron: 1} }],
-    }})
+    allow(@stub).to receive(:knights_data).and_return('11': {
+                                                        'activity' => { 'type' => 'home' },
+                                                        'home_village' => { 'id' => 1 },
+                                                        'usable_regimens' => [{ 'id' => 1, 'res_cost' => { wood: 1, stone: 1, iron: 1 } }]
+                                                      })
     Task::TrainKnight.new.run
   end
 end

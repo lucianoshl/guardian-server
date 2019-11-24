@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe Coordinate do
-
   it '==' do
     coord = Coordinate.new(x: 1, y: 1)
     coord2 = Coordinate.new(x: 1, y: 2)
@@ -12,7 +11,7 @@ describe Coordinate do
 
   it 'to_s' do
     coord = Coordinate.new(x: 1, y: 1)
-    expect(coord.to_s).to eq("1|1")
+    expect(coord.to_s).to eq('1|1')
   end
 
   it 'to_h' do
@@ -21,5 +20,4 @@ describe Coordinate do
     expect(coord['x']).to eq(1)
     expect(coord['y']).to eq(1)
   end
-
 end
