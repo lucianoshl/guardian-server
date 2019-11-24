@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Service::StartupTasks
+  
   def first_login_event
     fill_user_information
     fill_units_information
