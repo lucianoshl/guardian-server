@@ -185,7 +185,8 @@ GEM
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
     public_suffix (3.1.1)
-    puma (3.12.2)
+    puma (4.3.1)
+      nio4r (~> 2.0)
     r18n-core (3.2.0)
     rack (2.0.7)
     rack-pjax (1.1.0)
@@ -335,7 +336,7 @@ DEPENDENCIES
   pry-nav
   pry-rescue
   pry-stack_explorer
-  puma (~> 3.11)
+  puma (~> 4.3.1)
   r18n-core
   rails (~> 5.2.3)
   rails_admin (~> 2.0.0.rc)
