@@ -1,11 +1,55 @@
 # frozen_string_literal: true
 
 describe Screen::Place do
+
+  it 'test place messages' do
+    # TODO: extract complete messages from game
+    mock_request_from_id('place_with_commands_incomings')
+    place = Screen::Place.new
+    
+    expectations = {}
+    expectations[NewbieProtectionException] = 'para novatos'
+    expectations[BannedPlayerException] = 'jogador foi banido'
+    expectations[VeryWeakPlayerException] = 'apenas poderá atacar e ser atacado se a razão'
+    expectations[NeedsMinimalPopulationException] = 'de ataque precisa do'
+    expectations[RemovedPlayerException] = 'Alvo não existe'
+    expectations[InvitedPlayerException] = ' convidou o propriet'
+    expectations[NewbieProtectionException] = 'para novatos'
+
+    expectations[Exception] = 'other unknown message'
+
+    expectations.map do |exception,message|
+      expect { place.convert_error(message) }.to raise_error(exception)
+    end
+
+  end
+
   it 'parse troops available' do
     mock_request_from_id('place_with_commands_incomings')
     place = Screen::Place.new
     troops_available = place.troops_available
     expect(troops_available.spear).to eq(1)
+  end
+
+  it 'get all places' do
+    mock_request_from_id('place_with_commands_incomings')
+    places = Screen::Place.all_places
+    expect(places.size).to eq(3)
+  end
+
+  it 'check has command for village' do
+    mock_request_from_id('place_with_commands_incomings')
+    place = Screen::Place.new
+
+    target = double(:target)
+    command = double(:command)
+
+    allow(target).to receive(:distance).and_return(0)
+    allow(command).to receive(:target).and_return(target)
+    allow(command).to receive(:next_arrival).and_return(Time.now)
+    allow(place).to receive_message_chain(:commands,:all).and_return([command])
+
+    place.has_command_for_village(target)
   end
 
   it 'send attack' do
