@@ -52,7 +52,7 @@ RSpec.configure do |config|
     allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
     allow_any_instance_of(Report).to receive(:erase).and_return(nil)
 
-    allow_any_instance_of(Village).to receive(:reload).and_return { |a| binding.pry }
+    allow_any_instance_of(Village).to receive(:reload) { |a| a } 
 
     allow_any_instance_of(Washbullet::Client).to receive(:push_note).and_return(nil)
     allow(Service::AttackDetector).to receive(:run).and_return(nil)

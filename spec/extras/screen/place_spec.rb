@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 describe Screen::Place do
-  it 'parse place' do
+  it 'parse troops available' do
     mock_request_from_id('place_with_commands_incomings')
-    Screen::Place.new
+    place = Screen::Place.new
+    troops_available = place.troops_available
+    expect(troops_available.spear).to eq(1)
   end
 
   it 'send attack' do
@@ -11,6 +13,7 @@ describe Screen::Place do
     attack_command = double('attack_command')
 
     allow(attack_command).to receive(:troop=).and_return(nil)
+    allow(attack_command).to receive(:returning=).and_return(nil)
     allow(attack_command).to receive(:returning_arrival=).and_return(nil)
     allow(attack_command).to receive(:origin).and_return(double(:origin))
     allow(attack_command).to receive(:target).and_return(double(:target))
