@@ -50,12 +50,6 @@ RSpec.configure do |config|
     SimpleCov.register_tested_file(tested_file)
 
     allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
-    command = double('send_attack')
-    allow(command).to receive(:arrival).and_return(Time.zone.now + 1.hour)
-    allow(command).to receive(:origin_report=)
-    allow(command).to receive(:store)
-
-    allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_return(command)
     allow_any_instance_of(Report).to receive(:erase).and_return(nil)
 
     allow_any_instance_of(Village).to receive(:reload).and_return { |a| binding.pry }
