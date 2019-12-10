@@ -8,18 +8,17 @@ describe Screen::Place do
     place = Screen::Place.new
     
     expectations = {}
-    expectations[NewbieProtectionException] = 'para novatos'
+    expectations[NewbieProtectionException] = 'para novatos que termina Set 10, 2019 10:30:32.'
     expectations[BannedPlayerException] = 'jogador foi banido'
     expectations[VeryWeakPlayerException] = 'apenas poderá atacar e ser atacado se a razão'
     expectations[NeedsMinimalPopulationException] = 'de ataque precisa do'
     expectations[RemovedPlayerException] = 'Alvo não existe'
-    expectations[InvitedPlayerException] = ' convidou o propriet'
-    expectations[NewbieProtectionException] = 'para novatos'
+    expectations[InvitedPlayerException] = ' convidou o proprietario 10/Oct/10  10:10,'
 
     expectations[Exception] = 'other unknown message'
 
     expectations.map do |exception,message|
-      expect { place.convert_error(message) }.to raise_error(exception)
+      expect { raise place.convert_error(message) }.to raise_error(exception)
     end
 
   end
