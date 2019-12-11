@@ -3,7 +3,7 @@ get:
     body: unit_info.json
     default: true
     uri: .*ajax=data.*screen=unit_info.*
-  unit_info:
+  fake_request:
     body: fake_request.html
     default: true
     uri: .*fake_request.*
@@ -32,5 +32,9 @@ get:
   smith_screen_basic:
     body: smith/basic.html
     uri: .*screen=smith.*
+  main_buildings_labels:
+    body: main/buildings_labels.html
+    default: true
+    uri: .*for=buildings_labels.*
 
     

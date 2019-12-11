@@ -31,7 +31,7 @@ class Service::StartupTasks
   end
 
   def fill_buildings_information
-    names = Screen::Main.new.buildings_labels
+    names = Screen::Main.new(for: :buildings_labels ).buildings_labels
     page = Mechanize.new.get("https://#{Account.main.world}.tribalwars.com.br/interface.php?func=get_building_info")
     buildings = page.search('config > *').map do |item|
       attributes = item.search('*').map { |a| [a.name, a.text.to_f] }.to_h
