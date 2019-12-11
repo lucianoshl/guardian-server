@@ -6,6 +6,6 @@ describe TroopModel do
     model_file = Dir['./**/models/troop_model.rb'].first
     load model_file
     require model_file
-    TroopModel.new(spear: 1)
+    TroopModel.new(spear: 1).inspect
   end
 end
