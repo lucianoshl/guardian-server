@@ -55,7 +55,7 @@ class Report
     dot != 'red'
   end
 
-  # TODO: create a math function for this http://www.xuru.org/rt/PR.asp
+  # TODO: create a math function for this https://arachnoid.com/polysolve/
   def rams_to_destroy_wall
     wall = (buildings.wall || '0').to_i
 
