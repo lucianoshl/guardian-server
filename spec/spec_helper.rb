@@ -50,7 +50,6 @@ RSpec.configure do |config|
     SimpleCov.register_tested_file(tested_file)
 
     allow_any_instance_of(Screen::Train).to receive(:train).and_return(nil)
-    allow_any_instance_of(Report).to receive(:erase).and_return(nil)
 
     allow_any_instance_of(Village).to receive(:reload) { |a| a } 
 

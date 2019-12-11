@@ -7,4 +7,8 @@ describe Screen::InfoCommand do
     command = screen.command
     expect(command).to be_nil
   end
+
+
+  it 'TODO: page with incoming info' do
+  end
 end

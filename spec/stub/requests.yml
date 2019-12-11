@@ -3,6 +3,10 @@ get:
     body: unit_info.json
     default: true
     uri: .*ajax=data.*screen=unit_info.*
+  unit_info:
+    body: fake_request.html
+    default: true
+    uri: .*fake_request.*
   building_info:
     body: buildings.html
     default: true
