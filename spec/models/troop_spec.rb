@@ -19,4 +19,13 @@ describe Troop do
     result = troop.upgrade(disponible)
     pp result
   end
+
+  it 'troop +' do
+    a = Troop.new(spear: 5, axe: 4)
+    b = Troop.new(spear: 4, sword: 3)
+    c = a + b
+    expect(c.spear).to eq(9)
+    expect(c.axe).to eq(4)
+    expect(c.sword).to eq(3)
+  end
 end

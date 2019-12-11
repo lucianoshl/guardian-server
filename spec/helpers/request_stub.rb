@@ -6,6 +6,12 @@ module RequestStub
     mock_request(method, info)
   end
 
+  def get_mock_page(id)
+    method, info = find_stub(id)
+    html = File.read("#{File.dirname(__FILE__)}/../stub/requests/#{info['body']}")
+    Mechanize::Page.new(nil,{'content-type'=>'text/html'},html,nil,Mechanize.new)
+  end
+
   def mock_request(method, info)
     stub = WebMock.stub_request(method.to_sym, Regexp.new(info['uri']))
     stub.to_return(status: 200, body: mock_handler(info), headers: build_headers(info['body']))

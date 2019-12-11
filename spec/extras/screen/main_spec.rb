@@ -24,11 +24,11 @@ describe do
     expect(subject.in_queue?(:wood)).to eq(false)
   end
 
-  it 'build main' do 
-    allow(subject).to receive(:parse).and_return(nil)
-    allow(subject).to receive(:buildings_meta).and_return({
-      'main' =>{'build_link'=> 'fake_request'}
-    })
-    subject.build(:main)
-  end
+  # it 'build main' do 
+  #   allow(subject).to receive(:parse).and_return(nil)
+  #   allow(subject).to receive(:buildings_meta).and_return({
+  #     'main' =>{'build_link'=> 'fake_request'}
+  #   })
+  #   subject.build(:main)
+  # end
 end

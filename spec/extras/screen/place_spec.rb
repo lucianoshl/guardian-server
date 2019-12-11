@@ -64,7 +64,7 @@ describe Screen::Place do
     allow(attack_command).to receive(:arrival).and_return(Time.now + 1.hour)
     allow(attack_command).to receive_message_chain(:troop, :travel_time).and_return(1.hour)
 
-    place_page = Client::Logged.mobile.get("/game.php?screen=place")
+    place_page = get_mock_page('place_with_commands_incomings')
     allow(place).to receive_message_chain(:commands, :leaving, :select).and_return([attack_command])
 
     confirm_page = double('confirm_page')
@@ -74,8 +74,7 @@ describe Screen::Place do
     allow_any_instance_of(Mechanize).to receive(:submit).with(anything,anything,anything)
       .and_return(confirm_page)
 
-    result = Service::Map.find_nearby([Village.new(x:500,y:500)],200)
-    target = result.values.select{|v| v.player_id.nil?}.first
-    place.send_attack(target,Troop.new(spy: 50))
+
+    place.send_attack(Village.new(x:501, y:501),Troop.new(spy: 50))
   end
 end

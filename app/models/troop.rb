@@ -110,7 +110,6 @@ class Troop
     result.each do |troop, _qte|
       result[troop] -= other[troop]
     end
-    # raise Exception, 'Invalid operation' if result.has_negative?
     result
   end
 
@@ -119,7 +118,6 @@ class Troop
     result.each do |troop, _qte|
       result[troop] += other[troop]
     end
-    # raise Exception, 'Invalid operation' if result.has_negative?
     result
   end
 
