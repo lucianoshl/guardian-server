@@ -36,5 +36,9 @@ get:
     body: main/buildings_labels.html
     default: true
     uri: .*for=buildings_labels.*
+  map_cache_01:
+    body: map/01.json
+    default: true
+    uri: .*520_520=1.*
 
     
