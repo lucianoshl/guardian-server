@@ -13,10 +13,10 @@ class Buildings
     attrs.map(&block)
   end
 
-  def -(_other)
+  def -(other)
     result = Buildings.new
     result.each do |key, value|
-      result[key] = self[key] - value
+      result[key] = self[key] - other[key]
     end
     result
   end
@@ -33,6 +33,6 @@ class Buildings
   end
 
   def inspect
-    "#{self.class.name} #{each.to_h.select { |_l, qte| qte > 0 }}".gsub('"', '')
+    "#{self.class.name}[#{each.to_h.select { |_l, qte| qte > 0 }}]".gsub(/"|{|}|,/, '').gsub('=>', ':')
   end
 end
