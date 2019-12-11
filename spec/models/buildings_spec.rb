@@ -10,7 +10,6 @@ describe Buildings do
     expect(c.stone).to eq(0)
   end
 
-
   it 'buildings contains' do
     a = Buildings.new(main: 5, wood: 4)
     b = Buildings.new(main: 4, wood: 3)

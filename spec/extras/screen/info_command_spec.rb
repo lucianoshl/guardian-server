@@ -8,7 +8,6 @@ describe Screen::InfoCommand do
     expect(command).to be_nil
   end
 
-
   it 'TODO: page with incoming info' do
   end
 end

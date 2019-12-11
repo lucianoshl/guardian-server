@@ -15,7 +15,7 @@ class Buildings
 
   def -(other)
     result = Buildings.new
-    result.each do |key, value|
+    result.each do |key, _value|
       result[key] = self[key] - other[key]
     end
     result

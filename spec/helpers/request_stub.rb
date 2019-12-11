@@ -9,7 +9,7 @@ module RequestStub
   def get_mock_page(id)
     method, info = find_stub(id)
     html = File.read("#{File.dirname(__FILE__)}/../stub/requests/#{info['body']}")
-    Mechanize::Page.new(nil,{'content-type'=>'text/html'},html,nil,Mechanize.new)
+    Mechanize::Page.new(nil, { 'content-type' => 'text/html' }, html, nil, Mechanize.new)
   end
 
   def mock_request(method, info)

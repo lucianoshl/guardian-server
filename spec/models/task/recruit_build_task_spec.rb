@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe Task::RecruitBuildTask do
-
   subject { Task::RecruitBuildTask.new }
 
   it 'just run with recruit disabled' do
@@ -14,5 +13,4 @@ describe Task::RecruitBuildTask do
     allow(village).to receive(:disable_build).and_return(true)
     subject.run
   end
-
 end

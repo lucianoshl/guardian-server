@@ -21,6 +21,7 @@ class Screen::Main < Screen::Base
   def in_queue?(building)
     building_meta = buildings_meta[building.to_s]
     return false if building_meta.nil?
+
     building_meta['level_next'] - building_meta['level'].to_i > 1
   end
 

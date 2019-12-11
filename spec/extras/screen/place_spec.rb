@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 describe Screen::Place do
-
   it 'test place messages' do
     # TODO: extract complete messages from game
     mock_request_from_id('place_with_commands_incomings')
     place = Screen::Place.new
-    
+
     expectations = {}
     expectations[NewbieProtectionException] = 'para novatos que termina Set 10, 2019 10:30:32.'
     expectations[BannedPlayerException] = 'jogador foi banido'
@@ -17,10 +16,9 @@ describe Screen::Place do
 
     expectations[Exception] = 'other unknown message'
 
-    expectations.map do |exception,message|
+    expectations.map do |exception, message|
       expect { raise place.convert_error(message) }.to raise_error(exception)
     end
-
   end
 
   it 'parse troops available' do
@@ -46,7 +44,7 @@ describe Screen::Place do
     allow(target).to receive(:distance).and_return(0)
     allow(command).to receive(:target).and_return(target)
     allow(command).to receive(:next_arrival).and_return(Time.now)
-    allow(place).to receive_message_chain(:commands,:all).and_return([command])
+    allow(place).to receive_message_chain(:commands, :all).and_return([command])
 
     place.has_command_for_village(target)
   end
@@ -71,10 +69,9 @@ describe Screen::Place do
     allow(confirm_page).to receive_message_chain(:search, :text, :strip).and_return('')
     allow(confirm_page).to receive_message_chain(:form, :submit).and_return(place_page)
 
-    allow_any_instance_of(Mechanize).to receive(:submit).with(anything,anything,anything)
-      .and_return(confirm_page)
+    allow_any_instance_of(Mechanize).to receive(:submit).with(anything, anything, anything)
+                                                        .and_return(confirm_page)
 
-
-    place.send_attack(Village.new(x:501, y:501),Troop.new(spy: 50))
+    place.send_attack(Village.new(x: 501, y: 501), Troop.new(spy: 50))
   end
 end

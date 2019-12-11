@@ -17,7 +17,9 @@ module MongoInflector
     result = @@type_mapping[meta.type]
     return result if @@type_mapping.key?(meta.type)
 
-    return nil if meta.class == Mongoid::Relations::Metadata && meta.relation == Mongoid::Relations::Embedded::In
+    if meta.class == Mongoid::Relations::Metadata && meta.relation == Mongoid::Relations::Embedded::In
+      return nil
+    end
 
     type = meta.type
     if type == Object && meta.options[:metadata]

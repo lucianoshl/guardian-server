@@ -46,9 +46,9 @@ class Report
   end
 
   def erase?
-    dot != 'red' && dot != 'yellow' && 
-    ( atk_troops&.snob.nil? || atk_troops.snob.zero? ) && 
-    ( def_away&.to_a&.sum.nil? || def_away.to_a.sum.zero? )
+    dot != 'red' && dot != 'yellow' &&
+      (atk_troops&.snob.nil? || atk_troops.snob.zero?) &&
+      (def_away&.to_a&.sum.nil? || def_away.to_a.sum.zero?)
   end
 
   def win?

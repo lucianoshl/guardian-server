@@ -9,7 +9,7 @@ Metrics/LineLength:
   Max: 100
   IgnoredPatterns: ['(\A|\s)#']
 
-Layout/IndentFirstArrayElement:
+Layout/FirstArrayElementIndentation:
   Enabled: false 
 
 Metrics/BlockLength:

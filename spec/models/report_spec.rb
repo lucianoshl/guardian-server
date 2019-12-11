@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe Report do
-
   subject { Report.new }
 
   it 'before_save callback' do
@@ -43,6 +42,4 @@ describe Report do
     subject.produced_resource?(100)
     subject.time_to_produce(100)
   end
-  
-
 end

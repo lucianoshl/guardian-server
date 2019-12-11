@@ -7,7 +7,7 @@ class Service::Map
 
     get_limit = 1800 / 9
     @json = []
-    
+
     targets.each_slice(get_limit) do |parts|
       @json = @json.concat(JSON.parse(client.get("/map.php?v=2&#{parts.map { |a| "#{a}=1" }.join('&')}").body))
     end
