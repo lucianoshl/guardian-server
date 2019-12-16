@@ -19,7 +19,6 @@ class Client::Desktop < Client::Base
   end
 
   def login
-    ENV['PATH'] = "#{ENV['PATH']}:." unless ENV['PATH'].include?(':.')
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
     options.add_argument('--window-size=1200x600')
