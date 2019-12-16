@@ -1,7 +1,7 @@
-FROM ruby:2.5-alpine
+FROM ruby:2.5
 
-RUN apk update && apk upgrade && apk add --update build-base tzdata curl less
-RUN rm -rf /var/cache/apk/*
+# RUN apk update && apk upgrade && apk add --update build-base tzdata curl less
+# RUN rm -rf /var/cache/apk/*
 
 ENV APP /usr/app
 
