@@ -5,6 +5,8 @@ FROM ruby:2.5
 
 ENV APP /usr/app
 
+RUN apt-get install libnss3 libnss3-dev
+
 RUN mkdir $APP
 WORKDIR $APP
 
