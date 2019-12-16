@@ -19,6 +19,8 @@ class Client::Desktop < Client::Base
   end
 
   def login
+    Selenium::WebDriver::Chrome.driver_path = '/usr/bin/chromedriver'  if Rails.env.production?
+
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
     options.add_argument('--window-size=1200x600')
