@@ -61,6 +61,8 @@ gem 'mongo', '2.8.0'
 gem 'mongoid', '6.4.1'
 gem 'parallel'
 
+gem 'watir'
+
 gem 'kaminari-mongoid'
 gem 'rails_admin', '~> 2.0.0.rc'
 
