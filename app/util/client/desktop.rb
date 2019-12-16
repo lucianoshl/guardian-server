@@ -19,20 +19,26 @@ class Client::Desktop < Client::Base
   end
 
   def login
-    ENV['PATH'] = "#{ENV['PATH']}:."
-    browser = Watir::Browser.new(:chrome, chromeOptions: { args: ['--headless', '--window-size=1200x600'] })
+    ENV['PATH'] = "#{ENV['PATH']}:." unless ENV['PATH'].include?(':.')
+    options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument('--headless')
+    options.add_argument('--window-size=1200x600')
+    driver = Selenium::WebDriver.for :chrome, options: options
+    browser = Watir::Browser.new(driver)
     browser.cookies.clear
     browser.goto('https://www.tribalwars.com.br')
     account = Account.main
     browser.text_field(id: 'user').set account.username
     browser.text_field(id: 'password').set account.password
     browser.link(class: 'btn-login').click
-    browser.link(class: 'world-select').wait_until_present
+    browser.link(class: 'world-select').wait_until(&:present?)
     target_world = browser.links(class: 'world-select').select do |world|
       world.attribute_value('href').include?(account.world)
     end
 
     target_world.first.span.click
+    # browser.link(class: 'menu-item').wait_until_present
     Session.create(account, browser.cookies.to_a, 'desktop')
+    browser.close
   end
 end

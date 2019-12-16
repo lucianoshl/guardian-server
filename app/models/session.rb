@@ -11,7 +11,6 @@ class Session
   belongs_to :account, optional: Rails.env.test?
 
   def self.create(account, cookies, type)
-    binding.pry
     session = Session.new
     session.account_id = account.id
     session.type = type
