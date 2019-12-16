@@ -4,7 +4,7 @@ RUN apt-get update -qq \
 
 RUN wget -N http://chromedriver.storage.googleapis.com/2.29/chromedriver_linux64.zip -P /tmp
 RUN unzip /tmp/chromedriver_linux64.zip -d ~/tmp
-RUN mv -f tmp/chromedriver /usr/local/share/
+RUN mv -f /tmp/chromedriver /usr/local/share/
 RUN chmod +x /usr/local/share/chromedriver
 RUN ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
 RUN ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
