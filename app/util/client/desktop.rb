@@ -20,7 +20,7 @@ class Client::Desktop < Client::Base
 
   def login
     ENV['PATH'] = "#{ENV['PATH']}:."
-    browser = Watir::Browser.new(:chrome, {:chromeOptions => {:args => ['--headless', '--window-size=1200x600']}})
+    browser = Watir::Browser.new(:chrome, chromeOptions: { args: ['--headless', '--window-size=1200x600'] })
     browser.cookies.clear
     browser.goto('https://www.tribalwars.com.br')
     account = Account.main
@@ -35,5 +35,4 @@ class Client::Desktop < Client::Base
     target_world.first.span.click
     Session.create(account, browser.cookies.to_a, 'desktop')
   end
-
 end
