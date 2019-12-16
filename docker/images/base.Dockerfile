@@ -1,9 +1,14 @@
-FROM ruby:2.5
-RUN apt-get update -qq \
-  && apt-get install -y nodejs libpq-dev build-essential
-COPY ../.. /app
-WORKDIR /app
+FROM ruby:2.5-alpine
+
+RUN apk update && apk upgrade && apk add --update build-base tzdata curl less
+RUN rm -rf /var/cache/apk/*
+
+ENV APP /usr/app
+
+RUN mkdir $APP
+WORKDIR $APP
+
+COPY Gemfile $APP
+COPY Gemfile.lock $APP
 RUN bundle install
-RUN bundle exec rake assets:precompile
-EXPOSE 5000
-CMD bin/rails s
+COPY . $APP

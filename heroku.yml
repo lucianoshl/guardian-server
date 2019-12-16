@@ -1,5 +1,5 @@
 build:
   docker:
-    web: ./docker/images/base.Dockerfile
+    web: Dockerfile
 run:
   web: bundle exec foreman start -f Procfile.workers --timestamp=false
