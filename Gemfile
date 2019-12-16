@@ -34,6 +34,7 @@ group :development, :test do
   gem 'pry-stack_explorer'
   gem 'rspec-rails'
   gem 'webmock'
+  gem 'webdrivers', '~> 4.0'
 end
 
 group :test do
@@ -62,7 +63,6 @@ gem 'mongoid', '6.4.1'
 gem 'parallel'
 
 gem 'watir'
-gem 'webdrivers', '~> 4.0'
 
 gem 'kaminari-mongoid'
 gem 'rails_admin', '~> 2.0.0.rc'
