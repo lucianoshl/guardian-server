@@ -19,7 +19,7 @@ class Client::Desktop < Client::Base
   end
 
   def login
-    Selenium::WebDriver::Chrome::Service.driver_path = '/usr/bin/chromedriver' if Rails.env.production?
+    # Selenium::WebDriver::Chrome::Service.driver_path = '/usr/bin/chromedriver' if Rails.env.production?
 
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')

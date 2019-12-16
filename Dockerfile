@@ -12,6 +12,10 @@ RUN chmod +x /usr/local/share/chromedriver
 RUN ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
 RUN ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
 
+RUN chown root -R /opt/google/chrome
+RUN chmod 4755 /opt/google/chrome/chrome 
+RUN chmod 4755 /opt/google/chrome/chrome-sandbox 
+
 COPY . /app
 WORKDIR /app
 RUN gem install bundler
