@@ -1,6 +1,9 @@
 FROM ruby:2.5.5
 RUN apt-get update -qq \
-  && apt-get install -y nodejs libpq-dev build-essential libnss3-dev unzip xvfb libxi6 libgconf-2-4 google-chrome
+  && apt-get install -y nodejs libpq-dev build-essential libnss3-dev unzip xvfb libxi6 libgconf-2-4 
+
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 
 RUN wget -N http://chromedriver.storage.googleapis.com/2.29/chromedriver_linux64.zip -P /tmp
 RUN unzip /tmp/chromedriver_linux64.zip -d /tmp
