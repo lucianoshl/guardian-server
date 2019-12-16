@@ -1,6 +1,6 @@
-FROM ruby:2.5.5
+FROM ruby:2.5
 RUN apt-get update -qq \
-  && apt-get install -y nodejs libpq-dev build-essential
+  && apt-get install -y nodejs libpq-dev build-essential libnss3-dev
 COPY . /app
 WORKDIR /app
 RUN gem install bundler
