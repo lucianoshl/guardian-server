@@ -19,6 +19,7 @@ class Client::Desktop < Client::Base
   end
 
   def login
+    Webdrivers::Chromedriver.update
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
     options.add_argument('--window-size=1200x600')
