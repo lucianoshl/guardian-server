@@ -16,7 +16,7 @@ RUN chown root -R /opt/google/chrome
 RUN chmod 4755 /opt/google/chrome/chrome 
 RUN chmod 4755 /opt/google/chrome/chrome-sandbox 
 
-COPY . /app
+COPY . /app/worker
 WORKDIR /app
 RUN gem install bundler
 RUN bundle install
