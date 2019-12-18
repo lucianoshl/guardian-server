@@ -12,14 +12,13 @@ jobs:
   include:
     - stage: test
       before_script:
-        - cd worker
-        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-        - chmod +x ./cc-test-reporter
-        - ./cc-test-reporter before-build
-      script: bundle exec rspec
+        - cd worker && curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - cd worker && chmod +x ./cc-test-reporter
+        - cd worker && ./cc-test-reporter before-build
+      script: cd worker && bundle exec rspec
       after_script:
-        - bundle exec rake coveralls:push
-        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+        - cd worker && bundle exec rake coveralls:push
+        - cd worker && ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 stages:
   - test
 cache: bundler
