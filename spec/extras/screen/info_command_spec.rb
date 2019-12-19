@@ -9,10 +9,10 @@ describe Screen::InfoCommand do
   end
 
   it 'page with incoming info' do
-    allow(Account).to receive_message_chain(:main, :player,:villages,:map,:include?).and_return(true)
+    allow(Account).to receive_message_chain(:main, :player, :villages, :map, :include?).and_return(true)
     mock_request_from_id('incoming_command')
-    screen = Screen::InfoCommand.new(id: 1405170379)
+    screen = Screen::InfoCommand.new(id: 1_405_170_379)
     command = screen.command
-    expect(command.id).to eq(1405170379)
+    expect(command.id).to eq(1_405_170_379)
   end
 end

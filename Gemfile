@@ -33,8 +33,8 @@ group :development, :test do
   gem 'pry-rescue'
   gem 'pry-stack_explorer'
   gem 'rspec-rails'
-  gem 'webmock'
   gem 'webdrivers', '~> 4.0'
+  gem 'webmock'
 end
 
 group :test do
