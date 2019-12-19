@@ -26,6 +26,9 @@ get:
   player_command:
     body: place/commands/player_command.html
     uri: .*id=506937843.*
+  incoming_command:
+    body: place/commands/incoming.html
+    uri: .*id=1405170379.*
   report_list:
     body: report/report_list.html
     uri: .*mode=spec.*

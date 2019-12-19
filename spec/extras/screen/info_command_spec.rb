@@ -8,6 +8,11 @@ describe Screen::InfoCommand do
     expect(command).to be_nil
   end
 
-  it 'TODO: page with incoming info' do
+  it 'page with incoming info' do
+    allow(Account).to receive_message_chain(:main, :player,:villages,:map,:include?).and_return(true)
+    mock_request_from_id('incoming_command')
+    screen = Screen::InfoCommand.new(id: 1405170379)
+    command = screen.command
+    expect(command.id).to eq(1405170379)
   end
 end
