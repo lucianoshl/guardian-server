@@ -103,6 +103,13 @@ class Screen::Place < Screen::Base
     selected.min_by(&:next_arrival)
   end
 
+  def next_leaving_command(village)
+    selected = commands.leaving.select do |command|
+      command.target.distance(village).zero?
+    end
+    selected.min_by(&:next_arrival)
+  end
+
   def self.all_places
     Account.main.player.villages.map do |village|
       get_place(village.id)

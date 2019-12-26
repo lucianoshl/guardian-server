@@ -80,7 +80,7 @@ class Task::StealResourcesTask < Task::Abstract
     return waiting_spy_research if !target.barbarian? && !researched_spies?
 
     @nearby.map do |village|
-      command = Screen::Place.get_place(village.id).has_command_for_village(target)
+      command = Screen::Place.get_place(village.id).next_leaving_command(target)
       return send_to('waiting_report', command.next_arrival) unless command.nil?
     end
 
