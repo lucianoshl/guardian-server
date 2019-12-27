@@ -14,7 +14,7 @@ describe Task::StealResourcesTask do
 
     screen = stub_train(build_info: { 'spy' => OpenStruct.new(active: true) })
     allow(Screen::Train).to receive(:new).and_return(screen)
-    allow_any_instance_of(Screen::Place).to receive(:has_command_for_village).with(anything).and_return(nil)
+    allow_any_instance_of(Screen::Place).to receive(:next_leaving_command).with(anything).and_return(nil)
     allow(Service::Report).to receive(:sync)
   end
 
@@ -134,7 +134,7 @@ describe Task::StealResourcesTask do
     target = stub_target
     command = double('command')
     command.should_receive(:next_arrival).and_return Time.now
-    allow(@place).to receive(:has_command_for_village).with(anything).and_return(command)
+    allow(@place).to receive(:next_leaving_command).with(anything).and_return(command)
     expect_target_with(target, 'waiting_report')
   end
 

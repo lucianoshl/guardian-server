@@ -2,11 +2,11 @@
 
 module ScreenHelper
   def stub_place(args = {})
-    command_for_village = args[:has_command_for_village]
+    command_for_village = args[:next_leaving_command]
     troops = args[:troops] || Troop.new
 
     place = create_base('place', args)
-    allow(place).to receive(:has_command_for_village).with(anything).and_return(command_for_village)
+    allow(place).to receive(:next_leaving_command).with(anything).and_return(command_for_village)
     allow(place).to receive(:troops_available).and_return(troops)
     allow(place).to receive(:commands).and_return(OpenStruct.new(
                                                     all: [],

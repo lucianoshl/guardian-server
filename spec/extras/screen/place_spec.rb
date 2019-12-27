@@ -44,9 +44,9 @@ describe Screen::Place do
     allow(target).to receive(:distance).and_return(0)
     allow(command).to receive(:target).and_return(target)
     allow(command).to receive(:next_arrival).and_return(Time.now)
-    allow(place).to receive_message_chain(:commands, :all).and_return([command])
+    allow(place).to receive_message_chain(:commands, :leaving).and_return([command])
 
-    place.has_command_for_village(target)
+    place.next_leaving_command(target)
   end
 
   it 'send attack' do
