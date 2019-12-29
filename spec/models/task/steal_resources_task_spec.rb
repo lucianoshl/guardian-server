@@ -35,6 +35,7 @@ describe Task::StealResourcesTask do
     allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(@place).to receive(:send_attack).with(anything, anything).and_raise(BannedPlayerException)
     allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow(target).to receive(:latest_report).and_return(nil)
     expect_target_with(target, 'banned')
   end
 
@@ -42,6 +43,7 @@ describe Task::StealResourcesTask do
     target = stub_target
     allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow(target).to receive(:latest_report).and_return(nil)
     allow(@place).to receive(:send_attack).with(anything, anything).and_raise(NewbieProtectionException.new('termina ago 22, 2019 20:16:10.'))
     expect_target_with(target, 'newbie_protection')
   end
@@ -50,6 +52,7 @@ describe Task::StealResourcesTask do
     target = stub_target
     allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow(target).to receive(:latest_report).and_return(nil)
     allow(@place).to receive(:send_attack).with(anything, anything).and_raise(VeryWeakPlayerException)
     allow_any_instance_of(Screen::Place).to receive(:send_attack).with(anything, anything).and_raise
     expect_target_with(target, 'weak_player')
@@ -59,6 +62,7 @@ describe Task::StealResourcesTask do
     target = stub_target
     allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow(target).to receive(:latest_report).and_return(nil)
     allow(@place).to receive(:send_attack).with(anything, anything).and_raise(RemovedPlayerException)
     expect_target_with(target, 'removed_player')
   end
@@ -67,6 +71,7 @@ describe Task::StealResourcesTask do
     target = stub_target
     allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow(target).to receive(:latest_report).and_return(nil)
     allow(@place).to receive(:send_attack).with(anything, anything).and_raise(InvitedPlayerException.new('22/Aug/2019  20:30,'))
     expect_target_with(target, 'invited_player')
   end
@@ -78,6 +83,7 @@ describe Task::StealResourcesTask do
     allow(report).to receive(:time_to_produce).with(anything).and_return(Time.zone.now + 1.hour)
     allow(report).to receive(:mark_read)
     allow(target).to receive(:latest_valid_report).and_return(report)
+    allow(target).to receive(:latest_report).and_return(report)
     allow(@place).to receive(:send_attack).with(anything, anything).and_raise(NeedsMinimalPopulationException.new('200'))
     expect_target_with(target, 'waiting_resource_production')
   end
@@ -105,6 +111,7 @@ describe Task::StealResourcesTask do
     it 'with player' do
       target = stub_target
       allow(target).to receive(:latest_valid_report).and_return(nil)
+      allow(target).to receive(:latest_report).and_return(nil)
       expect_target_with(target, 'waiting_spy_research')
     end
 
@@ -112,6 +119,7 @@ describe Task::StealResourcesTask do
       target = stub_target(barbarian: true)
       allow(@place).to receive(:troops_available).and_return(Troop.new(spear: 100, light: 100))
       allow(target).to receive(:latest_valid_report).and_return(nil)
+      allow(target).to receive(:latest_report).and_return(nil)
       allow(target).to receive(:reports).and_return([])
       expect_target_with(target, 'waiting_report')
     end
@@ -125,6 +133,7 @@ describe Task::StealResourcesTask do
 
     allow(Screen::Train).to receive(:new).and_return(screen)
     allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow(target).to receive(:latest_report).and_return(nil)
     allow(target).to receive(:reports).and_return([])
 
     expect_target_with(target, 'waiting_troops')
@@ -141,6 +150,7 @@ describe Task::StealResourcesTask do
   it 'without latest_valid_report' do
     target = stub_target
     allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow(target).to receive(:latest_report).and_return(nil)
     allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 50))
     expect_target_with(target, 'waiting_report')
   end
@@ -148,6 +158,7 @@ describe Task::StealResourcesTask do
   it 'without report and spies' do
     target = stub_target
     allow(target).to receive(:latest_valid_report).and_return(nil)
+    allow(target).to receive(:latest_report).and_return(nil)
     allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 0))
     allow(target).to receive(:status).and_return('send_spies')
     expect_target_with(target, 'waiting_spies')
@@ -158,6 +169,7 @@ describe Task::StealResourcesTask do
 
     allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 5, spear: 100, light: 50))
     allow(target).to receive(:latest_valid_report).and_return(stub_report)
+    allow(target).to receive(:latest_report).and_return(stub_report)
     expect_target_with(target, 'waiting_report')
   end
 
@@ -168,6 +180,7 @@ describe Task::StealResourcesTask do
 
     allow(report).to receive(:possible_attack?).and_return(false)
     allow(target).to receive(:latest_valid_report).and_return(report)
+    allow(target).to receive(:latest_report).and_return(report)
     expect_target_with(target, 'has_spies')
   end
 
@@ -176,6 +189,7 @@ describe Task::StealResourcesTask do
 
     allow(@place).to receive(:troops_available).and_return(Troop.new(spy: 5, spear: 100, light: 50))
     allow(target).to receive(:latest_valid_report).and_return(stub_report)
+    allow(target).to receive(:latest_report).and_return(stub_report)
     expect_target_with(target, 'waiting_report')
   end
 
@@ -185,6 +199,7 @@ describe Task::StealResourcesTask do
     troops_available = Troop.new(light: 50, ram: 800)
     allow(@place).to receive(:troops_available).and_return(troops_available)
     allow(target).to receive(:latest_valid_report).and_return(stub_report(wall: 1))
+    allow(target).to receive(:latest_report).and_return(stub_report(wall: 1))
     allow(troops_available).to receive(:distribute).with(anything, anything).and_return(Troop.new(light: 1))
     expect_target_with(target, 'waiting_report')
   end
@@ -195,6 +210,7 @@ describe Task::StealResourcesTask do
     troops_available = Troop.new(light: 50, ram: 0)
     allow(@place).to receive(:troops_available).and_return(troops_available)
     allow(target).to receive(:latest_valid_report).and_return(stub_report(wall: 20, rams_to_destroy_wall: 20))
+    allow(target).to receive(:latest_report).and_return(target.latest_valid_report)
     allow(troops_available).to receive(:distribute).with(anything, anything).and_return(Troop.new(light: 1))
     expect_target_with(target, 'waiting_strong_troops')
   end
@@ -203,6 +219,7 @@ describe Task::StealResourcesTask do
     it 'finish after' do
       target = stub_target(barbarian: true)
       allow(target).to receive(:latest_valid_report).and_return(stub_report)
+      allow(target).to receive(:latest_report).and_return(target.latest_valid_report)
 
       incomings = [OpenStruct.new(
         incomings: Command::Incoming.new(arrival: Time.now + 1.minute)

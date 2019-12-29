@@ -87,10 +87,9 @@ class Task::StealResourcesTask < Task::Abstract
     Service::Report.sync
     @origin = @nearby.shift
 
-    @report = target.latest_valid_report
-    return run_to_state('send_spies') if @report.nil?
-
-    if %w[red yellow].include? @report.dot
+    @report = target.latest_report
+    
+    if %w[red yellow].include? @report&.dot
       only_spies = @report.atk_troops.total == @report.atk_troops.spy
       next_execute = Time.zone.now + 1.day
       return send_to('has_spies', next_execute) if only_spies
