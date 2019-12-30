@@ -34,11 +34,16 @@ module Service::Builder
       a_cost <=> b_cost
     end
 
-    model.map do |building, _level|
-      if main.possible_build?(building)
-        logger.info("Building #{building} in village #{village.id}")
-        return main.build(building.to_sym)
-      end
+    to_build_list = model.select do |building, _level|
+      main.possible_build?(building)
+    end
+
+    to_build_list = to_build_list.sort { |a, b| a.last <=> b.last }
+
+    unless to_build_list.empty?
+      building, _level = to_build_list.first
+      logger.info("Building #{building} in village #{village.id}")
+      return main.build(building.to_sym)
     end
 
     nil

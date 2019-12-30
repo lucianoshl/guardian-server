@@ -88,7 +88,7 @@ class Task::StealResourcesTask < Task::Abstract
     @origin = @nearby.shift
 
     @report = target.latest_report
-    
+
     if %w[red yellow].include? @report&.dot
       only_spies = @report.atk_troops.total == @report.atk_troops.spy
       next_execute = Time.zone.now + 1.day
