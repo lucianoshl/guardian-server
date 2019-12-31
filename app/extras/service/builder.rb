@@ -4,7 +4,7 @@ module Service::Builder
   include Logging
 
   def build(village, main)
-    # return unless main.queue.empty?
+    return unless main.queue.empty?
 
     if main.farm.warning && !main.in_queue?(:farm) && main.possible_build?(:farm)
       return main.build(:farm)
