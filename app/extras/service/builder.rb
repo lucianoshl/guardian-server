@@ -4,7 +4,7 @@ module Service::Builder
   include Logging
 
   def build(village, main)
-    return unless main.queue.empty?
+    # return unless main.queue.empty?
 
     if main.farm.warning && !main.in_queue?(:farm) && main.possible_build?(:farm)
       return main.build(:farm)
@@ -33,12 +33,10 @@ module Service::Builder
       b_cost = Resource.new(b_meta.select_keys(:wood, :stone, :iron)).total
       a_cost <=> b_cost
     end
-
+    
     to_build_list = model.select do |building, _level|
       main.possible_build?(building)
     end
-
-    to_build_list = to_build_list.sort { |a, b| a.last <=> b.last }
 
     unless to_build_list.empty?
       building, _level = to_build_list.first
