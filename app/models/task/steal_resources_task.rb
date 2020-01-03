@@ -219,10 +219,10 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def next_returning_command
-    all_commands = nearby_places.map(&:commands)
+    all_places = nearby_places.map(&:commands)
 
-    result = all_commands.map(&:returning).flatten.min_by(&:arrival)
-    result ||= all_commands.map(&:all).flatten.min_by(&:arrival)
+    result = all_places.map(&:returning).flatten.min_by(&:arrival)
+    result ||= all_places.map(&:all).flatten.min_by(&:arrival)
 
     if result.nil?
       finish_recruit = Screen::Train.new.queue.to_h.values.flatten.map(&:next_finish).compact.min
