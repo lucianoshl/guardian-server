@@ -43,7 +43,7 @@ class Task::Abstract
     else
       self.next_execution = nil
       execution_result = run
-      self.next_execution = execution_result if [Time, DateTime].include? execution_result.class
+      self.next_execution = execution_result if [Time, DateTime, ActiveSupport::TimeWithZone].include? execution_result.class
       if runs_every.nil?
         job&.delete
         delete
