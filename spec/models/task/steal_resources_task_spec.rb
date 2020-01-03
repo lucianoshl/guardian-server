@@ -21,6 +21,7 @@ describe Task::StealResourcesTask do
   def expect_target_with(target, status)
     target.should_receive(:status=).with(status)
     target.should_receive(:next_event=).with(anything)
+    target.should_receive(:next_event).with(anything)
     target.should_receive(:save)
     subject.run
   end
