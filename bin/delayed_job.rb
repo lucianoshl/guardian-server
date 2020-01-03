@@ -3,7 +3,10 @@
 require File.expand_path('../config/environment', __dir__)
 require 'delayed/command'
 Delayed::Worker.max_run_time = 10.minutes
-Delayed::Worker.logger = Rails.logger
+
+Delayed::Worker.logger = Logger.new(File.join(Rails.root, 'log', 'delayed_job.log'))
+Delayed::Worker.logger.level = Logger::ERROR
+
 Delayed::Worker.backend = :mongoid
 
 worker_args = ARGV[1..-1]

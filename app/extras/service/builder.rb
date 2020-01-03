@@ -33,7 +33,7 @@ module Service::Builder
       b_cost = Resource.new(b_meta.select_keys(:wood, :stone, :iron)).total
       a_cost <=> b_cost
     end
-    
+
     to_build_list = model.select do |building, _level|
       main.possible_build?(building)
     end
