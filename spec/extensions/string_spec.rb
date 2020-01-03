@@ -17,7 +17,7 @@ describe String do
 
   it 'string_bug_03' do
     now = Time.now
-    Time.stub(:now).and_return(now.change(day: 3, month: 10))
+    Time.stub(:now).and_return(now.change(day: 3, month: 10, year: 2019))
     value = 'hoje às 16:48:17:071'.to_datetime
     expect(value.class).to eq(Time)
     expect(value.zone).to eq('-03')
@@ -28,28 +28,28 @@ describe String do
     value = 'em 27.09. às 19:58:56:071'.to_datetime
     expect(value.class).to eq(Time)
     expect(value.zone).to eq('-03')
-    expect(value.strftime('%b %d, %Y %H:%M:%S:%L')).to eq('Sep 27, 2019 19:58:56:071')
+    expect(/Sep 27, \d{4} 19:58:56:071/).to match(value.strftime('%b %d, %Y %H:%M:%S:%L'))
   end
 
   it 'string_bug_05' do
     value = '22.09. às 13:45:071'.to_datetime
     expect(value.class).to eq(Time)
     expect(value.zone).to eq('-03')
-    expect(value.strftime('%b %d, %Y %H:%M:%S:%L')).to eq('Sep 22, 2019 13:45:07:000')
+    expect(/Sep 22, \d{4} 13:45:07:000/).to match(value.strftime('%b %d, %Y %H:%M:%S:%L'))
   end
 
   it 'string_bug_06' do
     value = 'em 29.09. às 17:13'.to_datetime
     expect(value.class).to eq(Time)
     value.zone.eql?('-03')
-    expect(value.strftime('%b %d, %Y %H:%M:%S:%L')).to eq('Sep 29, 2019 17:13:00:000')
+    expect(/Sep 29, \d{4} 17:13:00:000/).to match(value.strftime('%b %d, %Y %H:%M:%S:%L'))
   end
 
   it 'string_bug_07' do
     value = 'em 29.11. às 17:13'.to_datetime
     expect(value.class).to eq(Time)
     value.zone.eql?('-03')
-    expect(value.strftime('%b %d, %Y %H:%M:%S:%L')).to eq('Nov 29, 2019 17:13:00:000')
+    expect(/Nov 29, \d{4} 17:13:00:000/).to match(value.strftime('%b %d, %Y %H:%M:%S:%L'))
   end
 
   it 'string_bug_08' do
