@@ -37,6 +37,7 @@ class Task::Abstract
   end
 
   def execute
+    logger.info("Running task #{self.class}".black.on_white)
     if enabled == false
       self.next_execution = Time.now + 1.minute
       save
