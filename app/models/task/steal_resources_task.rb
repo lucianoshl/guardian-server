@@ -84,7 +84,7 @@ class Task::StealResourcesTask < Task::Abstract
       return send_to('waiting_report', command.next_arrival) unless command.nil?
     end
 
-    Service::Report.sync
+    Service::Report.sync if target.status == 'waiting_report'
     @origin = @nearby.shift
 
     @report = target.latest_report
