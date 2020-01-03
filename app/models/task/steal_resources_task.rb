@@ -239,17 +239,17 @@ class Task::StealResourcesTask < Task::Abstract
     #   waiting_report
     #   return
     # end
-    send_to('strong', Time.now + 1.hour)
+    send_to('strong', Time.now + 1.day)
   end
 
   def ally
     # TODO: rector this to use EVENTS
-    send_to('ally', Time.now + 1.hour)
+    send_to('ally', Time.now + 1.day)
   end
 
   def far_away
     # TODO: rector this to use EVENTS
-    send_to('far_away', Time.now + 1.hour)
+    send_to('far_away', Time.now + 1.day)
   end
 
   def has_spies
@@ -260,7 +260,7 @@ class Task::StealResourcesTask < Task::Abstract
 
   def waiting_spy_research
     # TODO: rector this to use EVENTS
-    send_to('waiting_spy_research', Time.now + 1.hour)
+    send_to('waiting_spy_research', Time.now + 1.day)
   end
 
   def equivalment_state(state)
