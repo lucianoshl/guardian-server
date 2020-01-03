@@ -207,6 +207,7 @@ class Task::StealResourcesTask < Task::Abstract
     target.status = status
     target.next_event = time
     target.save
+    target.next_event
   end
 
   def spy_qte
