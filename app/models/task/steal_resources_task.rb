@@ -253,7 +253,7 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def has_spies
-    return send_to('has_spies', Time.now + 1.hour) if @target.latest_report.dot != :green
+    return send_to('has_spies', Time.now + 1.day) if @target.latest_report.dot != :green
 
     send_to('waiting_report')
   end
