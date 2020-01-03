@@ -10,7 +10,7 @@ class Service::Simulator
   def self.simulate(attack, defence: Troop.new, wall: 0, moral: 100)
     key = (attack.to_a + defence.to_a + [wall, moral]).join(',')
 
-    logger.info("Running simulator for #{attack}")
+    logger.debug("Running simulator for #{attack}")
 
     result = SimulatorResult.where(key: key).first
     if result.nil?
@@ -20,7 +20,7 @@ class Service::Simulator
       result = SimulatorResult.new(key: key, win: win)
       result.save
     else
-      logger.info("Reading from cache result is #{result.win}")
+      logger.debug("Reading from cache result is #{result.win}")
     end
     result
   end
