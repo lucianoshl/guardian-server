@@ -46,7 +46,9 @@ class Task::StealResourcesTask < Task::Abstract
   rescue NewbieProtectionException => e
     send_to('newbie_protection', e.expiration)
   rescue UpgradeIsImpossibleException => e
-    send_to('waiting_strong_troops', next_returning_command.arrival)
+    next_command = next_returning_command
+    logger.info("Impossible upgrade troops, waiting for strong troops until #{next_command.arrival} next command(#{next_command.id}) arrival")
+    send_to('waiting_strong_troops', next_command.arrival)
   rescue VeryWeakPlayerException => e
     send_to('weak_player', Time.now + 1.day)
   rescue RemovedPlayerException => e
