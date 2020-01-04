@@ -81,6 +81,8 @@ class Task::StealResourcesTask < Task::Abstract
 
     @nearby.map do |village|
       command = Screen::Place.get_place(village.id).next_leaving_command(target)
+      logger.info("Exists a command for this target(#{target.id})...")
+      logger.info("... waiting report for command(#{command.id})")
       return send_to('waiting_report', command.next_arrival) unless command.nil?
     end
 
