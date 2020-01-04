@@ -98,9 +98,9 @@ class Screen::Place < Screen::Base
 
   def next_leaving_command(village)
     selected = commands.leaving.select do |command|
-      command.target.distance(village).zero?
+      command.target.distance(village).zero? && command.next_arrival >= Time.now 
     end
-    selected.min_by(&:next_arrival).select { |a| a.next_arrival >= Time.now }
+    selected.min_by(&:next_arrival)
   end
 
   def self.all_places
