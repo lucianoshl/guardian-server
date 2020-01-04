@@ -100,7 +100,7 @@ class Screen::Place < Screen::Base
     selected = commands.leaving.select do |command|
       command.target.distance(village).zero?
     end
-    selected.min_by(&:next_arrival)
+    selected.min_by(&:next_arrival).select { |a| a.next_arrival >= Time.now }
   end
 
   def self.all_places
