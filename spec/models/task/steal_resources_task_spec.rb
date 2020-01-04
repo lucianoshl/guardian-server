@@ -143,6 +143,7 @@ describe Task::StealResourcesTask do
   it 'with existing command' do
     target = stub_target
     command = double('command')
+    command.should_receive(:id).and_return 1
     command.should_receive(:next_arrival).and_return Time.now
     allow(@place).to receive(:next_leaving_command).with(anything).and_return(command)
     expect_target_with(target, 'waiting_report')

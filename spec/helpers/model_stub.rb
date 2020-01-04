@@ -29,6 +29,7 @@ module ModelStub
     status = args[:status] || 'waiting_report'
 
     stub = double('target')
+    allow(stub).to receive(:id).and_return 1
     if args[:barbarian] != false
       player = stub_player(args)
       allow(stub).to receive(:player).and_return player
