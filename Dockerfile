@@ -1,4 +1,4 @@
-FROM ruby:2.5.5
+FROM ruby:2.5.7
 RUN apt-get update -qq \
   && apt-get install -y nodejs libpq-dev build-essential libnss3-dev unzip xvfb libxi6 libgconf-2-4 
 
