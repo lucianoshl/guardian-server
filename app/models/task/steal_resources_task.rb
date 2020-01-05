@@ -221,7 +221,7 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def nearby_places
-    @nearby.map { |village| Screen::Place.get_place(village.id) }
+    nearby.map { |village| Screen::Place.get_place(village.id) }
   end
 
   def next_returning_command
