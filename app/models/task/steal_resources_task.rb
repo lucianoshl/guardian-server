@@ -232,11 +232,17 @@ class Task::StealResourcesTask < Task::Abstract
 
     if result.nil?
       finish_recruit = Screen::Train.new.queue.to_h.values.flatten.map(&:next_finish).compact.min
-      result ||= Time.now + finish_recruit unless finish_recruit.nil?
+      unless finish_recruit.nil?
+        result = Command::My.new(arrival: Time.now + finish_recruit)
+        result.id = 'train_screen_finish_time'
+      end
     end
 
-    result ||= Time.now + 10.minutes
-    result = Command::My.new(arrival: result) if result.class == Time
+    if result.nil?
+      result = Command::My.new(arrival: Time.now + 10.minutes)
+      result.id = 'now_plus_10.minutes'
+    end
+
     result
   end
 
