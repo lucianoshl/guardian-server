@@ -22,7 +22,7 @@ class Task::PlayerMonitoringTask < Task::Abstract
     save_or_update(Player, all_players)
     save_or_update(Ally, all_allies)
 
-    my_villages = Account.main.player.villages
+    my_villages = Account.main.player.villages.to_a.clone
     targets = Village.all.pluck(:id, :x, :y)
     to_create = (targets.pmap do |id, x, y|
       c_distance = my_villages.map { |v| v.distance(OpenStruct.new(x: x, y: y)) }.min
