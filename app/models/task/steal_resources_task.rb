@@ -243,11 +243,11 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   # TODO: move to Screen::Place
-  def next_returning_command
+  def next_returning_command &filter
     all_places = nearby_places.map(&:commands)
 
-    all_returning = all_places.map(&:returning).flatten
-    result = all_returning.select{|a| a.next_arrival >= Time.now }.min_by(&:arrival) # remove cached
+    all_returning = all_places.map(&:returning).flatten.select{|a| a.next_arrival >= Time.now }
+    result = all_returning.min_by(&:arrival) # remove cached
 
     if result.nil?
       all_commands = all_places.map(&:all).flatten

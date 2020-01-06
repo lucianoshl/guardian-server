@@ -65,6 +65,7 @@ class Screen::Place < Screen::Base
     travel_time = result.troop.travel_time(result.origin, result.target)
     result.returning_arrival = result.arrival + travel_time
     result.save_if_not_saved
+    logger.info("Command(#{result.id}) saved with troops #{result.troops}")
     result
   end
 

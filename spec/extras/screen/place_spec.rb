@@ -53,6 +53,8 @@ describe Screen::Place do
     place = Screen::Place.new
     attack_command = double('attack_command')
 
+    allow(attack_command).to receive(:id).and_return(1)
+    allow(attack_command).to receive(:troops).and_return(Troop.new)
     allow(attack_command).to receive(:troop=).and_return(nil)
     allow(attack_command).to receive(:returning=).and_return(nil)
     allow(attack_command).to receive(:returning_arrival=).and_return(nil)
