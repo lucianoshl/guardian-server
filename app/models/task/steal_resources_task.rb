@@ -51,7 +51,7 @@ class Task::StealResourcesTask < Task::Abstract
 
     latest_report = target.latest_valid_report
     if (latest_report.nil? || latest_report.buildings.wall.zero?)
-      logger.info("Not has strong troops, all 'waiting_strong_troops' jobs start waiting next command")
+      logger.info("Not has strong troops, all 'waiting_strong_troops' jobs start waiting until next command")
       village_waiting = Village.where(status: 'waiting_strong_troops').pluck(:id)
       tasks = Task::StealResourcesTask.in(target_id: village_waiting)
       # TODO: refactor to batch update
