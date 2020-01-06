@@ -224,11 +224,17 @@ class Task::StealResourcesTask < Task::Abstract
     nearby.map { |village| Screen::Place.get_place(village.id) }
   end
 
+  # TODO: move to Screen::Place
   def next_returning_command
     all_places = nearby_places.map(&:commands)
 
-    result = all_places.map(&:returning).flatten.min_by(&:arrival)
-    result ||= all_places.map(&:all).flatten.min_by(&:arrival)
+    all_returning = all_places.map(&:returning).flatten
+    result = all_returning.select{|a| a.next_arrival >= Time.now }.min_by(&:arrival) # remove cached
+
+    if result.nil?
+      all_commands = all_places.map(&:all).flatten
+      result = all_commands.select{|a| a.next_arrival >= Time.now }.min_by(&:arrival) # remove cached
+    end
 
     if result.nil?
       finish_recruit = Screen::Train.new.queue.to_h.values.flatten.map(&:next_finish).compact.min
