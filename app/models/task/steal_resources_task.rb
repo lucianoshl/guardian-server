@@ -54,8 +54,8 @@ class Task::StealResourcesTask < Task::Abstract
       logger.info("Not has strong troops, all 'waiting_strong_troops' jobs start waiting until next command")
       village_waiting = Village.where(status: 'waiting_strong_troops').pluck(:id)
       tasks = Task::StealResourcesTask.in(target_id: village_waiting)
-      # TODO: refactor to batch update
-
+      
+      # TODO: refactor to batch update and check callbacks
       logger.debug("Targets #{village_waiting.join(',')} start waiting")
       tasks.map do |task|
         task.next_execution = next_command.arrival
