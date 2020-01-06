@@ -55,8 +55,9 @@ class Task::StealResourcesTask < Task::Abstract
       village_waiting = Village.where(status: 'waiting_strong_troops').pluck(:id)
       tasks = Task::StealResourcesTask.in(target_id: village_waiting)
       # TODO: refactor to batch update
+
+      logger.debug("Targets #{village_waiting.join(',')} start waiting")
       tasks.map do |task|
-        logger.info("Target #{task.target.to_s} start waiting")
         task.next_execution = next_command.arrival
         task.save
       end
