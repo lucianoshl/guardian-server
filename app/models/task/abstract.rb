@@ -40,6 +40,7 @@ class Task::Abstract
     logger.info("Running task #{self.class} scheduled in #{next_execution}".black.on_white)
     if enabled == false
       self.next_execution = Time.now + 1.minute
+      logger.info("Task #{self.id} is #{'disabled'.black.on_white}")
       save
     else
       self.next_execution = nil
