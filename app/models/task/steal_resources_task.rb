@@ -85,7 +85,10 @@ class Task::StealResourcesTask < Task::Abstract
   end
 
   def run
-    return nil if target.nil?
+    if target.nil?
+      logger.info("Target is nil !!".white.on_red)
+      return nil 
+    end
 
     logger.info(">>>> Running for target #{target.to_s.black.on_white} with status #{target.status.black.on_white}")
 
