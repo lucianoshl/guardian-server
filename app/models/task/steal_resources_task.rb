@@ -48,6 +48,20 @@ class Task::StealResourcesTask < Task::Abstract
   rescue UpgradeIsImpossibleException => e
     next_command = next_returning_command
     logger.info("Impossible upgrade troops, waiting for strong troops until #{next_command.arrival} next command(#{next_command.id}) arrival")
+
+    latest_report = target.latest_valid_report
+    if (latest_report.nil? || latest_report.buildings.wall.zero?)
+      logger.info("Not has strong troops, all 'waiting_strong_troops' jobs start waiting next command")
+      village_waiting = Village.where(status: 'waiting_strong_troops').pluck(:id)
+      tasks = Task::StealResourcesTask.in(target_id: village_waiting)
+      # TODO: refactor to batch update
+      tasks.map do |task|
+        logger.info("Target #{task.target.to_s} start waiting")
+        task.next_execution = next_command.arrival
+        task.save
+      end
+    end
+    
     send_to('waiting_strong_troops', next_command.arrival)
   rescue VeryWeakPlayerException => e
     send_to('weak_player', Time.now + 1.day)

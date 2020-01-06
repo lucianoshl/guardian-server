@@ -61,6 +61,7 @@ class Task::Abstract
   def schedule
     logger.debug("Scheduling #{self.class} run in #{next_execution}".white.on_red)
     relation_job = delay(run_at: next_execution, queue: queue).execute
+    job&.delete
     self.class.where(id: id).update_all(job_id: relation_job.id)
     reload
   end
