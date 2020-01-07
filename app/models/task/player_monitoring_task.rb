@@ -9,7 +9,9 @@ class Task::PlayerMonitoringTask < Task::Abstract
     nearby = Service::Map.find_nearby(Account.main.player.villages, distance_border)
 
     moved_villages = Village.all.pluck(:id) - nearby.keys
+
     Village.in(id: moved_villages).delete_all
+    Task::StealResourcesTask.in(target_id: moved_villages).delete_all # merge this on callback
 
     all_villages = nearby
     all_players = nearby.values.map(&:player).compact.uniq.to_index(&:id)
