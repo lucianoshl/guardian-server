@@ -88,6 +88,8 @@ GEM
     ffi (1.11.1)
     figaro (1.1.1)
       thor (~> 0.14)
+    filewatcher (1.1.1)
+      optimist (~> 3.0)
     foreman (0.85.0)
       thor (~> 0.19.1)
     globalid (0.4.2)
@@ -173,6 +175,7 @@ GEM
     nokogiri (1.10.7)
       mini_portile2 (~> 2.4.0)
     ntlm-http (0.1.1)
+    optimist (3.0.0)
     parallel (1.17.0)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -336,6 +339,7 @@ DEPENDENCIES
   delayed_job
   delayed_job_mongoid
   figaro
+  filewatcher
   foreman (= 0.85.0)
   graphiql-rails
   graphql

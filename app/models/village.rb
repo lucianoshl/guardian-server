@@ -33,6 +33,11 @@ class Village
     end
   end
 
+  def self.task(str)
+    coord = str.extract_coordinate
+    Task::StealResourcesTask.where(target: Village.where(coord.to_h).first).first
+  end
+
   def latest_valid_report
     Report.where(target: self, read: false).gte(ocurrence: Time.now - 5.hours).order(ocurrence: 'desc').first
   end

@@ -5,8 +5,6 @@ class Task::StealResourcesTask < Task::Abstract
 
   runs_every 10.minutes
 
-  # include Service::Targets
-
   def is_strong_player
     current_points = Account.main.player.points
     strong_player = if target.player.nil?
@@ -183,7 +181,8 @@ class Task::StealResourcesTask < Task::Abstract
     to_send.ram += report.rams_to_destroy_wall if place_troops.ram >= report.rams_to_destroy_wall
 
     begin
-      to_send = to_send.upgrade_until_win(place_troops, report.buildings.wall, report.moral)
+      moral = target.player.nil? ? 100 : report.moral;
+      to_send = to_send.upgrade_until_win(place_troops, report.buildings.wall, moral)
     rescue UpgradeIsImpossibleException => e
       if report.buildings.wall.positive? && place_troops.ram >= report.rams_to_destroy_wall
         strong_troop = Troop.new(ram: report.rams_to_destroy_wall)

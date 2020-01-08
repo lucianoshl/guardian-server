@@ -85,4 +85,5 @@ install_if -> { ENV['DISABLE_SPRING'] == '1' && ENV['RAILS_ENV'] == 'production'
   gem 'pry-nav'
   gem 'pry-rescue'
   gem 'pry-stack_explorer'
+  gem 'filewatcher'
 end
