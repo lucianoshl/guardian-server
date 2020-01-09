@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 describe Service::HealthCheck do
+
   it 'check_job_with_error' do
     job_with_error = Delayed::Backend::Mongoid::Job.new
     job_with_error.last_error = 'invalid network'
@@ -13,13 +14,20 @@ describe Service::HealthCheck do
   end
 
   # TODO: add case with invalid DelayedJob state
-  it 'check_inconsistent_job_size' do
+  it 'check_task_without_job' do
     basic_task = Task::StealResourcesTask.new(target: Village.new)
     basic_task.save
     basic_task.job.delete
 
     errors = Service::HealthCheck.check_system.map(&:name)
-    expect(errors).to include('inconsistent_job_size')
+    expect(errors).to include('task_without_job')
+  end
+
+  it 'check_unlinked_jobs' do
+    expect(Delayed::Backend::Mongoid::Job.new.save).to eq(true)
+    
+    errors = Service::HealthCheck.check_system.map(&:name)
+    expect(errors).to include('unlinked_jobs')
   end
 
   it 'check_invalid_jobs' do

@@ -11,13 +11,14 @@ class Service::HealthCheck
       Job.nin(last_error: [nil]).pluck(:id)
     end
 
-    validations << validation('inconsistent_job_size') do
+    validations << validation('unlinked_jobs') do
       linked_jobs = Task::Abstract.pluck(:job_id)
-      unlinked_jobs = Job.nin(id: linked_jobs)
+      Job.nin(id: linked_jobs).to_a
+    end
 
-      task_without_job = Task::Abstract.all.select { |t| t.job.nil? }
-
-      unlinked_jobs + task_without_job
+    validations << validation('task_without_job') do
+      saved_jobs = Job.pluck(:id)
+      Task::Abstract.nin(job_id: saved_jobs).to_a
     end
 
     validations << validation('invalid_jobs') do
