@@ -2,7 +2,7 @@
 
 require File.expand_path('../config/environment', __dir__)
 require 'delayed/command'
-Delayed::Worker.max_run_time = 10.minutes
+Delayed::Worker.max_run_time = 1.minute
 
 Delayed::Worker.logger = Logger.new(File.join(Rails.root, 'log', 'delayed_job.log'))
 Delayed::Worker.logger.level = Logger::ERROR
