@@ -43,5 +43,8 @@ get:
     body: map/01.json
     default: true
     uri: .*520_520=1.*
+  ally_contracts:
+    body: ally_contracts.html
+    uri: .*contracts.*
 
     
