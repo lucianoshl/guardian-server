@@ -207,9 +207,14 @@ class Task::StealResourcesTask < Task::Abstract
 
   def check_is_possible_attack_before_incoming(_place, troops)
     incomings = Screen::Place.all_places.values.map(&:incomings).flatten
+    incomings = incomings.select do |incoming|
+      incoming.arrival >= Time.now 
+    end
     return if incomings.empty?
 
     travel_time = troops.travel_time(target, @origin)
+
+    
     next_incoming = incomings.first.arrival
     back_time = Time.now + travel_time * 2
     if back_time.to_datetime > (next_incoming - 1.minute)
