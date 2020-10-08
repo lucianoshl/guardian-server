@@ -3,6 +3,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/2ca7992702f76e8037d6/maintainability)](https://codeclimate.com/github/lucianoshl/guardian-server/maintainability)
 
 # Guardian server
+
+TribalWars bot and graphql server
+
 ## Deploy app
 git clone https://github.com/lucianoshl/guardian-server
 
