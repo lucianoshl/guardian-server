@@ -185,7 +185,7 @@ describe Task::StealResourcesTask do
     allow(target).to receive(:latest_report).and_return(report)
     expect_target_with(target, 'has_spies')
   end
-
+ 
   it 'attack with report without troops' do
     target = stub_target(status: 'waiting_report')
 
@@ -195,16 +195,16 @@ describe Task::StealResourcesTask do
     expect_target_with(target, 'waiting_report')
   end
 
-  it 'attack with report with wall, strong troops and wall to destroy' do
-    target = stub_target(status: 'waiting_report')
+  # it 'attack with report with wall, strong troops and wall to destroy' do
+  #   target = stub_target(status: 'waiting_report')
 
-    troops_available = Troop.new(light: 50, ram: 800)
-    allow(@place).to receive(:troops_available).and_return(troops_available)
-    allow(target).to receive(:latest_valid_report).and_return(stub_report(wall: 1))
-    allow(target).to receive(:latest_report).and_return(stub_report(wall: 1))
-    allow(troops_available).to receive(:distribute).with(anything, anything).and_return(Troop.new(light: 1))
-    expect_target_with(target, 'waiting_report')
-  end
+  #   troops_available = Troop.new(light: 50, ram: 800)
+  #   allow(@place).to receive(:troops_available).and_return(troops_available)
+  #   allow(target).to receive(:latest_valid_report).and_return(stub_report(wall: 1))
+  #   allow(target).to receive(:latest_report).and_return(stub_report(wall: 1))
+  #   allow(troops_available).to receive(:distribute).with(anything, anything).and_return(Troop.new(light: 1))
+  #   expect_target_with(target, 'waiting_report')
+  # end
 
   it 'attack with report with wall, strong troops without ram' do
     target = stub_target(status: 'waiting_report')
