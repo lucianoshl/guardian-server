@@ -41,15 +41,23 @@ class Client::Mobile < Client::Base
   def login
     logger.info('Making mobile login'.on_blue)
     account = Account.main
-    parameters = [account.username, account.password, '2.7.8']
-    result = post('https://www.tribalwars.com.br/m/m/login', parameters)
-    result = JSON.parse(result.body)
-    throw Exception.new(result['error']) unless result['error'].nil?
-    token = result['result']['token']
-    post('https://www.tribalwars.com.br/m/m/worlds', [token])
-    result = post("https://#{account.world}.tribalwars.com.br/m/g/login", [token, 2, 'android'])
-    add_global_arg('sid', JSON.parse(result.body)['result']['sid'])
-    get("https://#{account.world}.tribalwars.com.br/login.php?mobile&2")
+    parameters = [
+      "password",
+      {
+          "intent": "login",
+          "username": account.username,
+          "password": account.password
+      }
+    ]
+
+    result = post('https://www.tribalwars.com.br/m/m/signon', parameters)
+    token = JSON.parse(result.body)['result']['master_session']['token']
+
+    result = JSON.parse(post("https://#{account.world}.tribalwars.com.br/m/g/login", [token, 2]).body)
+    sid = result['result']['sid']
+    login_url = result['result']['login_url']
+    post(login_url)
+
     Session.create(account, cookies, 'mobile')
   end
 end

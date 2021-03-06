@@ -11,8 +11,6 @@ gem 'wisper', '2.0.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
-# Use Puma as the app server
-gem 'puma', '~> 4.3.5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
@@ -78,6 +76,7 @@ gem 'washbullet'
 
 group :production do
   gem 'foreman', '0.85.0'
+  gem 'puma', '~> 4.3.5'
 end
 
 install_if -> { ENV['DISABLE_SPRING'] == '1' && ENV['RAILS_ENV'] == 'production' } do
