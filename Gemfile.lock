@@ -153,7 +153,9 @@ GEM
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2019.0331)
-    mimemagic (0.3.3)
+    mimemagic (0.3.10)
+      nokogiri (~> 1)
+      rake
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
     minitest (5.14.2)
@@ -171,7 +173,7 @@ GEM
     net-http-digest_auth (1.4.1)
     net-http-persistent (3.1.0)
       connection_pool (~> 2.2)
-    nio4r (2.5.2)
+    nio4r (2.5.7)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     ntlm-http (0.1.1)
@@ -189,7 +191,7 @@ GEM
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
     public_suffix (3.1.1)
-    puma (4.3.5)
+    puma (4.3.8)
       nio4r (~> 2.0)
     r18n-core (3.2.0)
     rack (2.2.3)
@@ -353,7 +355,7 @@ DEPENDENCIES
   pry-nav
   pry-rescue
   pry-stack_explorer
-  puma (~> 4.3.5)
+  puma (~> 4.3.8)
   r18n-core
   rails (~> 5.2.3)
   rails_admin (~> 2.0.0.rc)
