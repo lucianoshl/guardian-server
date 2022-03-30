@@ -76,7 +76,7 @@ gem 'washbullet'
 
 group :production do
   gem 'foreman', '0.85.0'
-  gem 'puma', '~> 4.3.5'
+  gem 'puma', '~> 4.3.12'
 end
 
 install_if -> { ENV['DISABLE_SPRING'] == '1' && ENV['RAILS_ENV'] == 'production' } do
